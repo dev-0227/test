@@ -18,7 +18,7 @@ app.options('*', cors(corsOptions)); // Enable pre-flight for all routes
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(bodyParser.json({ limit: '50mb' }));
 
-app.use('/test', (req, res) => {
+app.get('/test', (req, res) => {
     res.status(200).json("Hello world!");
 });
 
