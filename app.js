@@ -3,8 +3,10 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require('cors');
 
+const route = require('./route');
+
 const corsOptions = {
-    origin: process.env.ALLOWED_ORIGIN || 'https://chny.precisionq.com',
+    origin: process.env.ALLOWED_ORIGIN || '*',
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control']
 };
@@ -18,9 +20,8 @@ app.options('*', cors(corsOptions)); // Enable pre-flight for all routes
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(bodyParser.json({ limit: '50mb' }));
 
-app.get('/test', (req, res) => {
-    res.status(200).json("Hello world!");
-});
+// app.get('/api', router);
+app.use('/login', route);
 
 // app.use((req, res, next) => {
 //     res.header("Access-Control-Allow-Origin", "*");
