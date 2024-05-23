@@ -349,7 +349,7 @@ const encounterRepo = {
     },
 
     appointmentSpecialty: (entry, callback) => {
-        let query = "SELECT * FROM `specialty`";
+        let query = "SELECT * FROM `specialty` ORDER BY name";
         connection.query(query, [], (err, result) => {
             callback(err, result);
         });
@@ -401,13 +401,13 @@ const encounterRepo = {
         });
     },
     getAppointmentSpecialtyByMeasure: (entry, callback) => {
-        let query = "SELECT * FROM `specialty` WHERE FIND_IN_SET(?, `mid`)";
+        let query = "SELECT * FROM `specialty` WHERE FIND_IN_SET(?, `mid`) ORDER BY name";
         connection.query(query, [entry.measure_id], (err, result) => {
             callback(err, result);
         });
     },
     getReferralSpecialtyByClinic: (entry, callback) => {
-        let query = "SELECT GROUP_CONCAT(DISTINCT m_id) as m_id FROM `f_referral` WHERE clinic_id=? ";
+        let query = "SELECT GROUP_CONCAT(DISTINCT m_id) as m_id FROM `f_referral` WHERE clinic_id=? ORDER BY name";
         
         connection.query(query, [entry.clinic_id], (err, result) => {
             if(!err){
