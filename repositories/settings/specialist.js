@@ -10,12 +10,6 @@ var query_string = function(str, value){
 }
 const accounts = {
     list: (entry, callback) => {
-        // create specialist table
-        var createQuery = "CREATE TABLE `specialist` (`id` int(11) NOT NULL AUTO_INCREMENT,`fname` varchar(20) DEFAULT NULL,`lname` varchar(20) DEFAULT NULL,`mname` varchar(20) DEFAULT NULL,`email` varchar(50) DEFAULT NULL,`cel` varchar(25) DEFAULT NULL,`phone` varchar(25) DEFAULT NULL,`address` varchar(100) DEFAULT NULL,`city` varchar(30) DEFAULT NULL,`state` varchar(30) DEFAULT NULL,`fax` varchar(25) DEFAULT NULL,`zip` varchar(30) DEFAULT NULL,`plocation` varchar(100) DEFAULT NULL,`npi` varchar(30) DEFAULT NULL,`license` varchar(20) DEFAULT NULL,`clinic` text DEFAULT NULL,`contactname` varchar(20) DEFAULT NULL,`contactemail` varchar(20) DEFAULT NULL,`contactcel` varchar(25) DEFAULT NULL,`type` int(11) DEFAULT NULL,`specialty_id` text NOT NULL,`insurance_id` text DEFAULT NULL,`status` int(11) NOT NULL,`taxonomy` varchar(30) DEFAULT NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
-        connection.query(createQuery, (err, result) => {
-            if (!err) console.log("Successs!");
-        })
-
         var where = "";
         let query = "SELECT specialist.*, specialty.`name` AS sname FROM `specialist`, `specialty` WHERE specialist.specialty_id = specialty.id ";
         if(entry.search.value!=""){
