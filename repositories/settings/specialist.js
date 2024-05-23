@@ -37,12 +37,8 @@ const accounts = {
     },
     
     add: (account, callback) => {
-        // let query = "INSERT INTO `managers` (`id`, `fname`, `lname`, `mname`, `plocation`, `speciality`, `npi`, `license`, `email`,`phone`, `cel`,`address`, `fax`, `city`, `state`, `zip`, `contactname`, `contactemail`, `contactcel`,`type`,`status`) VALUES (NULL, ? , ? , ? , ?,  ? , ?, ?, ? , ? , ? , ?,  ? , ?, ?, ?, ?, ?, ?, ?,? )";
-        // connection.query(query, [account.fname, account.lname, account.mname, account.plocation, account.speciality, account.npi, account.license, account.email, account.tel, account.cel, account.address, account.fax, account.city, account.state, account.zip, account.cname, account.cemail, account.ccel, account.type, account.status], (err, result) => {
-        //     callback(err, result);
-        // });
-        let query = "INSERT INTO `managers` (`fname`, `lname`, `mname`, `plocation`, `speciality`, `npi`, `license`, `email`, `phone`, `cel`,`address`, `fax`, `city`, `state`, `zip`, `clinic1`, `contactname`, `contactemail`, `contactcel`,`type`, `specialty_id`, `insurance_id`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        connection.query(query, [account.fname, account.lname, account.mname, account.plocation, account.speciality, account.npi, account.license, account.email, account.tel, account.cel, account.address, account.fax, account.city, account.state, account.zip, 1, account.cname, account.cemail, account.ccel, account.type, account.specialty_id, account.insurance_id, account.status], (err, result) => {
+        let query = "INSERT INTO `managers` (`fname`, `lname`, `mname`, `plocation`, `npi`, `license`, `email`, `phone`, `cel`,`address`, `fax`, `city`, `state`, `zip`, `clinic1`, `contactname`, `contactemail`, `contactcel`,`type`, `specialty_id`, `insurance_id`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        connection.query(query, [account.fname, account.lname, account.mname, account.plocation, account.npi, account.license, account.email, account.tel, account.cel, account.address, account.fax, account.city, account.state, account.zip, 1, account.cname, account.cemail, account.ccel, account.type, account.specialty_id, account.insurance_id, account.status], (err, result) => {
             callback(err, result);
         });
     },
@@ -53,8 +49,8 @@ const accounts = {
         });
     },
     update: (account, callback) => {
-        let query = "UPDATE `managers` SET `fname`= ?, `lname` = ?, `mname` = ?, `plocation` = ?, `speciality` = ?,`npi` = ?, `license` = ?, `email` = ?,  `phone` = ?, `cel` = ?,  `address` = ?, `fax` = ?, `city` = ?, `state` = ?, `zip` = ?, `contactname` = ?, `contactemail` = ?, `contactcel` = ?, `type` = ?, `specialty_id` = ?, `insurance_id` = ?, `status` = ? WHERE `id`= ? ";
-        connection.query(query, [account.fname, account.lname, account.mname, account.plocation, account.speciality, account.npi, account.license, account.email, account.tel, account.cel, account.address, account.fax, account.city, account.state, account.zip, account.cname, account.cemail, account.ccel, account.type, account.specialty_id, account.insurance_id, account.status, account.id], (err, result) => {
+        let query = "UPDATE `managers` SET `fname`= ?, `lname` = ?, `mname` = ?, `plocation` = ?,`npi` = ?, `license` = ?, `email` = ?,  `phone` = ?, `cel` = ?,  `address` = ?, `fax` = ?, `city` = ?, `state` = ?, `zip` = ?, `contactname` = ?, `contactemail` = ?, `contactcel` = ?, `type` = ?, `specialty_id` = ?, `insurance_id` = ?, `status` = ? WHERE `id`= ? ";
+        connection.query(query, [account.fname, account.lname, account.mname, account.plocation, account.npi, account.license, account.email, account.tel, account.cel, account.address, account.fax, account.city, account.state, account.zip, account.cname, account.cemail, account.ccel, account.type, account.specialty_id, account.insurance_id, account.status, account.id], (err, result) => {
             callback(err, result);
         });
     },
