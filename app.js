@@ -10,6 +10,7 @@ const manager = require('./routes/manager');
 const setting = require('./routes/setting');
 const role = require('./routes/role');
 const referral = require('./routes/referral');
+const insurance = require('./routes/insurance');
 
 
 const corsOptions = {
@@ -33,5 +34,6 @@ app.use('/manager', manager);
 app.use('/setting', setting);
 app.use('/role', role);
 app.use('/referral', referral);
+app.use('/insurance', insurance);
 
 module.exports = app;
