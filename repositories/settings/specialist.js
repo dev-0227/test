@@ -11,20 +11,20 @@ var query_string = function(str, value){
 const accounts = {
     list: (entry, callback) => {
         var where = "";
-        let query = "SELECT manager_specialist.*, specialty.`name` AS sname FROM `manager_specialist`, `specialty` WHERE manager_specialist.clinic1 >= 0 AND manager_specialist.specialty_id = specialty.id ";
+        let query = "SELECT managers.*, specialty.`name` AS sname FROM `managers`, `specialty` WHERE managers.clinic1 >= 0 AND managers.specialty_id = specialty.id ";
         if(entry.search.value!=""){
             where += "AND (";
-            where += "manager_specialist.fname LIKE '%"+entry.search.value+"%' ";
-            where += "OR manager_specialist.lname LIKE '%"+entry.search.value+"%' ";
-            where += "OR manager_specialist.email LIKE '%"+entry.search.value+"%' ";
-            where += "OR manager_specialist.phone LIKE '%"+entry.search.value+"%' ";
+            where += "managers.fname LIKE '%"+entry.search.value+"%' ";
+            where += "OR managers.lname LIKE '%"+entry.search.value+"%' ";
+            where += "OR managers.email LIKE '%"+entry.search.value+"%' ";
+            where += "OR managers.phone LIKE '%"+entry.search.value+"%' ";
             where += ") "
             query += where;
         }
-        query += "ORDER BY manager_specialist.fname ";
+        query += "ORDER BY managers.fname ";
         query += "LIMIT "+entry.start+","+entry.length;
         connection.query(query, (err, result) => {
-            query = "SELECT count(*) as total FROM `manager_specialist`, `specialty` WHERE manager_specialist.clinic1 >= 0 AND manager_specialist.specialty_id = specialty.id "+where
+            query = "SELECT count(*) as total FROM `managers`, `specialty` WHERE managers.clinic1 >= 0 AND managers.specialty_id = specialty.id "+where
             connection.query(query, (err1, result1) => {
                 if(err1)callback(err, result);
                 else {
@@ -60,6 +60,7 @@ const accounts = {
     },
     delete: (entry, callback) => {
         let query = "DELETE FROM `manager_specialist`";
+        // let query = "DELETE FROM `manager_specialist` WHERE `id` = ?";
         connection.query(query, [entry.id], (err, result) => {
             callback(err, result);
         });
@@ -98,20 +99,20 @@ const accounts = {
                     clinics += parseInt(entry.clinics[i]);
             }
         }
-        let query = "UPDATE `managers` SET `clinic` = ? WHERE `id`= ?";
+        let query = "UPDATE `manager_specialist` SET `clinic` = ? WHERE `id`= ?";
         connection.query(query, [clinics, entry.id], (err, result) => {
             callback(err, result);
         });
         
     },
     getSpecialistByClinic: (entry, callback) => {
-        let query = "SELECT * FROM `managers` WHERE type = '3' AND FIND_IN_SET(?, `clinic`) ORDER BY fname";
+        let query = "SELECT * FROM `manager_specialist` WHERE type = '3' AND FIND_IN_SET(?, `clinic`) ORDER BY fname";
         connection.query(query,[entry.clinic_id], (err, result) => {
             callback(err, result);
         });
     },
     getSpecialist: (entry) => {
-        let query = "SELECT * FROM `managers` WHERE type = '3' ORDER BY fname";
+        let query = "SELECT * FROM `manager_specialist` WHERE type = '3' ORDER BY fname";
         return new Promise((resolve, reject) => {
             connection.query(query, (err, rows) => {
                 if (err) {
@@ -140,13 +141,13 @@ const accounts = {
     import: (xData, callback) => {
         var i = 0;
         for(i = 0; i < xData.length; i ++) {
-            query = "INSERT INTO `managers` (`fname`, `mname`, `lname`, `speciality`, `npi`, `license`, `email`, `phone`, `cel`, `address`, `fax`, `city`, `state`, `zip`, `clinic`, `clinic1`, `measure_id`, `emrid`, `taxonomy`, `specialty_id`, `type`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            query = "INSERT INTO `manager_specialist` (`fname`, `mname`, `lname`, `speciality`, `npi`, `license`, `email`, `phone`, `cel`, `address`, `fax`, `city`, `state`, `zip`, `clinic`, `clinic1`, `measure_id`, `emrid`, `taxonomy`, `specialty_id`, `type`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             connection.query(query, [xData[i].ufname, xData[i].uminitial, xData[i].ulname, xData[i].speciality, xData[i].NPI, xData[i].Licenseid, xData[i].uemail, xData[i].upPhone, xData[i].cel, xData[i].upaddress, xData[i].FaxNo, xData[i].upcity, xData[i].upstate, xData[i].zipcode, xData[i].clinic, 1, xData[i].measureID, xData[i].doctorID, xData[i].Taxonomy, xData[i].specialtyID, 3, 1], (err, result) => {
                  if (err) console.log(err);
             });
         }
 
-        query = "SELECT * FROM `managers` ORDER BY fname";
+        query = "SELECT * FROM `manager_specialist` ORDER BY fname";
         connection.query(query, (err, result) => {
             callback(err, i);
         });
