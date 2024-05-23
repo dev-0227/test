@@ -1,4 +1,4 @@
-const connection = require('/../utilities/database');
+const connection = require('../utilities/database');
 var md5 = require('md5');
 var lastday = function(y,m){
     if (m < 10) {
