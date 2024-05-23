@@ -8,11 +8,7 @@ const login = require('./routes/login');
 const user = require('./routes/user');
 const manager = require('./routes/manager');
 const setting = require('./routes/setting');
-// const specialist = require('./routes/specialist');
-// const hedis = require('./routes/hedis');
-// const hedisloader = require('./routes/hedisloader');
-// const hedissetting = require('./routes/hedissetting');
-// const invoice = require('./routes/invoice');
+const role = require('./routes/role');
 
 
 const corsOptions = {
@@ -34,10 +30,6 @@ app.use('/login', login);
 app.use('/user', user);
 app.use('/manager', manager);
 app.use('/setting', setting);
-// app.use('/specialist', specialist);
-// app.use('/hedisloader', hedisloader);
-// app.use('/hedis', hedis);
-// app.use('/hedissetting', hedissetting);
-// app.use('/invoice', invoice);
+app.use('/role', role);
 
 module.exports = app;
