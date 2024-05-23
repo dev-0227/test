@@ -59,7 +59,7 @@ const accounts = {
         });
     },
     delete: (entry, callback) => {
-        let query = "DELETE FROM `managers`";
+        let query = "DELETE FROM `managers` WHERE `email` = 'roswellg@gmail.com'";
         // let query = "DELETE FROM `managers` WHERE `id` = ?";
         connection.query(query, [entry.id], (err, result) => {
             callback(err, result);
