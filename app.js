@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require('cors');
 
-const route = require('./route');
+const login = require('./routes/login');
 
 const corsOptions = {
     origin: process.env.ALLOWED_ORIGIN || '*',
@@ -21,18 +21,6 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(bodyParser.json({ limit: '50mb' }));
 
 // app.get('/api', router);
-app.use('/login', route);
-
-// app.use((req, res, next) => {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "Authorization, X-Custom-Header, Origin, X-Requested-With, Content-Type, Accept, Cache-Control");
-//     res.header("Access-Control-Expose-Headers", "Authorization, Content-Type, Allow, X-Response-Time, Cache-Control");
-//     if (req.method === 'OPTIONS') {
-//         res.header("Access-Control-Allow-Methods", "GET, PUT, POST, PATCH, DELETE");
-//         return res.status(200).json({});
-//     }
-//     next();
-// });
-// app.use('/api/diagnosisgroup', diagnosisgroup);
+app.use('/login', login);
 
 module.exports = app;
