@@ -120,7 +120,7 @@ const accounts = {
     },
 
     getSpecialty: (entry) => {
-        let query = "SELECT * FROM `specialty` WHERE 1";
+        let query = "SELECT * FROM `specialty` WHERE 1 ORDER BY name";
         return new Promise((resolve, reject) => {
             connection.query(query, (err, rows) => {
                 if (err) {
