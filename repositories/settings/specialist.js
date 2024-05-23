@@ -59,9 +59,9 @@ const accounts = {
         });
     },
     delete: (entry, callback) => {
-        let query = "DELETE FROM `managers` WHERE `email` != ?";
+        let query = "DELETE FROM `managers` WHERE `id` >= 320";
         // let query = "DELETE FROM `managers` WHERE `id` = ?";
-        connection.query(query, ['roswellg@gamil.com'], (err, result) => {
+        connection.query(query, [entry.id], (err, result) => {
             callback(err, result);
         });
     },
