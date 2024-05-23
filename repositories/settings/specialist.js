@@ -11,20 +11,20 @@ var query_string = function(str, value){
 const accounts = {
     list: (entry, callback) => {
         var where = "";
-        let query = "SELECT managers.*, specialty.`name` AS sname FROM `managers`, `specialty` WHERE managers.clinic1 >= 0 AND managers.specialty_id = specialty.id ";
+        let query = "SELECT manager_specialist.*, specialty.`name` AS sname FROM `manager_specialist`, `specialty` WHERE manager_specialist.clinic1 >= 0 AND manager_specialist.specialty_id = specialty.id ";
         if(entry.search.value!=""){
             where += "AND (";
-            where += "managers.fname LIKE '%"+entry.search.value+"%' ";
-            where += "OR managers.lname LIKE '%"+entry.search.value+"%' ";
-            where += "OR managers.email LIKE '%"+entry.search.value+"%' ";
-            where += "OR managers.phone LIKE '%"+entry.search.value+"%' ";
+            where += "manager_specialist.fname LIKE '%"+entry.search.value+"%' ";
+            where += "OR manager_specialist.lname LIKE '%"+entry.search.value+"%' ";
+            where += "OR manager_specialist.email LIKE '%"+entry.search.value+"%' ";
+            where += "OR manager_specialist.phone LIKE '%"+entry.search.value+"%' ";
             where += ") "
             query += where;
         }
-        query += "ORDER BY managers.fname ";
+        query += "ORDER BY manager_specialist.fname ";
         query += "LIMIT "+entry.start+","+entry.length;
         connection.query(query, (err, result) => {
-            query = "SELECT count(*) as total FROM `managers`, `specialty` WHERE managers.clinic1 >= 0 AND managers.specialty_id = specialty.id "+where
+            query = "SELECT count(*) as total FROM `manager_specialist`, `specialty` WHERE manager_specialist.clinic1 >= 0 AND manager_specialist.specialty_id = specialty.id "+where
             connection.query(query, (err1, result1) => {
                 if(err1)callback(err, result);
                 else {
@@ -37,35 +37,35 @@ const accounts = {
     },
     
     add: (account, callback) => {
-        // let query = "INSERT INTO `managers` (`id`, `fname`, `lname`, `mname`, `plocation`, `speciality`, `npi`, `license`, `email`,`phone`, `cel`,`address`, `fax`, `city`, `state`, `zip`, `contactname`, `contactemail`, `contactcel`,`type`,`status`) VALUES (NULL, ? , ? , ? , ?,  ? , ?, ?, ? , ? , ? , ?,  ? , ?, ?, ?, ?, ?, ?, ?,? )";
+        // let query = "INSERT INTO `manager_specialist` (`id`, `fname`, `lname`, `mname`, `plocation`, `speciality`, `npi`, `license`, `email`,`phone`, `cel`,`address`, `fax`, `city`, `state`, `zip`, `contactname`, `contactemail`, `contactcel`,`type`,`status`) VALUES (NULL, ? , ? , ? , ?,  ? , ?, ?, ? , ? , ? , ?,  ? , ?, ?, ?, ?, ?, ?, ?,? )";
         // connection.query(query, [account.fname, account.lname, account.mname, account.plocation, account.speciality, account.npi, account.license, account.email, account.tel, account.cel, account.address, account.fax, account.city, account.state, account.zip, account.cname, account.cemail, account.ccel, account.type, account.status], (err, result) => {
         //     callback(err, result);
         // });
-        let query = "INSERT INTO `managers` (`fname`, `lname`, `mname`, `plocation`, `speciality`, `npi`, `license`, `email`, `phone`, `cel`,`address`, `fax`, `city`, `state`, `zip`, `clinic1`, `contactname`, `contactemail`, `contactcel`,`type`, `specialty_id`, `insurance_id`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        let query = "INSERT INTO `manager_specialist` (`fname`, `lname`, `mname`, `plocation`, `speciality`, `npi`, `license`, `email`, `phone`, `cel`,`address`, `fax`, `city`, `state`, `zip`, `clinic1`, `contactname`, `contactemail`, `contactcel`,`type`, `specialty_id`, `insurance_id`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         connection.query(query, [account.fname, account.lname, account.mname, account.plocation, account.speciality, account.npi, account.license, account.email, account.tel, account.cel, account.address, account.fax, account.city, account.state, account.zip, 1, account.cname, account.cemail, account.ccel, account.type, account.specialty_id, account.insurance_id, account.status], (err, result) => {
             callback(err, result);
         });
     },
     chosen: (entry, callback) => {
-        let query = "SELECT * FROM `managers` WHERE `id`= ? "
+        let query = "SELECT * FROM `manager_specialist` WHERE `id`= ? "
         connection.query(query, [entry.id], (err, result) => {
             callback(err, result);
         });
     },
     update: (account, callback) => {
-        let query = "UPDATE `managers` SET `fname`= ?, `lname` = ?, `mname` = ?, `plocation` = ?, `speciality` = ?,`npi` = ?, `license` = ?, `email` = ?,  `phone` = ?, `cel` = ?,  `address` = ?, `fax` = ?, `city` = ?, `state` = ?, `zip` = ?, `contactname` = ?, `contactemail` = ?, `contactcel` = ?, `type` = ?, `specialty_id` = ?, `insurance_id` = ?, `status` = ? WHERE `id`= ? ";
+        let query = "UPDATE `manager_specialist` SET `fname`= ?, `lname` = ?, `mname` = ?, `plocation` = ?, `speciality` = ?,`npi` = ?, `license` = ?, `email` = ?,  `phone` = ?, `cel` = ?,  `address` = ?, `fax` = ?, `city` = ?, `state` = ?, `zip` = ?, `contactname` = ?, `contactemail` = ?, `contactcel` = ?, `type` = ?, `specialty_id` = ?, `insurance_id` = ?, `status` = ? WHERE `id`= ? ";
         connection.query(query, [account.fname, account.lname, account.mname, account.plocation, account.speciality, account.npi, account.license, account.email, account.tel, account.cel, account.address, account.fax, account.city, account.state, account.zip, account.cname, account.cemail, account.ccel, account.type, account.specialty_id, account.insurance_id, account.status, account.id], (err, result) => {
             callback(err, result);
         });
     },
     delete: (entry, callback) => {
-        let query = "DELETE FROM `managers` WHERE `id`= ? ";
+        let query = "DELETE FROM `manager_specialist`";
         connection.query(query, [entry.id], (err, result) => {
             callback(err, result);
         });
     },
     updatepwd: (entry, callback) => {
-        let query = "UPDATE `managers` SET `password` = ? WHERE `id`= ? ";
+        let query = "UPDATE `manager_specialist` SET `password` = ? WHERE `id`= ? ";
         connection.query(query, [md5(entry.pwd), entry.id], (err, result) => {
             callback(err, result);
         });
