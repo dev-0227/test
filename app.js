@@ -5,8 +5,8 @@ const cors = require('cors');
 
 
 const login = require('./routes/login');
-const user = require('./routes/user');
-const manager = require('./routes/manager');
+// const user = require('./routes/user');
+// const manager = require('./routes/manager');
 const hedis = require('./routes/hedis');
 const hedisloader = require('./routes/hedisloader');
 const hedissetting = require('./routes/hedissetting');
@@ -29,8 +29,8 @@ app.use(bodyParser.json({ limit: '50mb' }));
 
 
 app.use('/login', login);
-app.use('/user', user);
-app.use('/manager', manager);
+// app.use('/user', user);
+// app.use('/manager', manager);
 app.use('/hedisloader', hedisloader);
 app.use('/hedis', hedis);
 app.use('/hedissetting', hedissetting);
