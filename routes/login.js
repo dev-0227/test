@@ -6,10 +6,10 @@ const router = express.Router();
 
 // Get all logs route 
 router.post('/login', controller.login);
-// router.post('/getsecurity', controller.getsecurity);
-// router.post('/checksecurity', controller.checksecurity);
-// router.post('/resetpwdemail', controller.resetpwdemail);
-// router.post('/updatepwd', controller.updatepwd);
-// router.post('/updateloginouttime', controller.updateloginouttime);
-// router.post('/logout', controller.logout);
+router.post('/getsecurity', controller.getsecurity);
+router.post('/checksecurity', controller.checksecurity);
+router.post('/resetpwdemail', controller.resetpwdemail);
+router.post('/updatepwd', controller.updatepwd);
+router.post('/updateloginouttime', controller.updateloginouttime);
+router.post('/logout', controller.logout);
 module.exports = router;
