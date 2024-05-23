@@ -11,20 +11,20 @@ var query_string = function(str, value){
 const accounts = {
     list: (entry, callback) => {
         var where = "";
-        let query = "SELECT managers.*, specialty.`name` AS sname FROM `managers`, `specialty` WHERE managers.clinic1 >= 0 AND managers.specialty_id = specialty.id ";
+        let query = "SELECT manager_specialist.*, specialty.`name` AS sname FROM `manager_specialist`, `specialty` WHERE manager_specialist.clinic1 >= 0 AND manager_specialist.specialty_id = specialty.id ";
         if(entry.search.value!=""){
             where += "AND (";
-            where += "managers.fname LIKE '%"+entry.search.value+"%' ";
-            where += "OR managers.lname LIKE '%"+entry.search.value+"%' ";
-            where += "OR managers.email LIKE '%"+entry.search.value+"%' ";
-            where += "OR managers.phone LIKE '%"+entry.search.value+"%' ";
+            where += "manager_specialist.fname LIKE '%"+entry.search.value+"%' ";
+            where += "OR manager_specialist.lname LIKE '%"+entry.search.value+"%' ";
+            where += "OR manager_specialist.email LIKE '%"+entry.search.value+"%' ";
+            where += "OR manager_specialist.phone LIKE '%"+entry.search.value+"%' ";
             where += ") "
             query += where;
         }
-        query += "ORDER BY managers.fname ";
+        query += "ORDER BY manager_specialist.fname ";
         query += "LIMIT "+entry.start+","+entry.length;
         connection.query(query, (err, result) => {
-            query = "SELECT count(*) as total FROM `managers`, `specialty` WHERE managers.clinic1 >= 0 AND managers.specialty_id = specialty.id "+where
+            query = "SELECT count(*) as total FROM `manager_specialist`, `specialty` WHERE manager_specialist.clinic1 >= 0 AND manager_specialist.specialty_id = specialty.id "+where
             connection.query(query, (err1, result1) => {
                 if(err1)callback(err, result);
                 else {

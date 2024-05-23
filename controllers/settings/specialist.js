@@ -14,7 +14,7 @@ exports.list = async(req, res, next) => {
     if(!can)return res.status(405).json('Not Permission');
     specialist.list(req.query, (err, result) => {
         if (err) {
-            res.status(404).json(err);
+            res.status(404).json("Failed!");
         } else {
             res.status(200).json(result);
         }
@@ -121,7 +121,7 @@ exports.delete = async(req, res, next) => {
     }
     specialist.delete(entry, (err, result) => {
         if (err) {
-            res.status(404).json(err);
+            res.status(404).json("Failed!");
         } else {
             res.status(200).json({ data: result });
         }
