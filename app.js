@@ -16,7 +16,7 @@ const insurance = require('./routes/insurance');
 // const audit_event = require('./routes/audit_event');
 // const clinic = require('./routes/clinic');
 // const vital = require('./routes/vital');
-// const valueset = require('./routes/valueset');
+const valueset = require('./routes/valueset');
 // const database = require('./routes/database');
 // const profile = require('./routes/profile');
 // const hedisloader = require('./routes/hedisloader');
@@ -26,7 +26,7 @@ const insurance = require('./routes/insurance');
 // const paymentsetting = require('./routes/paymentsetting');
 // const paid = require('./routes/paid');
 // const ffs = require('./routes/ffs');
-// const patientlist = require('./routes/patientlist');
+const patientlist = require('./routes/patientlist');
 // const diagnosisgroup = require('./routes/diagnosisgroup');
 
 
@@ -56,7 +56,7 @@ app.use('/insurance', insurance);
 // app.use('/audit_event', audit_event);
 // app.use('/clinic', clinic);
 // app.use('/vital', vital);
-// app.use('/valueset', valueset);
+app.use('/valueset', valueset);
 // app.use('/database', database);
 // app.use('/profile', profile);
 // app.use('/hedisloader', hedisloader);
@@ -66,7 +66,7 @@ app.use('/insurance', insurance);
 // app.use('/paymentsetting', paymentsetting);
 // app.use('/paid', paid);
 // app.use('/ffs', ffs);
-// app.use('/patientlist', patientlist);
+app.use('/patientlist', patientlist);
 // app.use('/diagnosisgroup', diagnosisgroup);
 
 
