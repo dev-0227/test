@@ -25,7 +25,7 @@ const valueset = require('./routes/valueset');
 const hedissetting = require('./routes/hedissetting');
 // const paymentsetting = require('./routes/paymentsetting');
 const paid = require('./routes/paid');
-// const ffs = require('./routes/ffs');
+const ffs = require('./routes/ffs');
 const patientlist = require('./routes/patientlist');
 // const diagnosisgroup = require('./routes/diagnosisgroup');
 
@@ -65,7 +65,7 @@ app.use('/valueset', valueset);
 app.use('/hedissetting', hedissetting);
 // app.use('/paymentsetting', paymentsetting);
 app.use('/paid', paid);
-// app.use('/ffs', ffs);
+app.use('/ffs', ffs);
 app.use('/patientlist', patientlist);
 // app.use('/diagnosisgroup', diagnosisgroup);
 
