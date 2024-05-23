@@ -55,7 +55,6 @@ const accounts = {
         });
     },
     delete: (entry, callback) => {
-        // let query = "DELETE FROM `specialist` WHERE `id` >= 30";
         let query = "DELETE FROM `specialist` WHERE `id` = ?";
         connection.query(query, [entry.id], (err, result) => {
             callback(err, result);
@@ -108,7 +107,7 @@ const accounts = {
         });
     },
     getSpecialist: (entry) => {
-        let query = "SELECT * FROM `specialist` WHERE type = '3' ORDER BY fname";
+        let query = "SELECT * FROM `specialist` ORDER BY fname";
         return new Promise((resolve, reject) => {
             connection.query(query, (err, rows) => {
                 if (err) {
