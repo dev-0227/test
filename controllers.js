@@ -1,8 +1,8 @@
 
-exports.login = (req, res) => {
-    return res.status(200).json("login");
+exports.login = (req, res, next) => {
+    return res.status(200).json("Result : ", req.body);
 }
 
-exports.test = (req, res) => {
-    return res.status(200).json("hello world");
+exports.test = (req, res, next) => {
+    return res.status(200).json("Result : ", req.body);
 }
