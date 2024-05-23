@@ -1,0 +1,17 @@
+id,cyear,clinicid,insid,emr_id,mid,ptfname,ptlname,dob,phone,email,mlob,measureid,measure,ins_pcp_id,dos,value1,value2,cpt1,cpt2,icd1,icd2,icdv1,icdv2,flag,status,gstatus,rstatus,hstatus,apptdate,apptpcp,apptvisit,nextdate,lastdate,lastpcp,lastvisit
+1009456,2024,1,26,9330,214,ADRIANA,MONTERO,07/18/2010,347-738-5085,null,0,null,Comprehensive Diabetes,11372,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009457,2024,1,26,9331,215,LUNA,CESPEDES,04/08/2010,929-389-9748,null,0,null,Comprehensive Diabetes,11372-1405,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009458,2024,1,26,9332,216,MAKAYLA,GRIGSBY,12/16/2005,646-220-9032,null,0,null,Comprehensive Diabetes,11372-2848,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009459,2024,1,26,9333,217,OLIVIA,GARZON,07/13/2012,347-665-3572,null,0,null,Comprehensive Diabetes,11372-5000,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009460,2024,1,26,9334,218,ANGELA,CORDERO,07/28/2004,347-617-3210,null,0,null,Comprehensive Diabetes,11369-1225,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009461,2024,1,26,9335,219,ALEXANDER,CORDERO,04/17/2003,347-617-3210,null,0,null,Comprehensive Diabetes,11369-1225,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009462,2024,1,26,9336,220,SAMUEL,ORTIZ-BRAN,04/15/2016,718-578-1066,null,0,null,Comprehensive Diabetes,11367-1958,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009463,2024,1,26,9337,221,TEST TRIBORO,TEST,02/02/2016,null,null,0,null,Comprehensive Diabetes,null,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009464,2024,1,26,9338,222,ANDY,MEXQUITIT,12/06/2013,917-975-5677,null,1,null,Comprehensive Diabetes,11368-3392,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009465,2024,1,26,9339,223,LUCERO,MEXQUITIT,08/07/2009,917-975-5677,null,0,null,Comprehensive Diabetes,11368-3392,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009466,2024,1,26,9340,224,SHEYLA,CABRERA,01/09/2007,917-600-4908,null,0,null,Comprehensive Diabetes,11372-1204,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009467,2024,1,26,9341,225,LANCE,CORDOVA,01/25/2003,908-764-0317,null,0,null,Comprehensive Diabetes,11372-2828,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009468,2024,1,26,9342,226,ARIANNA,CASTRO,04/19/2010,917-841-0179,null,0,null,Comprehensive Diabetes,11433-2828,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009469,2024,1,26,9343,227,SAMANTHA,ELIZALDE,01/07/2004,718-568-4951,null,0,null,Comprehensive Diabetes,10983-1026,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009470,2024,1,26,9344,228,AVA,AQUINO,04/16/2016,347-924-2423,biluce1@aol.com,0,null,Comprehensive Diabetes,11372-3442,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
+1009471,2024,1,26,9345,229,AMARILY,PASTUIZACA,06/28/2012,347-586-8884,null,0,null,Comprehensive Diabetes,11372-6925,,null,null,null,null,null,null,null,null,0,0,null,null,2,,null,null,null,,null,null
