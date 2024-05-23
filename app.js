@@ -27,7 +27,7 @@ const paymentsetting = require('./routes/paymentsetting');
 const paid = require('./routes/paid');
 const ffs = require('./routes/ffs');
 const patientlist = require('./routes/patientlist');
-// const diagnosisgroup = require('./routes/diagnosisgroup');
+const diagnosisgroup = require('./routes/diagnosisgroup');
 
 
 const corsOptions = {
@@ -67,7 +67,7 @@ app.use('/paymentsetting', paymentsetting);
 app.use('/paid', paid);
 app.use('/ffs', ffs);
 app.use('/patientlist', patientlist);
-// app.use('/diagnosisgroup', diagnosisgroup);
+app.use('/diagnosisgroup', diagnosisgroup);
 
 
 module.exports = app;
