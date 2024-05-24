@@ -16,8 +16,8 @@ exports.add = async(req, res, next) => {
     var can = req.user['role']=="0"?true:false;
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
-        code: req.body.name,
-        system: req.body.description,
+        code: req.body.code,
+        system: req.body.system,
         display: req.body.display,
         definition: req.body.definition
     }
@@ -50,8 +50,8 @@ exports.update = async(req, res, next) => {
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
-        code: req.body.name,
-        system: req.body.description,
+        code: req.body.code,
+        system: req.body.system,
         display: req.body.display,
         definition: req.body.definition
     }
