@@ -3,7 +3,7 @@ const connection = require('../../utilities/database');
 const organizations = {
     create: (callback) => {
         let query = "CREATE TABLE `f_vs_org_type` (`id` int(11) NOT NULL AUTO_INCREMENT,`code` char(255) NOT NULL,`system` varchar(255) DEFAULT NULL,`display` char(255) NOT NULL,`definition` text DEFAULT NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
-        ConnectionPolicyInstance.query(query, (err, result) => {
+        connection.query(query, (err, result) => {
             callback(err, result);
         });
     },
