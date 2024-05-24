@@ -3,6 +3,10 @@ const organization = require('../../repositories/settings/organization');
 exports.list = async(req, res, next) => {
     var can = req.user['role']=="0"?true:false;
     if(!can)return res.status(405).json('Not Permission');
+    //
+    organization.create((err, result) => {
+    })
+    //
     organization.list((err, result) => {
         if (err) {
             res.status(404).json(err);
