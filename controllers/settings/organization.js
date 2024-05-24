@@ -1,9 +1,9 @@
 const organization = require('../../repositories/settings/organization');
 
-exports.list = async(req, res, next) => {
+exports.list_type = async(req, res, next) => {
     var can = req.user['role']=="0"?true:false;
     if(!can)return res.status(405).json('Not Permission');
-    organization.list((err, result) => {
+    organization.list_type((err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
@@ -12,7 +12,7 @@ exports.list = async(req, res, next) => {
     });
 }
 
-exports.add = async(req, res, next) => {
+exports.add_type = async(req, res, next) => {
     var can = req.user['role']=="0"?true:false;
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
@@ -21,7 +21,7 @@ exports.add = async(req, res, next) => {
         display: req.body.display,
         definition: req.body.definition
     }
-    organization.add(entry, (err, result) => {
+    organization.add_type(entry, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
@@ -30,13 +30,13 @@ exports.add = async(req, res, next) => {
     });
 }
 
-exports.chosen = async(req, res, next) => {
+exports.chosen_type = async(req, res, next) => {
     var can = req.user['role']=="0"?true:false;
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
     }
-    organization.chosen(entry, (err, result) => {
+    organization.chosen_type(entry, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
@@ -45,7 +45,7 @@ exports.chosen = async(req, res, next) => {
     });
 }
 
-exports.update = async(req, res, next) => {
+exports.update_type = async(req, res, next) => {
     var can = req.user['role']=="0"?true:false;
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
@@ -55,7 +55,7 @@ exports.update = async(req, res, next) => {
         display: req.body.display,
         definition: req.body.definition
     }
-    organization.update(entry, (err, result) => {
+    organization.update_type(entry, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
@@ -64,13 +64,13 @@ exports.update = async(req, res, next) => {
     });
 }
 
-exports.delete = async(req, res, next) => {
+exports.delete_type = async(req, res, next) => {
     var can = req.user['role']=="0"?true:false;
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
     }
-    organization.delete(entry, (err, result) => {
+    organization.delete_type(entry, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
