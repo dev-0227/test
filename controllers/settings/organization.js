@@ -137,7 +137,8 @@ exports.add = async(req, res, next) => {
         hoursoperation:req.body.hoursoperation,
         virticalservice: req.body.virticalservice,
         endpoint: req.body.endpoint,
-        map: req.body.map
+        map: req.body.map,
+        zip: req.body.zip
     }
     organization.getid(entry, (err, result) => {
         if (result.length) res.status(200).json({msg: 'exist'});
@@ -173,6 +174,7 @@ exports.update = async(req, res, next) => {
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
+        status: req.body.status,
         name: req.body.name,
         type: req.body.type,
         alias: req.body.alias,
@@ -197,7 +199,8 @@ exports.update = async(req, res, next) => {
         hoursoperation:req.body.hoursoperation,
         virticalservice: req.body.virticalservice,
         endpoint: req.body.endpoint,
-        map: req.body.map
+        map: req.body.map,
+        zip: req.body.zip
     }
     organization.getid(entry, (err, result) => {
         if (result.length && result[0].id != entry.id) res.status(200).json({msg: 'exist'});
