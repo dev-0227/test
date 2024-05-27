@@ -28,8 +28,8 @@ exports.list = async(req, res, next) => {
     });
 }
 exports.add = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'USER_MANAGE');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'USER_MANAGE');
+    if(!can)return res.status(405).json('Not Permission');
     let entry = {
         fname: req.body.fname,
         lname: req.body.lname,
@@ -73,8 +73,8 @@ exports.add = async(req, res, next) => {
     }
 }
 exports.update = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    if(!can)return res.status(405).json('Not Permission');
     if (req.body.photo == "###@@@###") {
         new Promise((resolve, reject) => {
             specialist.chosen({id: req.body.id}, (err, res) => {
@@ -159,8 +159,8 @@ exports.chosen = async(req, res, next) => {
     });
 }
 exports.delete = async(req, response, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'USER_MANAGE');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'USER_MANAGE');
+    if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
     }
@@ -214,8 +214,8 @@ exports.updateanswer = async(req, res, next) => {
     });
 }
 exports.updateclinics = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
         clinics: req.body.clinics,
