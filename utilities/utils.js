@@ -18,13 +18,12 @@ module.exports = async function readfile (pathlist, index, callback) {
         } else {
             fs.readFile(pathlist[index]['photo'], (err, data) => {
                 if (err) {
-                    pathlist[index]['photo'] = '';
-                    console.log("Error");
+                    pathlist[index]['photo'] = pathlist[index]['fname'].substr(0, 1).toUpperCase();
                 } else {
                     pathlist[index]['photo'] = Buffer.from(data).toString('base64');
-                    if (pathlist.length -1 == index) callback(pathlist);
-                    else readfile(pathlist, ++index, callback);
                 }
+                if (pathlist.length -1 == index) callback(pathlist);
+                else readfile(pathlist, ++index, callback);
             });
         }
     }
