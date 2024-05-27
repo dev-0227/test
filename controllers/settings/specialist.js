@@ -1,8 +1,9 @@
 const specialist = require('../../repositories/settings/specialist');
 const Acl = require('../../middleware/acl');
-const manager = require('../../repositories/manager');
-const xlsx = require('node-xlsx');
 const xls = require('xlsx');
+const config = require('../../config');
+const fs = require('fs');
+const readfile = require('../../utilities/utils');
 
 if(typeof String.prototype.replaceAll === "undefined") {
     String.prototype.replaceAll = function(match, replace) {
@@ -16,7 +17,13 @@ exports.list = async(req, res, next) => {
         if (err) {
             res.status(404).json("Failed!");
         } else {
-            res.status(200).json(result);
+            for (var i = 0; i < result['data'].length; i ++) {
+                if (result['data'][i]['photo'] != '')
+                    result['data'][i]['photo'] = config.common.uploads + 'photoes/' + result['data'][i]['photo'];
+            }
+            readfile(result['data'], 0, (res1) => {
+                res.status(200).json(result);
+            });
         }
     });
 }
@@ -27,7 +34,6 @@ exports.add = async(req, res, next) => {
         fname: req.body.fname,
         lname: req.body.lname,
         mname: req.body.mname,
-        plocation: req.body.plocation,
         speciality: req.body.speciality,
         npi: req.body.npi,
         license: req.body.license,
@@ -35,9 +41,12 @@ exports.add = async(req, res, next) => {
         tel: req.body.tel,
         cel: req.body.cel,
         address: req.body.address,
+        address2: req.body.address2,
         fax: req.body.fax,
         city: req.body.city,
         state: req.body.state,
+        country: req.body.country,
+        web: req.body.web,
         zip: req.body.zip,
         cname: req.body.cname,
         cemail: req.body.cemail,
@@ -45,9 +54,11 @@ exports.add = async(req, res, next) => {
         type: 3,
         specialty_id: req.body.specialty_id,
         insurance_id: req.body.insurance_id,
-        status: 1
+        status: 1,
+        taxonomy: req.body.taxonomy,
+        photo: req.body.photo
     }
-    let check = await manager.checkuser(entry.email);
+    let check = await specialist.checkuser(entry.fname, entry.lname, entry.mname, entry.tel);
     if(check.length == 0){
         specialist.add(entry, (err, result) => {
             if (err) {
@@ -60,17 +71,38 @@ exports.add = async(req, res, next) => {
     else{
         res.status(200).json({ data: "existed" });
     }
-    
 }
 exports.update = async(req, res, next) => {
     // var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
     // if(!can)return res.status(405).json('Not Permission');
+    if (req.body.photo == "###@@@###") {
+        new Promise((resolve, reject) => {
+            specialist.chosen({id: req.body.id}, (err, res) => {
+                req.body.photo = res[0]['photo'];
+            });
+        });
+    } else {
+        //delete prev image file
+        var imgpath = '';
+        await specialist.getPhotoName(req.body.id, (err, res) => {
+            if (!err) imgpath = res[0].photo;
+
+            if (imgpath != '') {
+                new Promise((resolve, reject) => {
+                    specialist.deleteImage(config.common.uploads + 'photoes/' + imgpath, (err) => {
+                        if (err) reject(err);
+                        else resolve();
+                    });
+                });
+            }
+        });
+    }
+
     let entry = {
         id: req.body.id,
         fname: req.body.fname,
         lname: req.body.lname,
         mname: req.body.mname,
-        plocation: req.body.plocation,
         speciality: req.body.speciality,
         npi: req.body.npi,
         license: req.body.license,
@@ -78,9 +110,12 @@ exports.update = async(req, res, next) => {
         tel: req.body.tel,
         cel: req.body.cel,
         address: req.body.address,
+        address2: req.body.address2,
+        web: req.body.web,
         fax: req.body.fax,
         city: req.body.city,
         state: req.body.state,
+        country: req.body.country,
         zip: req.body.zip,
         cname: req.body.cname,
         cemail: req.body.cemail,
@@ -89,7 +124,8 @@ exports.update = async(req, res, next) => {
         status: req.body.status,
         specialty_id: req.body.specialty_id,
         insurance_id: req.body.insurance_id,
-        taxonomy: req.body.taxonomy
+        taxonomy: req.body.taxonomy,
+        photo: req.body.photo
     }
     specialist.update(entry, (err, result) => {
         if (err) {
@@ -109,22 +145,41 @@ exports.chosen = async(req, res, next) => {
         if (err) {
             res.status(404).json(err);
         } else {
-            res.status(200).json({ data: result });
+            const filepath = config.common.uploads + 'photoes/';
+            fs.readFile(filepath + result[0]['photo'], (err, data) => {
+                if (err) {
+                    result[0]['photo'] = '';
+                    console.log("Loading Image Error");
+                } else {
+                    result[0]['photo'] = Buffer.from(data).toString('base64');
+                }
+                res.status(200).json({ data: result });
+            });
         }
     });
 }
-exports.delete = async(req, res, next) => {
+exports.delete = async(req, response, next) => {
     // var can = await Acl.can(req.user, ['create'], 'USER_MANAGE');
     // if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
     }
-    specialist.delete(entry, (err, result) => {
-        if (err) {
-            res.status(404).json("Failed!");
-        } else {
-            res.status(200).json({ data: result });
-        }
+    specialist.getPhotoName(entry.id, (err1, res) => {
+        var imgpath = '';
+        if (!err1) imgpath = res[0]['photo'];
+
+        specialist.delete(entry, (err2, result) => {
+            if (err2) {
+                response.status(404).json("Failed!");
+            } else {
+                specialist.deleteImage(config.common.uploads + 'photoes/' + imgpath, (err3) => {
+                    setTimeout(() => {
+                        if (!err3) response.status(200).json({ data: result });
+                        else response.status(201).json({ data: result });
+                    }, 200);
+                });
+            }
+        });
     });
 }
 exports.updatepwd = async(req, res, next) => {

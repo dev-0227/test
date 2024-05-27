@@ -10,4 +10,10 @@ router.post('/type/chosen', AuthGuard, controller.chosen_type);
 router.post('/type/update', AuthGuard, controller.update_type);
 router.post('/type/delete', AuthGuard, controller.delete_type);
 
+router.get('/', AuthGuard, controller.list);
+router.post('/add', AuthGuard, controller.add);
+router.post('/chosen', AuthGuard, controller.chosen);
+router.post('/update', AuthGuard, controller.update);
+router.post('/delete', AuthGuard, controller.delete);
+
 module.exports = router;

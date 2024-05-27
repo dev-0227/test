@@ -1,20 +1,30 @@
 const express = require('express');
 const AuthGuard = require('../middleware/auth');
 const controller = require('../controllers/settings/specialist');
-
 const multer = require('multer');
 const config = require('../config');
+const utils = require('../utilities/utils');
 const path = require('path');
-const storage = multer.diskStorage({
+
+const storage_csv = multer.diskStorage({
     destination: config.common.uploads,
     filename: (req, file, cb) => {
         cb(null, 'specialist-' + Date.now() + path.extname(file.originalname));
     }
 });
-
-const upload = multer({
-    storage: storage
+const upload_csv = multer({
+    storage: storage_csv
 }).array('specialist_file');
+
+const storage_photo = multer.diskStorage({
+    destination: config.common.uploads + 'photoes/',
+    filename: (req, file, cb) => {
+        cb(null, generateRandomString(32) + path.extname(file.originalname));
+    }
+});
+const upload_photo = multer({
+    storage: storage_photo
+}).array('ephoto');
 
 const router = express.Router();
 
@@ -28,12 +38,18 @@ router.post('/updatepwd', AuthGuard, controller.updatepwd);
 router.post('/updateanswer', AuthGuard, controller.updateanswer);
 router.post('/updateclinics', AuthGuard, controller.updateclinics);
 router.post('/getSpecialistByClinic', AuthGuard, controller.getSpecialistByClinic);
-
 router.post('/import', AuthGuard, (req, res, next) => {
-    upload(req, res, (err) => {
+    upload_csv(req, res, (err) => {
         if (!err) {
             controller.import(req, res, next);
         }
+    });
+});
+router.post('/uploadimage', AuthGuard, (req, res, next) => {
+    upload_photo(req, res, (err) => {
+        if (!err) {
+            res.status(200).json({data: req.files[0]});
+        } else res.status(404).json(err);
     });
 });
 

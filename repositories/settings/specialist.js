@@ -1,5 +1,6 @@
 const connection = require('../../utilities/database');
 var md5 = require('md5');
+const fs = require('fs');
 
 var query_string = function(str, value){
     var result = value?value:"NULL";
@@ -35,10 +36,21 @@ const accounts = {
             });
         });
     },
-    
+    checkuser: (fname, lname, mname, phone) => {
+        let query = "SELECT id FROM `specialist` WHERE `fname` = ? AND `lname` = ? AND `mname` = ? AND `phone` = ?";
+        return new Promise((resolve, reject) => {
+            connection.query(query, [fname, lname, mname, phone], (err, rows) => {
+                if (err) {
+                reject(err);
+                } else {
+                resolve(rows);
+                }
+            });
+        });
+    },
     add: (account, callback) => {
-        let query = "INSERT INTO `specialist` (`fname`, `lname`, `mname`, `plocation`, `npi`, `license`, `email`, `phone`, `cel`,`address`, `fax`, `city`, `state`, `zip`, `clinic`, `contactname`, `contactemail`, `contactcel`,`type`, `specialty_id`, `insurance_id`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        connection.query(query, [account.fname, account.lname, account.mname, account.plocation, account.npi, account.license, account.email, account.tel, account.cel, account.address, account.fax, account.city, account.state, account.zip, 1, account.cname, account.cemail, account.ccel, account.type, account.specialty_id, account.insurance_id, account.status], (err, result) => {
+        let query = "INSERT INTO `specialist` (`fname`, `lname`, `mname`, `npi`, `web`, `license`, `email`, `phone`, `cel`, `address`, `address2`, `fax`, `city`, `country`, `state`, `zip`, `contactname`, `contactemail`, `contactcel`,`type`, `specialty_id`, `insurance_id`, `taxonomy`, `photo`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        connection.query(query, [account.fname, account.lname, account.mname, account.npi, account.web, account.license, account.email, account.tel, account.cel, account.address, account.address2, account.fax, account.city, account.country, account.state, account.zip, account.cname, account.cemail, account.ccel, account.type, account.specialty_id, account.insurance_id, account.taxonomy, account.photo, account.status], (err, result) => {
             callback(err, result);
         });
     },
@@ -49,8 +61,8 @@ const accounts = {
         });
     },
     update: (account, callback) => {
-        let query = "UPDATE `specialist` SET `fname`= ?, `lname` = ?, `mname` = ?, `plocation` = ?,`npi` = ?, `license` = ?, `email` = ?,  `phone` = ?, `cel` = ?,  `address` = ?, `fax` = ?, `city` = ?, `state` = ?, `zip` = ?, `contactname` = ?, `contactemail` = ?, `contactcel` = ?, `type` = ?, `specialty_id` = ?, `insurance_id` = ?, `status` = ? WHERE `id`= ? ";
-        connection.query(query, [account.fname, account.lname, account.mname, account.plocation, account.npi, account.license, account.email, account.tel, account.cel, account.address, account.fax, account.city, account.state, account.zip, account.cname, account.cemail, account.ccel, account.type, account.specialty_id, account.insurance_id, account.status, account.id], (err, result) => {
+        let query = "UPDATE `specialist` SET `fname`= ?, `lname` = ?, `mname` = ?, `web` = ?, `npi` = ?, `license` = ?, `email` = ?,  `phone` = ?, `cel` = ?,  `address` = ?, `address2` = ?, `fax` = ?, `city` = ?, `state` = ?, `zip` = ?, `country` = ?, `contactname` = ?, `contactemail` = ?, `contactcel` = ?, `taxonomy` = ?, `photo` = ?, `type` = ?, `specialty_id` = ?, `insurance_id` = ?, `status` = ? WHERE `id`= ? ";
+        connection.query(query, [account.fname, account.lname, account.mname, account.web, account.npi, account.license, account.email, account.tel, account.cel, account.address, account.address2, account.fax, account.city, account.state, account.zip, account.country, account.cname, account.cemail, account.ccel, account.taxonomy, account.photo, account.type, account.specialty_id, account.insurance_id, account.status, account.id], (err, result) => {
             callback(err, result);
         });
     },
@@ -131,8 +143,6 @@ const accounts = {
             });
         });
     },
-
-  
     import: (xData, callback) => {
         var i = 0;
         for(i = 0; i < xData.length; i ++) {
@@ -147,5 +157,17 @@ const accounts = {
             callback(err, i);
         });
     },
+    //util
+    getPhotoName: (id, callback) => {
+        let query = "SELECT photo FROM specialist WHERE `id` = ?";
+        connection.query(query, [id], (err, result) => {
+            callback(err, result);
+        });
+    },
+    deleteImage: (filepath, callback) => {
+        fs.unlink(filepath, (err) => {
+            callback(err);
+        })
+    }
 }
 module.exports = accounts;

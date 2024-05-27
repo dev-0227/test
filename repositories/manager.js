@@ -7,8 +7,8 @@ const accounts = {
             callback(err, result);
         });
     },
-    checkuser: (email) => {
-        let query = "SELECT id FROM `managers` WHERE email = '"+email+"'";
+    checkuser: (fname, lname, mname, phone) => {
+        let query = "SELECT id FROM `managers` WHERE fname = '" + fname + "' AND lname = '" + lname + "' AND mname = '" + mname + "' AND phone = '" + phone + "'";
         return new Promise((resolve, reject) => {
             connection.query(query, (err, rows) => {
                 if (err) {

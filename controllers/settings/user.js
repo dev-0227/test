@@ -61,7 +61,6 @@ function httpRequest(options) {
 exports.list = async(req, res, next) => {
     var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
-    console.log('req.query', req.query)
     user.list(req.query, (err, result) => {
         if (err) {
             res.status(404).json(err);

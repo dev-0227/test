@@ -21,7 +21,6 @@ const communications = {
         });
     },
     setcalllogtrack: (entry) => {
-        console.log(entry.userid, entry.clinicid, entry.phone, entry.dudration, entry.price, entry.patinsid, entry.patemrid, entry.calldate)
         let query = "INSERT INTO `call_track_table` (`id`, `userid`, `clinic_id`, `receive_num`, `duration`,`price`,`ins_id`,`emr_id`,`call_date`) VALUES (NULL, ? , ? , ?,  ?, ?, ? , ? , ?)";
         return new Promise((resolve, reject) => {
             connection.query(query, [entry.userid, entry.clinicid, entry.phone, entry.dudration, entry.price, entry.patinsid, entry.patemrid, entry.calldate], (err, rows) => {
