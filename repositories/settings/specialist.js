@@ -12,7 +12,7 @@ var query_string = function(str, value){
 const accounts = {
     list: (entry, callback) => {
 
-        let q = "ALTER TABLE `specialist` ADD `photo` varchar(100) DEFAULT NULL, `address2` varchar(100) DEFAULT NULL, `web` varchar(200) DEFAULT NULL, `country` varchar(25) DEFAULT 'US';";
+        let q = "ALTER TABLE `specialist` ADD `photo` varchar(100) DEFAULT NULL, ADD `address2` varchar(100) DEFAULT NULL, ADD `web` varchar(200) DEFAULT NULL, ADD `country` varchar(25) DEFAULT 'US';";
         connection.query(q, (err, result) => {
             if (!err) {
                 result.status(200).json("OK!");
