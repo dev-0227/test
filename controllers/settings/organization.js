@@ -95,6 +95,13 @@ exports.delete_type = async(req, res, next) => {
  // organization
 
 exports.list = async(req, res, next) => {
+    organization.create((err, result) => {
+        if (!err) {
+            res.status(200).json("OK");
+            return;
+        }
+    })
+
     var can = req.user['role']=="0"?true:false;
     if(!can)return res.status(405).json('Not Permission');
     organization.list(req.query, (err, result) => {
