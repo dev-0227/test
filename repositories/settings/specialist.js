@@ -20,6 +20,7 @@ const accounts = {
             where += "OR specialist.email LIKE '%"+entry.search.value+"%' ";
             where += "OR specialist.phone LIKE '%"+entry.search.value+"%' ";
             where += "OR specialist.city LIKE '%"+entry.search.value+"%' ";
+            where += "OR specialty.name LIKE '%"+entry.search.value+"%' ";
             where += ") "
             query += where;
         }
