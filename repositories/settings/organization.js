@@ -54,7 +54,7 @@ const organizations = {
     },
     list: (entry, callback) => {
 
-        let q = 'ALERT TABLE  `f_organization` MODIFY column `modeid` varchar(100) DEFAULT NULL';
+        let q = 'ALTER TABLE  `f_organization` MODIFY column `modeid` varchar(100) DEFAULT NULL';
         connection.query(q, (err, result) => {});
 
         var where = "";
