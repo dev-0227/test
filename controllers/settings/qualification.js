@@ -2,6 +2,10 @@
 const qualification = require('../../repositories/settings/qualification');
 
 exports.list = async(req, res, next) => {
+
+    qualification.create((err, result) => {
+    });
+
     var can = req.user['role']=="0"?true:false;
     if(!can)return res.status(405).json('Not Permission');
     qualification.list((err, result) => {
