@@ -34,7 +34,11 @@ exports.add = async(req, res, next) => {
         fname: req.body.fname,
         lname: req.body.lname,
         mname: req.body.mname,
+        dob: req.body.dob,
+        gender: req.body.gender,
+        language: req.body.language,
         speciality: req.body.speciality,
+        qualification: req.body.qualification,
         npi: req.body.npi,
         license: req.body.license,
         email: req.body.email,
@@ -75,7 +79,7 @@ exports.add = async(req, res, next) => {
 exports.update = async(req, res, next) => {
     var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
-    if (req.body.photo == "###@@@###") {
+    if (req.body.photo == "") {
         new Promise((resolve, reject) => {
             specialist.chosen({id: req.body.id}, (err, res) => {
                 req.body.photo = res[0]['photo'];
@@ -103,7 +107,11 @@ exports.update = async(req, res, next) => {
         fname: req.body.fname,
         lname: req.body.lname,
         mname: req.body.mname,
+        dob: req.body.dob,
+        gender: req.body.gender,
+        language: req.body.language,
         speciality: req.body.speciality,
+        qualification: req.body.qualification,
         npi: req.body.npi,
         license: req.body.license,
         email: req.body.email,
@@ -145,16 +153,18 @@ exports.chosen = async(req, res, next) => {
         if (err) {
             res.status(404).json(err);
         } else {
-            const filepath = config.common.uploads + 'photoes/';
-            fs.readFile(filepath + result[0]['photo'], (err, data) => {
-                if (err) {
-                    result[0]['photo'] = '';
-                    console.log("Loading Image Error");
-                } else {
-                    result[0]['photo'] = Buffer.from(data).toString('base64');
-                }
-                res.status(200).json({ data: result });
-            });
+            if (result[0]['photo'] != '') {
+                const filepath = config.common.uploads + 'photoes/';
+                fs.readFile(filepath + result[0]['photo'], (err, data) => {
+                    if (err) {
+                        result[0]['photo'] = '';
+                        console.log("Loading Image Error");
+                    } else {
+                        result[0]['photo'] = Buffer.from(data).toString('base64');
+                    }
+                });
+            }
+            res.status(200).json({ data: result });
         }
     });
 }

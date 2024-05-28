@@ -49,8 +49,8 @@ const accounts = {
         });
     },
     add: (account, callback) => {
-        let query = "INSERT INTO `specialist` (`fname`, `lname`, `mname`, `npi`, `web`, `license`, `email`, `phone`, `cel`, `address`, `address2`, `fax`, `city`, `country`, `state`, `zip`, `contactname`, `contactemail`, `contactcel`,`type`, `specialty_id`, `insurance_id`, `taxonomy`, `photo`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        connection.query(query, [account.fname, account.lname, account.mname, account.npi, account.web, account.license, account.email, account.tel, account.cel, account.address, account.address2, account.fax, account.city, account.country, account.state, account.zip, account.cname, account.cemail, account.ccel, account.type, account.specialty_id, account.insurance_id, account.taxonomy, account.photo, account.status], (err, result) => {
+        let query = "INSERT INTO `specialist` (`fname`, `lname`, `mname`, `dob`, `gender`, `language`, `qualification`, `npi`, `web`, `license`, `email`, `phone`, `cel`, `address`, `address2`, `fax`, `city`, `country`, `state`, `zip`, `contactname`, `contactemail`, `contactcel`,`type`, `specialty_id`, `insurance_id`, `taxonomy`, `photo`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        connection.query(query, [account.fname, account.lname, account.mname, account.dob, account.gender, account.language, account.qualification, account.npi, account.web, account.license, account.email, account.tel, account.cel, account.address, account.address2, account.fax, account.city, account.country, account.state, account.zip, account.cname, account.cemail, account.ccel, account.type, account.specialty_id, account.insurance_id, account.taxonomy, account.photo, account.status], (err, result) => {
             callback(err, result);
         });
     },
@@ -61,8 +61,8 @@ const accounts = {
         });
     },
     update: (account, callback) => {
-        let query = "UPDATE `specialist` SET `fname`= ?, `lname` = ?, `mname` = ?, `web` = ?, `npi` = ?, `license` = ?, `email` = ?,  `phone` = ?, `cel` = ?,  `address` = ?, `address2` = ?, `fax` = ?, `city` = ?, `state` = ?, `zip` = ?, `country` = ?, `contactname` = ?, `contactemail` = ?, `contactcel` = ?, `taxonomy` = ?, `photo` = ?, `type` = ?, `specialty_id` = ?, `insurance_id` = ?, `status` = ? WHERE `id`= ? ";
-        connection.query(query, [account.fname, account.lname, account.mname, account.web, account.npi, account.license, account.email, account.tel, account.cel, account.address, account.address2, account.fax, account.city, account.state, account.zip, account.country, account.cname, account.cemail, account.ccel, account.taxonomy, account.photo, account.type, account.specialty_id, account.insurance_id, account.status, account.id], (err, result) => {
+        let query = "UPDATE `specialist` SET `fname`= ?, `lname` = ?, `mname` = ?, `dob`= ?, `gender` = ?, `language` = ?, `qualification` = ?, `web` = ?, `npi` = ?, `license` = ?, `email` = ?,  `phone` = ?, `cel` = ?,  `address` = ?, `address2` = ?, `fax` = ?, `city` = ?, `state` = ?, `zip` = ?, `country` = ?, `contactname` = ?, `contactemail` = ?, `contactcel` = ?, `taxonomy` = ?, `photo` = ?, `type` = ?, `specialty_id` = ?, `insurance_id` = ?, `status` = ? WHERE `id`= ? ";
+        connection.query(query, [account.fname, account.lname, account.mname, account.dob, account.gender, account.language, account.qualification, account.web, account.npi, account.license, account.email, account.tel, account.cel, account.address, account.address2, account.fax, account.city, account.state, account.zip, account.country, account.cname, account.cemail, account.ccel, account.taxonomy, account.photo, account.type, account.specialty_id, account.insurance_id, account.status, account.id], (err, result) => {
             callback(err, result);
         });
     },
@@ -94,7 +94,6 @@ const accounts = {
                 });
             }
         });
-        
     },
     updateclinics: (entry, callback) => {
         let clinics = "";
@@ -110,7 +109,6 @@ const accounts = {
         connection.query(query, [clinics, entry.id], (err, result) => {
             callback(err, result);
         });
-        
     },
     getSpecialistByClinic: (entry, callback) => {
         let query = "SELECT * FROM `specialist` WHERE type = '3' AND FIND_IN_SET(?, `clinic`) ORDER BY fname";
