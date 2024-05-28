@@ -53,10 +53,6 @@ const organizations = {
         });
     },
     list: (entry, callback) => {
-
-        let q = 'ALTER TABLE  `f_organization` MODIFY column `modeid` varchar(100) DEFAULT NULL';
-        connection.query(q, (err, result) => {});
-
         var where = "";
         let query = "SELECT f_organization.*, f_vs_org_type.`display` AS display FROM `f_organization`, `f_vs_org_type` WHERE f_organization.typeid = f_vs_org_type.id ";
         if(entry.search.value!=""){
@@ -97,7 +93,7 @@ const organizations = {
     },
     update: (organization, callback) => {
         let query = "UPDATE `f_organization` SET `statusid` = ?, `typeid` = ?, `name` = ?, `alias` = ?, `description` = ?, `modeid` = ?, `address1` = ?, `address2` = ?, `address3` = ?, `city` = ?, `state` = ?, `zip` = ?, `phone1` = ?, `phone2` = ?, `phone3` = ?, `mobile` = ?, `fax` = ?, `email` = ?, `longitude` = ?, `latitude` = ?, `altitude` = ?, `characteristic` = ?, `daysoperation` = ?, `hoursoperation` = ?, `virticalservice` = ?, `endpoint` = ?, `map` = ? WHERE `id`= ? ";
-        connection.query(query, [organization.status, organization.type, organization.name, organization.alias, organization.description, organization.modeid, organization.address1, organization.address2, organization.address3, organization.city, organization.state, organization.zip, organization.phone1, organization.phone2, organization.phone3, organization.mobile, organization.fax, organization.email, organization.longitude, organization.latitude, organization.altitude, organization.characteristic, organization.daysoperation, organization.hoursoperation, organization.virticalservice, organization.endpoint, organization.map, organization.id], (err, result) => {
+        connection.query(query, [organization.status, organization.type, organization.name, organization.alias, organization.description, organization.mode, organization.address1, organization.address2, organization.address3, organization.city, organization.state, organization.zip, organization.phone1, organization.phone2, organization.phone3, organization.mobile, organization.fax, organization.email, organization.longitude, organization.latitude, organization.altitude, organization.characteristic, organization.daysoperation, organization.hoursoperation, organization.virticalservice, organization.endpoint, organization.map, organization.id], (err, result) => {
             callback(err, result);
         });
     },
