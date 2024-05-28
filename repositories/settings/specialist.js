@@ -11,11 +11,6 @@ var query_string = function(str, value){
 }
 const accounts = {
     list: (entry, callback) => {
-
-        let q = "ALTER TABLE `specialist` ADD `dob` varchar(20) NOT NULL DEFAULT '2000-01-01', ADD `gender` int(11) NOT NULL DEFAULT 1, ADD `language` varchar(300) DEFAULT 'English', ADD `qualification` int(11) DEFAULT NULL;";
-        connection.query(q, (err, result) => {
-        })
-
         var where = "";
         let query = "SELECT specialist.*, specialty.`name` AS sname FROM `specialist`, `specialty` WHERE specialist.specialty_id = specialty.id ";
         if(entry.search.value!=""){
