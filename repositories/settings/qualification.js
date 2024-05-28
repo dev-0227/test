@@ -4,7 +4,7 @@ const connection = require('../../utilities/database');
 const qualification = {
     // qualification type
     create: (callback) => {
-        let query = "CREATE TABLE `f_vs_qualification` (`id` int(11) NOT NULL AUTO_INCREMENT,`code` char(255) NOT NULL,`system` varchar(255) DEFAULT NULL,`display` char(255) NOT NULL,`definition` text DEFAULT NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
+        let query = "CREATE TABLE `f_vs_qualification` (`id` int(11) NOT NULL AUTO_INCREMENT,`code` char(255) DEFAULT NULL,`system` varchar(255) DEFAULT NULL,`display` char(255) DEFAULT NULL,`definition` text DEFAULT NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
         connection.query(query, (err, result) => {
             callback(err, result);
         });
