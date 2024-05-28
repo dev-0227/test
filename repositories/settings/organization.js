@@ -53,6 +53,10 @@ const organizations = {
         });
     },
     list: (entry, callback) => {
+
+        let q = 'ALERT TABLE  `f_organization` MODIFY column `modeid` varchar(100) DEFAULT NULL';
+        connection.query(q, (err, result) => {});
+
         var where = "";
         let query = "SELECT f_organization.*, f_vs_org_type.`display` AS display FROM `f_organization`, `f_vs_org_type` WHERE f_organization.typeid = f_vs_org_type.id ";
         if(entry.search.value!=""){
