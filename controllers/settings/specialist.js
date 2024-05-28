@@ -79,18 +79,12 @@ exports.add = async(req, res, next) => {
 exports.update = async(req, res, next) => {
     var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
-    if (req.body.photo == "") {
-        new Promise((resolve, reject) => {
-            specialist.chosen({id: req.body.id}, (err, res) => {
-                req.body.photo = res[0]['photo'];
-            });
-        });
-    } else {
-        //delete prev image file
-        var imgpath = '';
-        await specialist.getPhotoName(req.body.id, (err, res) => {
-            if (!err) imgpath = res[0].photo;
 
+    var imgpath = '';
+    await specialist.getPhotoName(req.body.id, (err, res1) => {
+        if (!err) imgpath = res1[0].photo;
+        //if state is update, read photo name uploaded.
+        if (req.body.photostate == 'update' ) {    
             if (imgpath != '') {
                 new Promise((resolve, reject) => {
                     specialist.deleteImage(config.common.uploads + 'photoes/' + imgpath, (err) => {
@@ -99,48 +93,50 @@ exports.update = async(req, res, next) => {
                     });
                 });
             }
-        });
-    }
-
-    let entry = {
-        id: req.body.id,
-        fname: req.body.fname,
-        lname: req.body.lname,
-        mname: req.body.mname,
-        dob: req.body.dob,
-        gender: req.body.gender,
-        language: req.body.language,
-        speciality: req.body.speciality,
-        qualification: req.body.qualification,
-        npi: req.body.npi,
-        license: req.body.license,
-        email: req.body.email,
-        tel: req.body.tel,
-        cel: req.body.cel,
-        address: req.body.address,
-        address2: req.body.address2,
-        web: req.body.web,
-        fax: req.body.fax,
-        city: req.body.city,
-        state: req.body.state,
-        country: req.body.country,
-        zip: req.body.zip,
-        cname: req.body.cname,
-        cemail: req.body.cemail,
-        ccel: req.body.ccel,
-        type: 3,
-        status: req.body.status,
-        specialty_id: req.body.specialty_id,
-        insurance_id: req.body.insurance_id,
-        taxonomy: req.body.taxonomy,
-        photo: req.body.photo
-    }
-    specialist.update(entry, (err, result) => {
-        if (err) {
-            res.status(404).json(err);
-        } else {
-            res.status(200).json({ data: result });
+        } else if (req.body.photostate == 'none') {
+            req.body.photo = res1[0].photo;
         }
+
+        let entry = {
+            id: req.body.id,
+            fname: req.body.fname,
+            lname: req.body.lname,
+            mname: req.body.mname,
+            dob: req.body.dob,
+            gender: req.body.gender,
+            language: req.body.language,
+            speciality: req.body.speciality,
+            qualification: req.body.qualification,
+            npi: req.body.npi,
+            license: req.body.license,
+            email: req.body.email,
+            tel: req.body.tel,
+            cel: req.body.cel,
+            address: req.body.address,
+            address2: req.body.address2,
+            web: req.body.web,
+            fax: req.body.fax,
+            city: req.body.city,
+            state: req.body.state,
+            country: req.body.country,
+            zip: req.body.zip,
+            cname: req.body.cname,
+            cemail: req.body.cemail,
+            ccel: req.body.ccel,
+            type: 3,
+            status: req.body.status,
+            specialty_id: req.body.specialty_id,
+            insurance_id: req.body.insurance_id,
+            taxonomy: req.body.taxonomy,
+            photo: req.body.photo
+        }
+        specialist.update(entry, (err, result) => {
+            if (err) {
+                res.status(404).json(err);
+            } else {
+                res.status(200).json({ data: result });
+            }
+        });
     });
 }
 exports.chosen = async(req, res, next) => {
@@ -159,12 +155,15 @@ exports.chosen = async(req, res, next) => {
                     if (err) {
                         result[0]['photo'] = '';
                         console.log("Loading Image Error");
+                        res.status(200).json({ data: result });
                     } else {
                         result[0]['photo'] = Buffer.from(data).toString('base64');
+                        res.status(200).json({ data: result });
                     }
                 });
+            } else {
+                res.status(200).json({ data: result });
             }
-            res.status(200).json({ data: result });
         }
     });
 }
