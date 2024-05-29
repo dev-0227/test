@@ -2,9 +2,6 @@
 const relationship = require('../../repositories/settings/relationship');
 
 exports.getOrganizationByClinic = async(req, res, next) => {
-
-    relationship.create((err, result) => {});
-
     var can = req.user['role']=="0"?true:false;
     if(!can)return res.status(405).json('Not Permission');
 
