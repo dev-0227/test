@@ -108,6 +108,12 @@ const organizations = {
         connection.query(query, [entry.name], (err, result) => {
             callback(err, result);
         });
+    },
+    getAll: (callback) => {
+        let query = "SELECT * FROM `f_organization`";
+        connection.query(query, (err, result) => {
+            callback(err, result);
+        });
     }
 }
 module.exports = organizations;

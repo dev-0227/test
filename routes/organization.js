@@ -15,5 +15,6 @@ router.post('/add', AuthGuard, controller.add);
 router.post('/chosen', AuthGuard, controller.chosen);
 router.post('/update', AuthGuard, controller.update);
 router.post('/delete', AuthGuard, controller.delete);
+router.get('/all', AuthGuard, controller.getAll);
 
 module.exports = router;

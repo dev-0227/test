@@ -229,3 +229,14 @@ exports.delete = async(req, res, next) => {
         }
     });
 }
+
+exports.getAll = async(req, res, next) => {
+    var can = req.user['role']=="0"?true:false;
+    if(!can)return res.status(405).json('Not Permission');
+
+    organization.getAll((err, result) => {
+        if (err) res.status(404).json(err);
+        else res.status(200).json({data: result});
+    });
+}
+
