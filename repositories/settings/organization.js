@@ -104,13 +104,13 @@ const organizations = {
         });
     },
     getid: (entry, callback) => {
-        let query = "SELECT `id` FROM `f_organization` WHERE `name` = ?";
-        connection.query(query, [entry.name], (err, result) => {
+        let query = "SELECT `id` FROM `f_organization` WHERE `name` = ? AND `address1` = ? AND `phone1` = ?";
+        connection.query(query, [entry.name, entry.address1, entry.phone1], (err, result) => {
             callback(err, result);
         });
     },
     getAll: (callback) => {
-        let query = "SELECT * FROM `f_organization`";
+        let query = "SELECT * FROM `f_organization` ORDER BY name";
         connection.query(query, (err, result) => {
             callback(err, result);
         });

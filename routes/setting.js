@@ -3,6 +3,7 @@ const controller = require('../controllers/setting');
 const diagnosticProcedures = require('../controllers/settings/diagnosticprocedures');
 const vitalController = require('../controllers/settings/vital');
 const AuthGuard = require('../middleware/auth');
+const relateController = require('../controllers/settings/relationship');
 const router = express.Router();
 
 // Get all logs route 
@@ -111,5 +112,11 @@ router.post('/gettwiliosubaccount',controller.gettwiliosubaccount);
 
 router.post('/appointment/doctor/type', controller.getAppointmentDoctorType);
 router.post('/appointment/doctor/type/set', controller.setAppointmentDoctorType);
+
+router.post('/relationship/getOrganizationByClinic', AuthGuard, relateController.getOrganizationByClinic);
+router.post('/relationship/add', AuthGuard, relateController.add);
+router.post('/relationship/updateOrganization', AuthGuard, relateController.updateOrganization);
+router.post('/relationship/delete', AuthGuard, relateController.delete);
+router.post('/relationship/set', AuthGuard, relateController.set);
 
 module.exports = router;
