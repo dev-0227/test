@@ -118,5 +118,6 @@ router.post('/relationship/add', AuthGuard, relateController.add);
 router.post('/relationship/updateOrganization', AuthGuard, relateController.updateOrganization);
 router.post('/relationship/delete', AuthGuard, relateController.delete);
 router.post('/relationship/set', AuthGuard, relateController.set);
+router.post('/relationship/getOrganizationBySpecialist', AuthGuard, relateController.getOrganizationBySpecialist);
 
 module.exports = router;

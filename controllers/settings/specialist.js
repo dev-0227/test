@@ -284,3 +284,16 @@ exports.updateorganizations = async(req, res, next) => {
         else res.status(200).json({data: result});
     })
 }
+
+exports.getOrgan = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    if(!can)return res.status(405).json('Not Permission');
+    
+    let entry = {
+        id: req.body.id
+    }
+    specialist.getOrgan(entry, (err, result) => {
+        if (err) res.status(404).json(err);
+        else res.status(200).json({data: result});
+    })
+}

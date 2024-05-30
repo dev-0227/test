@@ -170,19 +170,16 @@ const accounts = {
         })
     },
     updateorganizations: (entry, callback) => {
-        let organizations = "";
-        if(entry.organizations.length > 0){
-            for(var i = 0;i < entry.organizations.length; i++){
-                if(i < entry.organizations.length - 1)
-                    organizations += parseInt(entry.organizations[i])+",";
-                else
-                organizations += parseInt(entry.organizations[i]);
-            }
-        }
         let query = "UPDATE `specialist` SET `organization` = ? WHERE `id`= ?";
-        connection.query(query, [organizations, entry.id], (err, result) => {
+        connection.query(query, [entry.organizations, entry.id], (err, result) => {
             callback(err, result);
         });
-    }
+    },
+    getOrgan: (entry, callback) => {
+        let query = "SELECT `organization` FROM `specialist` WHERE `id`= ?";
+        connection.query(query, [entry.id], (err, result) => {
+            callback(err, result);
+        });
+    },
 }
 module.exports = accounts;

@@ -14,6 +14,12 @@ const relationship = {
             callback(err, result);
         });
     },
+    getOrganizationBySpecialist: (entry, callback) => {
+        let query = "SELECT * FROM `relationship_c_s_o` WHERE `specialistid` = ?";
+        connection.query(query, [entry.specialistid], (err, result) => {
+            callback(err, result);
+        });
+    },
     add: (entry, callback) => {
         let organizations = "";
         if(entry.organizations.length > 0){
@@ -26,6 +32,26 @@ const relationship = {
         }
         let query = "INSERT INTO `relationship_c_s_o` (`clinicid`, `specialistid`, `organizationid`) VALUES (?, ?, ?)";
         connection.query(query, [entry.clinicid, entry.specialistid, organizations], (err, result) => {
+            callback(err, result);
+        });
+    },
+    add_several: (entry, callback) => {
+        let query = 'INSERT INTO `relationship_c_s_o` (`clinicid`, `specialistid`, `organizationid`) VALUES ?';
+        let values = entry.rel.map(data => {
+            if (data !== null && data.specialistid !== '') {
+                let organizations = "";
+                if (data.organizations && data.organizations.length > 0) {
+                    data.organizations.forEach((org, index) => {
+                        if (index < data.organizations.length - 1)
+                            organizations += parseInt(org) + ",";
+                        else
+                            organizations += parseInt(org);
+                    });
+                }
+                return [data.clinicid, data.specialistid, organizations];
+            }
+        }).filter(value => value !== undefined); // Filter out undefined values & specialistid
+        connection.query(query, [values], (err, result) => {
             callback(err, result);
         });
     },
@@ -47,6 +73,12 @@ const relationship = {
     delete: (entry, callback) => {
         let query = "DELETE FROM `relationship_c_s_o` WHERE `id` = ?";
         connection.query(query, [entry.id], (err, result) => {
+            callback(err, result);
+        });
+    },
+    deleteBySpecialtyId: (sid, callback) => {
+        let query = "DELETE FROM `relationship_c_s_o` WHERE `specialistid` = ?";
+        connection.query(query, [sid], (err, result) => {
             callback(err, result);
         });
     }
