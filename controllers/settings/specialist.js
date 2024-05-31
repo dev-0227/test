@@ -310,3 +310,16 @@ exports.getClinics = async(req, res, next) => {
         else res.status(200).json({data: result});
     })
 }
+
+exports.getSpecialistByMeasureId = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    if(!can)return res.status(405).json('Not Permission');
+    
+    let entry = {
+        measureid: req.body.measureid
+    }
+    specialist.getSpecialistByMeasureId(entry, (err, result) => {
+        if (err) res.status(404).json(err);
+        else res.status(200).json({data: result});
+    })
+}

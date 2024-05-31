@@ -41,6 +41,7 @@ router.post('/getSpecialistByClinic', AuthGuard, controller.getSpecialistByClini
 router.post('/updateorganizations', AuthGuard, controller.updateorganizations);
 router.post('/getOrgan', AuthGuard, controller.getOrgan);
 router.post('/getClinics', AuthGuard, controller.getClinics);
+router.post('/getSpecialistByMeasureId', AuthGuard, controller.getSpecialistByMeasureId);
 router.post('/import', AuthGuard, (req, res, next) => {
     upload_csv(req, res, (err) => {
         if (!err) {

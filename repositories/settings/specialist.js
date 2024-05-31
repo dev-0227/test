@@ -187,5 +187,12 @@ const accounts = {
             callback(err, result);
         });
     },
+    getSpecialistByMeasureId: (entry, callback) => {
+        let query = "SELECT `specialist`.* FROM `specialist`, `specialty`, `measure_hedis` WHERE `measure_hedis`.`measureId` = `specialty`.`mid` AND `specialty`.`id` = `specialist`.`specialty_id` AND `measure_hedis`.`measureId` = ?";
+        connection.query(query, [entry.measureid], (err, result) => {
+            console.log(err);
+            callback(err, result);
+        });
+    }
 }
 module.exports = accounts;
