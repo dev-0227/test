@@ -188,9 +188,8 @@ const accounts = {
         });
     },
     getSpecialistByMeasureId: (entry, callback) => {
-        let query = "SELECT `specialist`.* FROM `specialist`, `specialty`, `measure_hedis` WHERE `measure_hedis`.`measureId` = `specialty`.`mid` AND `specialty`.`id` = `specialist`.`specialty_id` AND `measure_hedis`.`measureId` = ?";
+        let query = "SELECT `specialist`.* FROM `specialist`, `specialty`, `measure_hedis` WHERE `measure_hedis`.`measureId` = `specialty`.`mid` AND `specialty`.`id` = `specialist`.`specialty_id` AND `measure_hedis`.`measureId` = ? ORDER BY `specialist`.`fname`";
         connection.query(query, [entry.measureid], (err, result) => {
-            console.log(err);
             callback(err, result);
         });
     }
