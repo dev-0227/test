@@ -181,5 +181,11 @@ const accounts = {
             callback(err, result);
         });
     },
+    getClinics: (entry, callback) => {
+        let query = "SELECT `clinic` FROM `specialist` WHERE `id`= ?";
+        connection.query(query, [entry.id], (err, result) => {
+            callback(err, result);
+        });
+    },
 }
 module.exports = accounts;

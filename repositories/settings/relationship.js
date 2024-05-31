@@ -22,12 +22,12 @@ const relationship = {
     },
     add: (entry, callback) => {
         let organizations = "";
-        if(entry.organizations.length > 0){
-            for(var i = 0;i < entry.organizations.length; i++){
-                if(i < entry.organizations.length - 1)
-                    organizations += parseInt(entry.organizations[i])+",";
+        if(entry.organizationid.length > 0){
+            for(var i = 0;i < entry.organizationid.length; i++){
+                if(i < entry.organizationid.length - 1)
+                    organizations += parseInt(entry.organizationid[i])+",";
                 else
-                organizations += parseInt(entry.organizations[i]);
+                organizations += parseInt(entry.organizationid[i]);
             }
         }
         let query = "INSERT INTO `relationship_c_s_o` (`clinicid`, `specialistid`, `organizationid`) VALUES (?, ?, ?)";
@@ -40,9 +40,9 @@ const relationship = {
         let values = entry.rel.map(data => {
             if (data !== null && data.specialistid !== '') {
                 let organizations = "";
-                if (data.organizations && data.organizations.length > 0) {
-                    data.organizations.forEach((org, index) => {
-                        if (index < data.organizations.length - 1)
+                if (data.organizationid && data.organizationid.length > 0) {
+                    data.organizationid.forEach((org, index) => {
+                        if (index < data.organizationid.length - 1)
                             organizations += parseInt(org) + ",";
                         else
                             organizations += parseInt(org);
@@ -57,12 +57,12 @@ const relationship = {
     },
     updateOrganization: (entry, callback) => {
         let organizations = "";
-        if(entry.organizations.length > 0){
-            for(var i = 0;i < entry.organizations.length; i++){
-                if(i < entry.organizations.length - 1)
-                    organizations += parseInt(entry.organizations[i])+",";
+        if(entry.organizationid.length > 0){
+            for(var i = 0;i < entry.organizationid.length; i++){
+                if(i < entry.organizationid.length - 1)
+                    organizations += parseInt(entry.organizationid[i])+",";
                 else
-                organizations += parseInt(entry.organizations[i]);
+                organizations += parseInt(entry.organizationid[i]);
             }
         }
         let query = "UPDATE `relationship_c_s_o` SET `organizationid` = ? WHERE `clinicid` = ? AND `specialistid` = ?";

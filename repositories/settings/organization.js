@@ -58,8 +58,6 @@ const organizations = {
         if(entry.search.value!=""){
             where += "AND (";
             where += "f_organization.name LIKE '%"+entry.search.value+"%' ";
-            where += "OR f_organization.alias LIKE '%"+entry.search.value+"%' ";
-            where += "OR f_organization.email LIKE '%"+entry.search.value+"%' ";
             where += "OR f_organization.address1 LIKE '%"+entry.search.value+"%' ";
             where += "OR f_organization.phone1 LIKE '%"+entry.search.value+"%' ";
             where += ") "
@@ -114,6 +112,20 @@ const organizations = {
         connection.query(query, (err, result) => {
             callback(err, result);
         });
+    },
+    getAllUsingFilter: (entry, callback) => {
+        let q = "SELECT COUNT(*) FROM `f_organization`";
+        connection.query(q, (err, result) => {
+            if (!err) {
+                let query = "SELECT * FROM `f_organization` ORDER BY name, address1, phone1 LIMIT ?, ?";
+                connection.query(query, [entry.count*entry.page, entry.count], (err, result1) => {
+                    callback(err, {data: result1, count: result[0]['COUNT(*)']});
+                });
+            } else {
+                callback(err, null);
+            }
+        })
     }
 }
+
 module.exports = organizations;

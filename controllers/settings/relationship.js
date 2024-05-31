@@ -35,7 +35,7 @@ exports.add = async(req, res, next) => {
     let entry = {
         clinicid: req.body.clinicid,
         specialistid: req.body.specialistid,
-        organizations: req.body.organizations
+        organizationid: req.body.organizationid
     }
     relationship.add(entry, (err, result) => {
         if (!err) res.status(200).json({data: result});
@@ -50,7 +50,7 @@ exports.updateOrganization = async(req, res, next) => {
     let entry = {
         clinicid: req.body.clinicid,
         specialistid: req.body.specialistid,
-        organizations: req.body.organizations
+        organizationid: req.body.organizationid
     }
     relationship.updateOrganization(entry, (err, result) => {
         if (!err) res.status(200).json({data: result});
@@ -76,7 +76,7 @@ exports.set = async(req, res, next) => {
     if(!can)return res.status(405).json('Not Permission');
 
     let entry = {
-        rel: req.body.relationship,
+        rel: req.body.organizationid,
         specialistid: req.body.specialistid
     }
     relationship.deleteBySpecialtyId(entry.specialistid, (err, result) => {
