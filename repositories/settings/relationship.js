@@ -23,7 +23,7 @@ const relationship = {
     getOrganizationNames: (entry, callback) => {
         if (entry.length === 0) callback(null, []);
         else {
-            let query ="SELECT `id`, `name` FROM `f_organization` WHERE ";
+            let query ="SELECT `id`, `name`, `address1`, `phone1` FROM `f_organization` WHERE ";
             for (var i = 0; i < entry.length; i ++) {
                 if (i === 0) query += "`id` = ?";
                 else query += " OR `id` = ?";
