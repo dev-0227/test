@@ -27,6 +27,21 @@ exports.list = async(req, res, next) => {
         }
     });
 }
+exports.listBymeasureID = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    if(!can)return res.status(405).json('Not Permission');
+
+    if (req.query.measureid === null || req.query.measureid === undefined || req.query.measureid === '') res.status(200).json({data: []});
+    else {
+        specialist.listBymeasureID(req.query, (err, result) => {
+            if (err) {
+                res.status(404).json("Failed!");
+            } else {
+                res.status(200).json(result);
+            }
+        });
+    }
+}
 exports.add = async(req, res, next) => {
     var can = await Acl.can(req.user, ['create'], 'USER_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
@@ -222,14 +237,14 @@ exports.updateanswer = async(req, res, next) => {
         }
     });
 }
-exports.updateclinics = async(req, res, next) => {
+exports.updateclinic = async(req, res, next) => {
     var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
         clinics: req.body.clinics,
     }
-    specialist.updateclinics(entry, (err, result) => {
+    specialist.updateclinic(entry, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
@@ -318,7 +333,23 @@ exports.getSpecialistByMeasureId = async(req, res, next) => {
     let entry = {
         measureid: req.body.measureid
     }
-    specialist.getSpecialistByMeasureId(entry, (err, result) => {
+    if (req.body.measureid === undefined || req.body.measureid === null) res.status(200).json({data: []});
+    else {
+        specialist.getSpecialistByMeasureId(entry, (err, result) => {
+            if (err) res.status(404).json(err);
+            else res.status(200).json({data: result});
+        });
+    }
+}
+
+exports.updateClinics = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    if(!can)return res.status(405).json('Not Permission');
+
+    let entry = {
+         clinics: req.body.clinics
+    }
+    specialist.updateClinics(entry, (err, result) => {
         if (err) res.status(404).json(err);
         else res.status(200).json({data: result});
     })

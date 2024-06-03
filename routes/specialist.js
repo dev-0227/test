@@ -30,13 +30,15 @@ const router = express.Router();
 
 // Get all logs route 
 router.get('/', AuthGuard, controller.list);
+router.get('/listBymeasureID', AuthGuard, controller.listBymeasureID);
 router.post('/add', AuthGuard, controller.add);
 router.post('/update', AuthGuard, controller.update);
 router.post('/chosen', AuthGuard, controller.chosen);
 router.post('/delete', AuthGuard, controller.delete);
 router.post('/updatepwd', AuthGuard, controller.updatepwd);
 router.post('/updateanswer', AuthGuard, controller.updateanswer);
-router.post('/updateclinics', AuthGuard, controller.updateclinics);
+router.post('/updateclinic', AuthGuard, controller.updateclinic);
+router.post('/updateClinics', AuthGuard, controller.updateClinics);
 router.post('/getSpecialistByClinic', AuthGuard, controller.getSpecialistByClinic);
 router.post('/updateorganizations', AuthGuard, controller.updateorganizations);
 router.post('/getOrgan', AuthGuard, controller.getOrgan);

@@ -38,6 +38,32 @@ const accounts = {
             });
         });
     },
+    listBymeasureID: (entry, callback) => {
+        var where = "";
+        let query = "SELECT `specialist`.*, `specialty`.`name` as `sname` FROM `specialist`, `specialty`, `measure_hedis` WHERE `measure_hedis`.`measureId` = `specialty`.`mid` AND `specialty`.`id` = `specialist`.`specialty_id` AND `measure_hedis`.`measureId` = " + entry.measureid + " ";
+        if(entry.search.value!="") {
+            where += "AND (";
+            where += "specialist.fname LIKE '%"+entry.search.value+"%' ";
+            where += "OR specialist.lname LIKE '%"+entry.search.value+"%' ";
+            where += "OR specialist.address LIKE '%"+entry.search.value+"%' ";
+            where += "OR specialist.phone LIKE '%"+entry.search.value+"%' ";
+            where += ") "
+            query += where;
+        }
+        query += "ORDER BY specialist.fname ";
+        query += "LIMIT "+entry.start+","+entry.length;
+        connection.query(query, (err, result) => {
+            query = "SELECT count(*) as total FROM `specialist`, `specialty`, `measure_hedis` WHERE `measure_hedis`.`measureId` = `specialty`.`mid` AND `specialty`.`id` = `specialist`.`specialty_id` AND `measure_hedis`.`measureId` = "+ entry.measureid + " " + where;
+            connection.query(query, (err1, result1) => {
+                if(err1) callback(err, result);
+                else {
+                    var total = 0;
+                    if(result1.length>0)total = result1[0]['total']
+                    callback(err, { data: result, recordsFiltered: total, recordsTotal: total });
+                }
+            });
+        });
+    },
     checkuser: (fname, lname, mname, phone) => {
         let query = "SELECT id FROM `specialist` WHERE `fname` = ? AND `lname` = ? AND `mname` = ? AND `phone` = ?";
         return new Promise((resolve, reject) => {
@@ -97,7 +123,7 @@ const accounts = {
             }
         });
     },
-    updateclinics: (entry, callback) => {
+    updateclinic: (entry, callback) => {
         let clinics = "";
         if(entry.clinics.length > 0){
             for(var i = 0;i < entry.clinics.length; i++){
@@ -188,10 +214,23 @@ const accounts = {
         });
     },
     getSpecialistByMeasureId: (entry, callback) => {
-        let query = "SELECT `specialist`.* FROM `specialist`, `specialty`, `measure_hedis` WHERE `measure_hedis`.`measureId` = `specialty`.`mid` AND `specialty`.`id` = `specialist`.`specialty_id` AND `measure_hedis`.`measureId` = ? ORDER BY `specialist`.`fname`";
+        let query = "SELECT `specialist`.*, `specialty`.`name` as `sname` FROM `specialist`, `specialty`, `measure_hedis` WHERE `measure_hedis`.`measureId` = `specialty`.`mid` AND `specialty`.`id` = `specialist`.`specialty_id` AND `measure_hedis`.`measureId` = ? ORDER BY `specialist`.`fname`";
         connection.query(query, [entry.measureid], (err, result) => {
             callback(err, result);
         });
+    },
+    updateClinics: (entry, callback) => {
+        let query = "";
+        for (var i = 0; i < entry.clinics.length; i ++) {
+            if (entry.clinics[i] != null && entry.clinics[i] != undefined) {
+                var c = entry.clinics[i].clinics.join(',');
+                // if (i == 0) query = "UPDATE `specialist` SET `clinic` = '" + c + "' WHERE `id`= '" + entry.clinics[i].id + "'";
+                query += "UPDATE `specialist` SET `clinic` = '" + c + "' WHERE `id`= '" + entry.clinics[i].id + "';\r\n";
+            }
+        }
+        connection.query(query, (err, result) => {
+            callback(err, result);
+        })
     }
 }
 module.exports = accounts;
