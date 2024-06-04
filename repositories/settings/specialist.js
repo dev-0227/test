@@ -39,26 +39,42 @@ const accounts = {
         });
     },
     listBymeasureID: (entry, callback) => {
+        var query = "";
         var where = "";
-        let query = "SELECT `specialist`.*, `specialty`.`name` as `sname` FROM `specialist`, `specialty`, `measure_hedis` WHERE `measure_hedis`.`measureId` = `specialty`.`mid` AND `specialty`.`id` = `specialist`.`specialty_id` AND `measure_hedis`.`measureId` = " + entry.measureid + " ";
+        if (entry.all === 'false')
+            query += "SELECT `specialist`.*, `specialty`.`name` as `sname` FROM `specialist`, `specialty`, `measure_hedis` WHERE `measure_hedis`.`measureId` = `specialty`.`mid` AND `specialty`.`id` = `specialist`.`specialty_id` AND `measure_hedis`.`measureId` = " + entry.measureid + " ";
+        else if (entry.all === 'true')
+            query += "SELECT specialist.*, specialty.`name` AS sname FROM `specialist`, `specialty` WHERE specialist.specialty_id = specialty.id ";
+        if (entry.zip != '') {
+            where += "AND specialist.zip LIKE '%" + entry.zip + "%' ";
+        }
         if(entry.search.value!="") {
             where += "AND (";
             where += "specialist.fname LIKE '%"+entry.search.value+"%' ";
             where += "OR specialist.lname LIKE '%"+entry.search.value+"%' ";
             where += "OR specialist.address LIKE '%"+entry.search.value+"%' ";
             where += "OR specialist.phone LIKE '%"+entry.search.value+"%' ";
-            where += ") "
-            query += where;
+            where += "OR specialist.city LIKE '%"+entry.search.value+"%' ";
+            where += "OR specialist.state LIKE '%"+entry.search.value+"%' ";
+            where += ") ";
         }
+        if (entry.specialty != '' && entry.specialty != '0') {
+            where += "AND (specialist.specialty_id = '" + entry.specialty + "' OR specialist.specialty_id = '" + entry.specialty + "' OR specialist.specialty_id = '" + entry.specialty + "') ";
+        }
+        query += where;
+        
         query += "ORDER BY specialist.fname ";
         query += "LIMIT "+entry.start+","+entry.length;
         connection.query(query, (err, result) => {
-            query = "SELECT count(*) as total FROM `specialist`, `specialty`, `measure_hedis` WHERE `measure_hedis`.`measureId` = `specialty`.`mid` AND `specialty`.`id` = `specialist`.`specialty_id` AND `measure_hedis`.`measureId` = "+ entry.measureid + " " + where;
+            if (entry.all === 'false')
+                query = "SELECT count(*) as total FROM `specialist`, `specialty`, `measure_hedis` WHERE `measure_hedis`.`measureId` = `specialty`.`mid` AND `specialty`.`id` = `specialist`.`specialty_id` AND `measure_hedis`.`measureId` = " + entry.measureid + " " + where;
+            else if (entry.all === 'true')
+                query = "SELECT count(*) as total FROM `specialist`, `specialty` WHERE specialist.specialty_id = specialty.id " + where;
             connection.query(query, (err1, result1) => {
                 if(err1) callback(err, result);
                 else {
                     var total = 0;
-                    if(result1.length>0)total = result1[0]['total']
+                    if(result1.length>0) total = result1[0]['total']
                     callback(err, { data: result, recordsFiltered: total, recordsTotal: total });
                 }
             });
