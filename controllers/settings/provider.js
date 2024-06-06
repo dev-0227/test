@@ -171,8 +171,9 @@ exports.delete = async(req, response, next) => {
             } else {
                 provider.deleteImage(config.common.uploads + 'photoes/' + imgpath, (err3) => {
                     setTimeout(() => {
-                        if (!err3) response.status(200).json({ data: result });
-                        else response.status(201).json({ data: result });
+                        // if (!err3) response.status(200).json({ data: result });
+                        // else response.status(201).json({ data: result });
+                        response.status(200).json({ data: result });
                     }, 200);
                 });
             }

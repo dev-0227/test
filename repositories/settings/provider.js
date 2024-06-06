@@ -83,14 +83,6 @@ const accounts = {
     },
     updateclinic: (entry, callback) => {
         let clinics = entry.clinics.join(',');
-        // if(entry.clinics.length > 0){
-        //     for(var i = 0;i < entry.clinics.length; i++){
-        //         if(i < entry.clinics.length - 1)
-        //             clinics += parseInt(entry.clinics[i])+",";
-        //         else
-        //             clinics += parseInt(entry.clinics[i]);
-        //     }
-        // }
         let query = "UPDATE `doctors` SET `clinic` = ? WHERE `id`= ?";
         connection.query(query, [clinics, entry.id], (err, result) => {
             callback(err, result);
