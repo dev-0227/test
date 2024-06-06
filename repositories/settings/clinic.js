@@ -7,7 +7,33 @@ const accounts = {
             callback(err, result);
         });
     },
-    
+    listForSearch: (entry, callback) => {
+        var where = "";
+        let query = "SELECT clinics.* FROM `clinics` ";
+        if(entry.search.value!="") {
+            where += "WHERE clinics.name LIKE '%"+entry.search.value+"%' ";
+            where += "OR clinics.address1 LIKE '%"+entry.search.value+"%' ";
+            where += "OR clinics.state LIKE '%"+entry.search.value+"%' ";
+            where += "OR clinics.city LIKE '%"+entry.search.value+"%' ";
+            where += "OR clinics.zip LIKE '%"+entry.search.value+"%' ";
+            where += "OR clinics.phone LIKE '%"+entry.search.value+"%' ";
+            where += "OR clinics.web LIKE '%"+entry.search.value+"%' ";
+            query += where;
+        }
+        query += "ORDER BY clinics.name ";
+        query += "LIMIT "+entry.start+","+entry.length;
+        connection.query(query, (err, result) => {
+            query = "SELECT count(*) as total FROM `clinics` " + where
+            connection.query(query, (err1, result1) => {
+                if(err1)callback(err, result);
+                else {
+                    var total = 0;
+                    if(result1.length > 0) total = result1[0]['total']
+                    callback(err, { data: result, recordsFiltered: total, recordsTotal: total });
+                }
+            });
+        });
+    },
     add: (account, callback) => {
         let query = "INSERT INTO `clinics` (`id`, `name`, `acronym`, `address1`,`address2`,`city`,`state`,`zip`,`country`,`phone`,`cel`,`email`,`web`,`portal`,`placeservice`,`status`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
         connection.query(query, [account.name, account.acronym, account.address1, account.address2, account.city, account.state, account.zip, account.country, account.tel, account.fax, account.email, account.web, account.portal, account.pos, account.status], (err, result) => {

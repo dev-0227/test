@@ -30,6 +30,7 @@ const patientlist = require('./routes/patientlist');
 const diagnosisgroup = require('./routes/diagnosisgroup');
 const organization = require('./routes/organization');
 const qualification = require('./routes/qualification');
+const provider = require('./routes/provider');
 
 
 const corsOptions = {
@@ -72,6 +73,6 @@ app.use('/patientlist', patientlist);
 app.use('/diagnosisgroup', diagnosisgroup);
 app.use('/organization', organization);
 app.use('/qualification', qualification);
-
+app.use('/provider', provider);
 
 module.exports = app;
