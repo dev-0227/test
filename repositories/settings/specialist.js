@@ -20,8 +20,11 @@ const accounts = {
             where += "OR specialist.email LIKE '%"+entry.search.value+"%' ";
             where += "OR specialist.phone LIKE '%"+entry.search.value+"%' ";
             where += "OR specialist.city LIKE '%"+entry.search.value+"%' ";
-            where += "OR specialty.name LIKE '%"+entry.search.value+"%' ";
-            where += ") "
+            where += ") ";
+            query += where;
+        }
+        if (entry.fspecialty != '' && entry.fspecialty != '0') {
+            where += "AND FIND_IN_SET('" + entry.fspecialty + "', specialist.specialty_id) ";
             query += where;
         }
         query += "ORDER BY specialist.fname ";
