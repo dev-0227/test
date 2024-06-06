@@ -230,7 +230,7 @@ exports.updateclinic = async(req, res, next) => {
 exports.getproviderByClinic = async(req, res, next) => {
     var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
-    provider.getproviderByClinic(req.body, (err, result) => {
+    provider.getProviderByClinic(req.body, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
