@@ -861,7 +861,7 @@ exports.deleteidomain = (req, res, next) => {
 
 exports.qppMeasuresData = async(req, res, next) => {
     var can = await Acl.can(req.user, ['read'], 'HEDIS_QPP_MEASURES_DATA');
-    if(!can)return res.status(200).json({ data: [] });
+    if(!can)return res.status(200).json('Not Permission');
     let entry = {
         eyear: req.query.eyear
     }
@@ -877,7 +877,7 @@ exports.qppMeasuresData = async(req, res, next) => {
 
 exports.qppMeasuresDataById = async(req, res, next) => {
     var can = await Acl.can(req.user, ['read'], 'HEDIS_QPP_MEASURES_DATA');
-    if(!can)return res.status(200).json({ data: [] });
+    if(!can)return res.status(200).json('Not Permission');
     let entry = {
         id: req.body.id
     }
@@ -920,9 +920,21 @@ exports.importQppMeasuresData = async(req, res, next) => {
 }
 
 exports.measuresData = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['read'], 'HEDIS_MEASURES_DATA');
-    // if(!can)return res.status(200).json({ data: [] });
-    setting.measuresData({}, (err, result) => {
+    var can = await Acl.can(req.user, ['read'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(200).json('Not Permission');
+    setting.measuresData(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.measuresDataByClinic = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(200).json('Not Permission');
+    setting.measuresDataByClinic({clinicid: req.body.clinicid}, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
@@ -932,8 +944,8 @@ exports.measuresData = async(req, res, next) => {
 }
 
 exports.measuresDataById = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['read'], 'HEDIS_MEASURES_DATA');
-    // if(!can)return res.status(200).json({ data: [] });
+    var can = await Acl.can(req.user, ['read'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(200).json('Not Permission');
     let entry = {
         id: req.body.id
     }
@@ -947,8 +959,8 @@ exports.measuresDataById = async(req, res, next) => {
 }
 
 exports.addMeasureaData = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['read'], 'HEDIS_MEASURES_DATA');
-    // if(!can)return res.status(200).json({ data: [] });
+    var can = await Acl.can(req.user, ['read'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(200).json('Not Permission');
     setting.addMeasureaData(req.body, (err, result) => {
         if (err) {
             res.status(404).json(err);
@@ -960,8 +972,8 @@ exports.addMeasureaData = async(req, res, next) => {
 }
 
 exports.updateMeasureaData = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['read'], 'HEDIS_MEASURES_DATA');
-    // if(!can)return res.status(200).json({ data: [] });
+    var can = await Acl.can(req.user, ['read'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(200).json('Not Permission');
     setting.updateMeasureaData(req.body, (err, result) => {
         if (err) {
             res.status(404).json(err);
@@ -972,8 +984,8 @@ exports.updateMeasureaData = async(req, res, next) => {
 }
 
 exports.deleteMeasureaData = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['read'], 'HEDIS_MEASURES_DATA');
-    // if(!can)return res.status(200).json({ data: [] });
+    var can = await Acl.can(req.user, ['read'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(200).json('Not Permission');
     setting.deleteMeasureaData(req.body, (err, result) => {
         if (err) {
             res.status(404).json(err);
@@ -984,8 +996,8 @@ exports.deleteMeasureaData = async(req, res, next) => {
 }
 
 exports.importMeasuresData = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['read'], 'HEDIS_MEASURES_DATA');
-    // if(!can)return res.status(200).json({ data: [] });
+    var can = await Acl.can(req.user, ['read'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(200).json('Not Permission');
     let entry = {
         id: req.body.mid
     }
@@ -1005,8 +1017,8 @@ exports.importMeasuresData = async(req, res, next) => {
 }
 
 exports.vsPublicationState = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(405).json('Not Permission');
 
     setting.vsPublicationState([], (err, result) => {
         if (err) {
@@ -1018,8 +1030,8 @@ exports.vsPublicationState = async(req, res, next) => {
 }
 
 exports.vsJurisdiction = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(405).json('Not Permission');
 
     setting.vsJurisdiction([], (err, result) => {
         if (err) {
@@ -1031,8 +1043,8 @@ exports.vsJurisdiction = async(req, res, next) => {
 }
 
 exports.vsObservationCategory = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(405).json('Not Permission');
 
     setting.vsObservationCategory([], (err, result) => {
         if (err) {
@@ -1043,8 +1055,8 @@ exports.vsObservationCategory = async(req, res, next) => {
     });
 }
 exports.vsSpecimenType = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(405).json('Not Permission');
 
     setting.vsSpecimenType([], (err, result) => {
         if (err) {
@@ -1056,8 +1068,8 @@ exports.vsSpecimenType = async(req, res, next) => {
 }
 
 exports.vsPermittedDataType = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(405).json('Not Permission');
 
     setting.vsPermittedDataType([], (err, result) => {
         if (err) {
@@ -1069,8 +1081,8 @@ exports.vsPermittedDataType = async(req, res, next) => {
 }
 
 exports.csCalendarCycle = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(405).json('Not Permission');
 
     setting.csCalendarCycle([], (err, result) => {
         if (err) {
@@ -1082,8 +1094,8 @@ exports.csCalendarCycle = async(req, res, next) => {
 }
 
 exports.addMeasureObservation = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(405).json('Not Permission');
     let entry = {
         mid: req.body.mid,
         name: req.body.name,
@@ -1126,8 +1138,8 @@ exports.addMeasureObservation = async(req, res, next) => {
 }
 
 exports.updateMeasureObservation = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
         mid: req.body.mid,
@@ -1171,8 +1183,8 @@ exports.updateMeasureObservation = async(req, res, next) => {
 }
 
 exports.getMeasureObservation = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(405).json('Not Permission');
     setting.getMeasureObservation({}, (err, result) => {
         if (err) {
             res.status(404).json(err);
@@ -1183,8 +1195,8 @@ exports.getMeasureObservation = async(req, res, next) => {
 }
 
 exports.deleteMeasureObservation = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
     }
@@ -1198,8 +1210,8 @@ exports.deleteMeasureObservation = async(req, res, next) => {
 }
 
 exports.getMeasureObservationById = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
-    // if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
     }
@@ -1297,11 +1309,3 @@ exports.getcomcategorycode = (req, res, next) => {
         }
     });
 }
-
-
-
-
-
-
-
-

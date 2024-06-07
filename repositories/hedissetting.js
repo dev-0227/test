@@ -565,8 +565,47 @@ const setting = {
     },
     measuresData: (entry, callback) => {
         let query = "SELECT id, measureId, nqfId, title, acronym FROM `measure_hedis` ORDER BY measureId"
-        connection.query(query, [], (err, result) => {
+        connection.query(query, (err, result) => {
             callback(err, result);
+        });
+    },
+    measuresDataByClinic: (entry, callback) => {
+        let query = "SELECT DISTINCT `specialist`.`specialty_id` FROM `clinics`, `specialist` WHERE FIND_IN_SET(`clinics`.`id`, `specialist`.`clinic`) AND `clinics`.`id` = ?";
+        connection.query(query, [entry.clinicid], (err, result) => {
+            if (!err) {
+                query = 'SELECT DISTINCT `specialty`.`mid` FROM `specialty`, `specialist` WHERE ';
+                if (result.length < 1) {
+                    callback(err, []);
+                    return;
+                }
+                else if (result.length == 1) query += "`specialist`.`specialty_id` = `specialty`.`id` AND `specialist`.`specialty_id` = '" + result[0].specialty_id + "'";
+                else if (result.length > 1) {
+                    result.forEach(item => {
+                        query += "(`specialist`.`specialty_id` = `specialty`.`id` AND `specialist`.`specialty_id` = '" + item.specialty_id + "') OR ";
+                    })
+                    query = query.substr(0, query.length - 3); query += ';';
+                }
+                connection.query(query, (err1, result1) => {
+                    if (!err1) {
+                        query = "SELECT DISTINCT `measure_hedis`.`id`, `measure_hedis`.`measureId`, `measure_hedis`.`nqfId`, `measure_hedis`.`title`, `measure_hedis`.`acronym` FROM `measure_hedis`, `specialty` WHERE ";
+                        if (result1.length < 1) {
+                            callback(err, []);
+                            return;
+                        } else if (result1.length == 1) {
+                            query += "`specialty`.`mid` = `measure_hedis`.`measureId` AND `measure_hedis`.`measureId` = '" + result1[0].mid + "'";
+                        } else if (result1.length > 1) {
+                            result1.forEach(item => {
+                                query += "(`specialty`.`mid` = `measure_hedis`.`measureId` AND `measure_hedis`.`measureId` = '" + item.mid + "') OR ";
+                            })
+                            query = query.substr(0, query.length - 3); query += ';';
+                        }
+                        console.log(query)
+                        connection.query(query, (err2, result2) => {
+                            if (!err) callback(err2, result2)
+                        })
+                    } else callback(err, []);
+                })
+            } else callback(err, []);
         });
     },
     addMeasureaData: (entry, callback) => {

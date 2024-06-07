@@ -98,6 +98,7 @@ router.post('/qppMeasuresDataById', AuthGuard, controller.qppMeasuresDataById);
 router.post('/getYearsQppMeasuresData', AuthGuard, controller.getYearsQppMeasuresData);
 
 router.get('/measuresData', AuthGuard, controller.measuresData);
+router.post('/measuresDataByClinic', AuthGuard, controller.measuresDataByClinic);
 router.post('/measuresDataById', AuthGuard, controller.measuresDataById);
 router.post('/addMeasureaData', AuthGuard, controller.addMeasureaData);
 router.post('/updateMeasureaData', AuthGuard, controller.updateMeasureaData);
