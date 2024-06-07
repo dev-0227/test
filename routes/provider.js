@@ -36,7 +36,10 @@ router.post('/delete', AuthGuard, controller.delete);
 router.post('/updatepwd', AuthGuard, controller.updatepwd);
 router.post('/updateanswer', AuthGuard, controller.updateanswer);
 router.post('/updateclinic', AuthGuard, controller.updateclinic);
-router.post('/getProviderByClinic', AuthGuard, controller.getproviderByClinic);
+router.post('/getProviderByClinic', AuthGuard, controller.getProviderByClinic);
+router.post('/getClinic', AuthGuard, controller.getClinic);
+router.post('/setPCPInfo', AuthGuard, controller.setPCPInfo);
+router.post('/getPCPInfo', AuthGuard, controller.getPCPInfo);
 router.post('/import', AuthGuard, (req, res, next) => {
     upload_csv(req, res, (err) => {
         if (!err) {

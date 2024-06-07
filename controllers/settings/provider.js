@@ -37,7 +37,6 @@ exports.add = async(req, res, next) => {
         mname: req.body.mname,
         dob: req.body.dob,
         gender: req.body.gender,
-        emrid: req.body.emrid,
         qualification: req.body.qualification,
         npi: req.body.npi,
         license: req.body.license,
@@ -46,7 +45,6 @@ exports.add = async(req, res, next) => {
         phone2: req.body.phone2,
         address: req.body.address,
         address2: req.body.address2,
-        phpfhirid: req.body.phpfhirid,
         city: req.body.city,
         state: req.body.state,
         country: req.body.country,
@@ -55,7 +53,8 @@ exports.add = async(req, res, next) => {
         type: req.body.type,
         specialty: req.body.specialty,
         status: req.body.status,
-        photo: req.body.photo
+        photo: req.body.photo,
+        user: req.body.user
     }
     let check = await provider.checkuser(entry.fname, entry.lname, entry.mname, entry.phone);
     if(check.length == 0){
@@ -99,7 +98,6 @@ exports.update = async(req, res, next) => {
             mname: req.body.mname,
             dob: req.body.dob,
             gender: req.body.gender,
-            emrid: req.body.emrid,
             qualification: req.body.qualification,
             npi: req.body.npi,
             license: req.body.license,
@@ -108,7 +106,6 @@ exports.update = async(req, res, next) => {
             phone2: req.body.phone2,
             address: req.body.address,
             address2: req.body.address2,
-            phpfhirid: req.body.phpfhirid,
             city: req.body.city,
             state: req.body.state,
             country: req.body.country,
@@ -227,10 +224,48 @@ exports.updateclinic = async(req, res, next) => {
     });
 }
 
-exports.getproviderByClinic = async(req, res, next) => {
+exports.getProviderByClinic = async(req, res, next) => {
     var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     provider.getProviderByClinic(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.getClinic = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    if(!can)return res.status(405).json('Not Permission');
+    provider.getClinic(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.setPCPInfo = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    if(!can)return res.status(405).json('Not Permission');
+
+    provider.setPCPInfo(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.getPCPInfo = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    if(!can)return res.status(405).json('Not Permission');
+
+    provider.getPCPInfo(req.body, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {

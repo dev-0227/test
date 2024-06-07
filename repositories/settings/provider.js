@@ -19,7 +19,6 @@ const accounts = {
             where += "OR doctors.lname LIKE '%"+entry.search.value+"%' ";
             where += "OR doctors.email LIKE '%"+entry.search.value+"%' ";
             where += "OR doctors.phone LIKE '%"+entry.search.value+"%' ";
-            where += "OR doctors.emrid LIKE '%"+entry.search.value+"%' ";
             where += "OR doctors.address LIKE '%"+entry.search.value+"%' ";
             where += "OR specialty.name LIKE '%"+entry.search.value+"%' ";
             where += ") "
@@ -52,20 +51,20 @@ const accounts = {
         });
     },
     add: (account, callback) => {
-        let query = "INSERT INTO `doctors` (`fname`, `lname`, `mname`, `dob`, `gender`, `emrid`, `qualification`, `npi`, `phpfhirid`, `license`, `email`, `password`, `phone`, `phone2`, `address`, `address2`, `city`, `country`, `state`, `zip`, `type`, `specialty`, `photo`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        connection.query(query, [account.fname, account.lname, account.mname, account.dob, account.gender, account.emrid, account.qualification, account.npi, account.phpfhirid, account.license, account.email, account.password, account.phone, account.phone2, account.address, account.address2, account.city, account.country, account.state, account.zip, account.type, account.specialty, account.photo, account.status], (err, result) => {
+        let query = "INSERT INTO `doctors` (`fname`, `lname`, `mname`, `dob`, `gender`, `qualification`, `npi`, `license`, `email`, `password`, `phone`, `phone2`, `address`, `address2`, `city`, `country`, `state`, `zip`, `type`, `specialty`, `photo`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        connection.query(query, [account.fname, account.lname, account.mname, account.dob, account.gender, account.qualification, account.npi, account.license, account.email, account.password, account.phone, account.phone2, account.address, account.address2, account.city, account.country, account.state, account.zip, account.type, account.specialty, account.photo, account.status], (err, result) => {
             callback(err, result);
         });
     },
     chosen: (entry, callback) => {
-        let query = "SELECT * FROM `doctors` WHERE `id`= ? "
+        let query = "SELECT `doctors`.* FROM `doctors` WHERE `id`= ? "
         connection.query(query, [entry.id], (err, result) => {
             callback(err, result);
         });
     },
     update: (account, callback) => {
-        let query = "UPDATE `doctors` SET `fname`= ?, `lname` = ?, `mname` = ?, `dob`= ?, `gender` = ?, `emrid` = ?, `qualification` = ?, `phpfhirid` = ?, `npi` = ?, `license` = ?, `email` = ?,  `phone` = ?, `phone2` = ?,  `address` = ?, `address2` = ?, `password` = ?, `city` = ?, `state` = ?, `zip` = ?, `country` = ?, `photo` = ?, `type` = ?, `specialty` = ?, `status` = ? WHERE `id`= ? ";
-        connection.query(query, [account.fname, account.lname, account.mname, account.dob, account.gender, account.emrid, account.qualification, account.phpfhirid, account.npi, account.license, account.email, account.phone, account.phone2, account.address, account.address2, account.password, account.city, account.state, account.zip, account.country, account.photo, account.type, account.specialty, account.status, account.id], (err, result) => {
+        let query = "UPDATE `doctors` SET `fname`= ?, `lname` = ?, `mname` = ?, `dob`= ?, `gender` = ?, `qualification` = ?, `npi` = ?, `license` = ?, `email` = ?,  `phone` = ?, `phone2` = ?,  `address` = ?, `address2` = ?, `password` = ?, `city` = ?, `state` = ?, `zip` = ?, `country` = ?, `photo` = ?, `type` = ?, `specialty` = ?, `status` = ? WHERE `id`= ? ";
+        connection.query(query, [account.fname, account.lname, account.mname, account.dob, account.gender, account.qualification, account.npi, account.license, account.email, account.phone, account.phone2, account.address, account.address2, account.password, account.city, account.state, account.zip, account.country, account.photo, account.type, account.specialty, account.status, account.id], (err, result) => {
             callback(err, result);
         });
     },
@@ -106,7 +105,12 @@ const accounts = {
             });
         });
     },
-
+    getClinic: (entry, callback) => {
+        let query = "SELECT `clinics`.`id`, `clinics`.`name`, `doctors`.`address`, `doctors`.`phone`, `doctors`.`city`, `doctors`.`state`, `doctors`.`zip` FROM `doctors`, `clinics` WHERE FIND_IN_SET(`clinics`.`id`, `doctors`.`clinic`) AND `doctors`.`id` = ?";
+        connection.query(query, [entry.id], (err, result) => {
+            callback(err, result)
+        });
+    },
     getSpecialty: (entry) => {
         let query = "SELECT * FROM `specialty` ORDER BY name";
         return new Promise((resolve, reject) => {
@@ -129,7 +133,33 @@ const accounts = {
     deleteImage: (filepath, callback) => {
         fs.unlink(filepath, (err) => {
             callback(err);
-        })
+        });
+    },
+    setPCPInfo: (entry, callback) => {
+        // delete old data
+        query = "DELETE FROM `pcp_external_ids` WHERE `doctorid` = ?";
+        connection.query(query, [entry.doctorid], (err, result) => {
+            if (!err) {
+                //add new data
+                query = "INSERT INTO `pcp_external_ids` (`doctorid`, `clinicid`, `usertypeid`, `pcpid`, `emrid`, `doctorfhirid`, `insuranceid`, `doctorinsid`, `createdat`, `createdby`) VALUES ";
+                entry.pcp.forEach(item => {
+                    if (item != undefined && item != null) {
+                        query += `(${item.doctorid},${item.clinicid},${item.usertypeid},'${item.pcpid}','${item.emrid}','${item.pcpfhirid}','${item.insuranceid}','${item.doctorinsid}','${Date.now()}','${item.user}'),`
+                    }
+                })
+                query = query.substr(0, query.length - 1);   query + ';'
+                connection.query(query, (err1, result1) => {
+                    callback(err1, result1);
+                });
+            }
+            else callback(err, result);
+        });
+    },
+    getPCPInfo: (entry, callback) => {
+        let query = 'SELECT * FROM `pcp_external_ids` WHERE `doctorid` = ?';
+        connection.query(query, [entry.doctorid], (err, result) => {
+            callback(err, result);
+        });
     }
 }
 module.exports = accounts;
