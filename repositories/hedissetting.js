@@ -569,6 +569,14 @@ const setting = {
             callback(err, result);
         });
     },
+    measuresDataForAppointment: (entry, callback) => {
+        let query = ''
+        if (entry.isSpecialist == true) query = "SELECT id, measureId, nqfId, title, acronym FROM `measure_hedis` WHERE `appt_specialist` = 1 ORDER BY measureId";
+        else if (entry.isSpecialist == false) query = "SELECT id, measureId, nqfId, title, acronym FROM `measure_hedis` WHERE `appt_clinic` = 1 ORDER BY measureId";
+        connection.query(query, (err, result) => {
+            callback(err, result);
+        });
+    },
     measuresDataByClinic: (entry, callback) => {
         let query = "SELECT DISTINCT `specialist`.`specialty_id` FROM `clinics`, `specialist` WHERE FIND_IN_SET(`clinics`.`id`, `specialist`.`clinic`) AND `clinics`.`id` = ?";
         connection.query(query, [entry.clinicid], (err, result) => {
@@ -599,7 +607,6 @@ const setting = {
                             })
                             query = query.substr(0, query.length - 3); query += ';';
                         }
-                        console.log(query)
                         connection.query(query, (err2, result2) => {
                             if (!err) callback(err2, result2)
                         })
@@ -616,8 +623,8 @@ const setting = {
         query += "`metricType`, `firstPerformanceYear`, `lastPerformanceYear`, `isInverse`, `category`, ";
         query += "`isRegistryMeasure`, `isRiskAdjusted`, `icdImpacted`, `isClinicalGuidelineChanged`, `isIcdImpacted`,  ";
         query += "`clinicalGuidelineChanged`, `allowedPrograms`, `submissionMethods`, `measureSets`, `measureSpecification`, ";
-        query += "`eMeasureUuid`, `strata`, `eligibilityOptions`, `performanceOptions`) ";
-        query += " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+        query += "`eMeasureUuid`, `strata`, `eligibilityOptions`, `performanceOptions`, `appt_clinic`, `appt_specialist`) ";
+        query += " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
         var values = []
         values.push(entry.eyear?entry.eyear:'0');
         values.push(entry.title);
@@ -655,6 +662,8 @@ const setting = {
         values.push(entry.strata);
         values.push(entry.eligibilityOptions);
         values.push(entry.performanceOptions);
+        values.push(entry.appt_clinic);
+        values.push(entry.appt_specialist);
         connection.query(query, values, (err, result) => {
             callback(err, result);
         });
@@ -667,7 +676,7 @@ const setting = {
         query += "`metricType`=?, `firstPerformanceYear`=?, `lastPerformanceYear`=?, `isInverse`=?, `category`=?, ";
         query += "`isRegistryMeasure`=?, `isRiskAdjusted`=?, `icdImpacted`=?, `isClinicalGuidelineChanged`=?, `isIcdImpacted`=?,  ";
         query += "`clinicalGuidelineChanged`=?, `allowedPrograms`=?, `submissionMethods`=?, `measureSets`=?, `measureSpecification`=?, ";
-        query += "`eMeasureUuid`=?, `strata`=?, `eligibilityOptions`=?, `performanceOptions`=? ";
+        query += "`eMeasureUuid`=?, `strata`=?, `eligibilityOptions`=?, `performanceOptions`=?, `appt_clinic`=?, `appt_specialist`=? ";
         query += " WHERE `id`=? ";
         var values = []
         values.push(entry.title);
@@ -705,6 +714,8 @@ const setting = {
         values.push(entry.strata);
         values.push(entry.eligibilityOptions);
         values.push(entry.performanceOptions);
+        values.push(entry.appt_clinic);
+        values.push(entry.appt_specialist)
         values.push(entry.id);
         connection.query(query, values, (err, result) => {
             callback(err, result);

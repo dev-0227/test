@@ -931,6 +931,18 @@ exports.measuresData = async(req, res, next) => {
     });
 }
 
+exports.measuresDataForAppointment = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'HEDIS_QPP_MEASURES_DATA');
+    if(!can)return res.status(200).json('Not Permission');
+    setting.measuresDataForAppointment(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
 exports.measuresDataByClinic = async(req, res, next) => {
     var can = await Acl.can(req.user, ['read'], 'HEDIS_QPP_MEASURES_DATA');
     if(!can)return res.status(200).json('Not Permission');
