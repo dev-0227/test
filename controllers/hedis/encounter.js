@@ -353,6 +353,67 @@ exports.deleteAppointmentCategory = async(req, res, next) => {
 }
 
 
+exports.appointmentStatus = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
+    if(!can)return res.status(405).json('Not Permission');
+    encounter.appointmentStatus(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.createAppointmentStatus = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
+    if(!can)return res.status(405).json('Not Permission');
+    encounter.createAppointmentStatus(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.updateAppointmentStatus = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
+    if(!can)return res.status(405).json('Not Permission');
+    encounter.updateAppointmentStatus(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.chosenAppointmentStatus = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
+    if(!can)return res.status(405).json('Not Permission');
+    encounter.chosenAppointmentStatus(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.deleteAppointmentStatus = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
+    if(!can)return res.status(405).json('Not Permission');
+    encounter.deleteAppointmentStatus(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+
 exports.appointmentSpecialty = async(req, res, next) => {
     // var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
     // if(!can) return res.status(405).json('Not Permission');

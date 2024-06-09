@@ -306,6 +306,7 @@ const encounterRepo = {
             callback(err, result);
         });
     },
+
     appointmentCategory: (entry, callback) => {
         let query = "SELECT * FROM `f_appointment_category`";
         connection.query(query, [], (err, result) => {
@@ -343,6 +344,54 @@ const encounterRepo = {
     },
     deleteAppointmentCategory: (entry, callback) => {
         let query = "DELETE FROM `f_appointment_category` WHERE `id`= ? ";
+        connection.query(query, [entry.id], (err, result) => {
+            callback(err, result);
+        });
+    },
+
+    appointmentStatus: (entry, callback) => {
+        let query = "SELECT * FROM `f_vs_appt_status` ORDER BY `code`";
+        connection.query(query, [], (err, result) => {
+            callback(err, result);
+        });
+    },
+    createAppointmentStatus: (entry, callback) => {
+        let query = "INSERT INTO `f_vs_appt_status` (";
+        query += "`code`, `system`, `display`, `definition`, `canonical`) VALUES (?, ?, ?, ?, ?);";
+        var values = []
+        values.push(entry.code);
+        values.push(entry.system);
+        values.push(entry.display);
+        values.push(entry.definition);
+        values.push(entry.canonical);
+        connection.query(query, values, (err, result) => {
+            console.log(err)
+            callback(err, result);
+        });
+    },
+    updateAppointmentStatus: (entry, callback) => {
+        let query = "UPDATE `f_vs_appt_status` SET ";
+        query += "`code`=?, `system`=?, `display`=?, `definition`=?, `canonical`=?";
+        query += "WHERE `id`= ? ";
+        var values = []
+        values.push(entry.code);
+        values.push(entry.system);
+        values.push(entry.display);
+        values.push(entry.definition);
+        values.push(entry.canonical);
+        values.push(entry.id);
+        connection.query(query, values, (err, result) => {
+            callback(err, result);
+        });
+    },
+    chosenAppointmentStatus: (entry, callback) => {
+        let query = "SELECT * FROM `f_vs_appt_status` WHERE id=?";
+        connection.query(query, [entry.id], (err, result) => {
+            callback(err, result);
+        });
+    },
+    deleteAppointmentStatus: (entry, callback) => {
+        let query = "DELETE FROM `f_vs_appt_status` WHERE `id`= ? ";
         connection.query(query, [entry.id], (err, result) => {
             callback(err, result);
         });
