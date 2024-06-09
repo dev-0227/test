@@ -365,7 +365,6 @@ const encounterRepo = {
         values.push(entry.definition);
         values.push(entry.canonical);
         connection.query(query, values, (err, result) => {
-            console.log(err)
             callback(err, result);
         });
     },
@@ -392,6 +391,44 @@ const encounterRepo = {
     },
     deleteAppointmentStatus: (entry, callback) => {
         let query = "DELETE FROM `f_vs_appt_status` WHERE `id`= ? ";
+        connection.query(query, [entry.id], (err, result) => {
+            callback(err, result);
+        });
+    },
+
+    appointmentBarrier: (entry, callback) => {
+        let query = "SELECT * FROM `f_vs_appt_barrier` ORDER BY `reason`";
+        connection.query(query, [], (err, result) => {
+            callback(err, result);
+        });
+    },
+    createAppointmentBarrier: (entry, callback) => {
+        let query = "INSERT INTO `f_vs_appt_barrier` (`code`, `reason`) VALUES (?, ?);";
+        var values = []
+        values.push(entry.code);
+        values.push(entry.reason);
+        connection.query(query, values, (err, result) => {
+            callback(err, result);
+        });
+    },
+    updateAppointmentBarrier: (entry, callback) => {
+        let query = "UPDATE `f_vs_appt_barrier` SET `code`=?, `reason`=? WHERE `id`= ? ";
+        var values = []
+        values.push(entry.code);
+        values.push(entry.reason);
+        values.push(entry.id);
+        connection.query(query, values, (err, result) => {
+            callback(err, result);
+        });
+    },
+    chosenAppointmentBarrier: (entry, callback) => {
+        let query = "SELECT * FROM `f_vs_appt_barrier` WHERE id=?";
+        connection.query(query, [entry.id], (err, result) => {
+            callback(err, result);
+        });
+    },
+    deleteAppointmentBarrier: (entry, callback) => {
+        let query = "DELETE FROM `f_vs_appt_barrier` WHERE `id`= ? ";
         connection.query(query, [entry.id], (err, result) => {
             callback(err, result);
         });

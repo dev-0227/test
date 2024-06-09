@@ -1,5 +1,7 @@
+
 const encounter = require('../../repositories/hedis/encounter');
 const Acl = require('../../middleware/acl');
+
 exports.encounter = async(req, res, next) => {
     var can = await Acl.can(req.user, ['read'], 'REFERRAL_ENCOUNTER');
     if(!can)return res.status(200).json({ data: [] });
@@ -414,9 +416,70 @@ exports.deleteAppointmentStatus = async(req, res, next) => {
 }
 
 
+exports.appointmentBarrier = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
+    if(!can)return res.status(405).json('Not Permission');
+    encounter.appointmentBarrier(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.createAppointmentBarrier = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
+    if(!can)return res.status(405).json('Not Permission');
+    encounter.createAppointmentBarrier(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.updateAppointmentBarrier = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
+    if(!can)return res.status(405).json('Not Permission');
+    encounter.updateAppointmentBarrier(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.chosenAppointmentBarrier = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
+    if(!can)return res.status(405).json('Not Permission');
+    encounter.chosenAppointmentBarrier(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.deleteAppointmentBarrier = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
+    if(!can)return res.status(405).json('Not Permission');
+    encounter.deleteAppointmentBarrier(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+
 exports.appointmentSpecialty = async(req, res, next) => {
-    // var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
-    // if(!can) return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
+    if(!can) return res.status(405).json('Not Permission');
     encounter.appointmentSpecialty(req.body, (err, result) => {
         if (err) {
             res.status(404).json(err);

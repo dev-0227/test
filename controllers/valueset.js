@@ -185,3 +185,13 @@ exports.appointmentStatus = (req, res, next) => {
         }
     });
 }
+
+exports.appointmentBarrier = (req, res, next) => {
+    valueSet.appointmentBarrier((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}

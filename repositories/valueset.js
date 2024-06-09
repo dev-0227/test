@@ -109,6 +109,12 @@ const valueSet = {
         connection.query(query, (err, result) => {
             callback(err, result);
         });
+    },
+    appointmentBarrier: (callback) => {
+        let query = "SELECT * FROM f_vs_appt_barrier WHERE 1 ORDER BY `code`";
+        connection.query(query, (err, result) => {
+            callback(err, result);
+        });
     }
 }
 module.exports = valueSet;
