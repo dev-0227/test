@@ -104,5 +104,11 @@ const valueSet = {
             callback(err, result);
         });
     },
+    appointmentStatus: (callback) => {
+        let query = "SELECT * FROM f_vs_appt_status WHERE 1 ORDER BY `display`";
+        connection.query(query, (err, result) => {
+            callback(err, result);
+        });
+    }
 }
 module.exports = valueSet;

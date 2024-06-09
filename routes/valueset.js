@@ -23,5 +23,7 @@ router.get('/encounterParticipantType', AuthGuard, controller.encounterParticipa
 router.get('/encounterReasonUse', AuthGuard, controller.encounterReasonUse);
 router.get('/encounterReasonCodes', AuthGuard, controller.encounterReasonCodes);
 
+router.get('/appointmentStatus', AuthGuard, controller.appointmentStatus);
+
 
 module.exports = router;

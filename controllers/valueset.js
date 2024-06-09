@@ -176,7 +176,12 @@ exports.encounterReasonCodes = (req, res, next) => {
     });
 }
 
-
-
-
-
+exports.appointmentStatus = (req, res, next) => {
+    valueSet.appointmentStatus((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
