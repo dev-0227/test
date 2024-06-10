@@ -113,6 +113,7 @@ const encounterRepo = {
         });
     },
     createAppointment: (entry, callback) => {
+        console.log(entry)
         var provider_id = entry.clinic_provider;
         if(entry.provider=="1"){
             provider_id = entry.specialist_provider;
@@ -226,12 +227,12 @@ const encounterRepo = {
         });
     },
     getAppointment: (entry, callback) => {
-        
         let query = "SELECT a.*, p.FNAME, p.LNAME, p.PHONE, p.ADDRESS, p.DOB, p.GENDER, p.Language, p.EMAIL, p.MOBILE, ";
         query += "usr.fname as doctor_fname, usr.lname as doctor_lname "
         query += "FROM `f_appointment` as a "
         query += "LEFT JOIN patient_list as p ON a.patient_id = p.id "
-        query += "LEFT JOIN managers as usr ON usr.id = a.provider_id "
+        // query += "LEFT JOIN managers as usr ON usr.id = a.provider_id "
+        query += "LEFT JOIN specialist as usr ON usr.id = a.provider_id "
         query += "LEFT JOIN specialty as spc ON FIND_IN_SET(a.measure, spc.mid) "
         query += "WHERE `clinic_id`=? ";
         query += "AND FIND_IN_SET(usr.type, (";
