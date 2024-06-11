@@ -228,19 +228,20 @@ const encounterRepo = {
     },
     getAppointment: (entry, callback) => {
         let query = "SELECT DISTINCT a.*, p.FNAME, p.LNAME, p.PHONE, p.ADDRESS, p.DOB, p.GENDER, p.Language, p.EMAIL, p.MOBILE, ";
-        query += "usr.fname as doctor_fname, usr.lname as doctor_lname, usr.phone as dphone, usr.address as daddress, usr.city as dcity, usr.zip as dzip "
+        query += "usr.fname as spec_fname, usr.lname as spec_lname, usr.phone as sphone, usr.address as saddress, usr.city as scity, usr.zip as szip, "
+        query += "dtr.fname as doctor_fname, dtr.lname as doctor_lname, dtr.phone as dphone, dtr.address as daddress, dtr.city as dcity, dtr.zip as dzip "
         query += "FROM `f_appointment` as a "
         query += "LEFT JOIN patient_list as p ON a.patient_id = p.id "
-        // query += "LEFT JOIN managers as usr ON usr.id = a.provider_id "
         query += "LEFT JOIN specialist as usr ON usr.id = a.provider_id "
+        query += "LEFT JOIN doctors as dtr ON dtr.id = a.provider_id "
         query += "LEFT JOIN specialty as spc ON FIND_IN_SET(a.measure, spc.mid) "
         query += "WHERE `clinic_id`=? ";
         query += "AND FIND_IN_SET(usr.type, (";
         query += "SELECT GROUP_CONCAT(value) FROM `f_settings` WHERE type='appointment_doctor'";
         query += ")) ";
-        if(entry.doctors){
-            query += "AND FIND_IN_SET(a.provider_id, '"+entry.doctors+"') ";
-        }
+        // if(entry.doctors){
+        //     query += "AND FIND_IN_SET(a.provider_id, '"+entry.doctors+"') ";
+        // }
         if(entry.specialties != "0"){
             query += "AND FIND_IN_SET(spc.id, '"+entry.specialties+"') ";
         }
@@ -252,11 +253,6 @@ const encounterRepo = {
             query += "AND a.approve_date < '"+next_month.toISOString().split("T")[0]+"' ";
         }
         connection.query(query, [entry.clinic_id], (err, result) => {
-            // result.forEach(item => {
-            //     var date = new Date(item.approve_date)
-            //     var newDate = date.setDate(date.getDate() + 1)
-            //     item.approve_date = new Date(newDate).toISOString().split("T")[0]
-            // })
             callback(err, result);
         });
     },
