@@ -104,7 +104,7 @@ const encounterRepo = {
             callback(err, result);
         });
     },
-    
+
     appointment: (entry, callback) => {
         let query = "SELECT a.*, m.fname, m.lname FROM `f_appointment` as a ";
         query += "LEFT JOIN `managers` as m ON m.id = a.provider_id "
@@ -252,11 +252,11 @@ const encounterRepo = {
             query += "AND a.approve_date < '"+next_month.toISOString().split("T")[0]+"' ";
         }
         connection.query(query, [entry.clinic_id], (err, result) => {
-            result.forEach(item => {
-                var date = new Date(item.approve_date)
-                var newDate = date.setDate(date.getDate() + 1)
-                item.approve_date = new Date(newDate).toISOString().split("T")[0]
-            })
+            // result.forEach(item => {
+            //     var date = new Date(item.approve_date)
+            //     var newDate = date.setDate(date.getDate() + 1)
+            //     item.approve_date = new Date(newDate).toISOString().split("T")[0]
+            // })
             callback(err, result);
         });
     },
