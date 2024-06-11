@@ -233,8 +233,8 @@ const accounts = {
         });
     },
     getSpecialistByMeasureId: (entry, callback) => {
-        let query = "SELECT `specialist`.*, `specialty`.`name` as `sname` FROM `specialist`, `specialty`, `measure_hedis` WHERE `measure_hedis`.`measureId` = `specialty`.`mid` AND `specialty`.`id` = `specialist`.`specialty_id` AND `measure_hedis`.`measureId` = ? ORDER BY `specialist`.`fname`";
-        connection.query(query, [entry.measureid], (err, result) => {
+        let query = "SELECT `specialist`.*, `specialty`.`name` as `sname` FROM `specialist`, `specialty`, `measure_hedis` WHERE (`measure_hedis`.`measureId` = `specialty`.`mid` AND `specialty`.`id` = `specialist`.`specialty_id` AND `measure_hedis`.`measureId` = ?) AND FIND_IN_SET(?, `specialist`.`clinic`) ORDER BY `specialist`.`fname`";
+        connection.query(query, [entry.measureid, entry.clinicid], (err, result) => {
             callback(err, result);
         });
     },

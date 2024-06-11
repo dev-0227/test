@@ -332,7 +332,8 @@ exports.getSpecialistByMeasureId = async(req, res, next) => {
     if(!can)return res.status(405).json('Not Permission');
     
     let entry = {
-        measureid: req.body.measureid
+        measureid: req.body.measureid,
+        clinicid: req.body.clinicid
     }
     if (req.body.measureid === undefined || req.body.measureid === null) res.status(200).json({data: []});
     else {

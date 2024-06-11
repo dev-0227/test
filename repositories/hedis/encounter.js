@@ -104,6 +104,7 @@ const encounterRepo = {
             callback(err, result);
         });
     },
+    
     appointment: (entry, callback) => {
         let query = "SELECT a.*, m.fname, m.lname FROM `f_appointment` as a ";
         query += "LEFT JOIN `managers` as m ON m.id = a.provider_id "
@@ -113,7 +114,6 @@ const encounterRepo = {
         });
     },
     createAppointment: (entry, callback) => {
-        console.log(entry)
         var provider_id = entry.clinic_provider;
         if(entry.provider=="1"){
             provider_id = entry.specialist_provider;
@@ -227,8 +227,8 @@ const encounterRepo = {
         });
     },
     getAppointment: (entry, callback) => {
-        let query = "SELECT a.*, p.FNAME, p.LNAME, p.PHONE, p.ADDRESS, p.DOB, p.GENDER, p.Language, p.EMAIL, p.MOBILE, ";
-        query += "usr.fname as doctor_fname, usr.lname as doctor_lname "
+        let query = "SELECT DISTINCT a.*, p.FNAME, p.LNAME, p.PHONE, p.ADDRESS, p.DOB, p.GENDER, p.Language, p.EMAIL, p.MOBILE, ";
+        query += "usr.fname as doctor_fname, usr.lname as doctor_lname, usr.phone as dphone, usr.address as daddress, usr.city as dcity, usr.zip as dzip "
         query += "FROM `f_appointment` as a "
         query += "LEFT JOIN patient_list as p ON a.patient_id = p.id "
         // query += "LEFT JOIN managers as usr ON usr.id = a.provider_id "
@@ -252,9 +252,15 @@ const encounterRepo = {
             query += "AND a.approve_date < '"+next_month.toISOString().split("T")[0]+"' ";
         }
         connection.query(query, [entry.clinic_id], (err, result) => {
+            result.forEach(item => {
+                var date = new Date(item.approve_date)
+                var newDate = date.setDate(date.getDate() + 1)
+                item.approve_date = new Date(newDate).toISOString().split("T")[0]
+            })
             callback(err, result);
         });
     },
+
     appointmentType: (entry, callback) => {
         let query = "SELECT t.*, c.name as categoryName FROM `f_appointment_type` as t ";
         query += "LEFT JOIN `f_appointment_category` as c ON c.id=t.category";
