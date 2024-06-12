@@ -11,7 +11,7 @@ if(typeof String.prototype.replaceAll === "undefined") {
     }
 }
 exports.list = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     specialist.list(req.query, (err, result) => {
         if (err) {
@@ -28,7 +28,7 @@ exports.list = async(req, res, next) => {
     });
 }
 exports.listBymeasureID = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
 
     if (req.query.measureid === null || req.query.measureid === undefined || req.query.measureid === '') res.status(200).json({data: []});
@@ -43,7 +43,7 @@ exports.listBymeasureID = async(req, res, next) => {
     }
 }
 exports.add = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['create'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['create'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         fname: req.body.fname,
@@ -92,7 +92,7 @@ exports.add = async(req, res, next) => {
     }
 }
 exports.update = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['write'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
 
     var imgpath = '';
@@ -155,7 +155,7 @@ exports.update = async(req, res, next) => {
     });
 }
 exports.chosen = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
@@ -183,7 +183,7 @@ exports.chosen = async(req, res, next) => {
     });
 }
 exports.delete = async(req, response, next) => {
-    var can = await Acl.can(req.user, ['create'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['create'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
@@ -208,7 +208,7 @@ exports.delete = async(req, response, next) => {
     });
 }
 exports.updatepwd = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['write'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
@@ -223,7 +223,7 @@ exports.updatepwd = async(req, res, next) => {
     });
 }
 exports.updateanswer = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['write'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
@@ -239,7 +239,7 @@ exports.updateanswer = async(req, res, next) => {
     });
 }
 exports.updateclinic = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['write'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
@@ -255,7 +255,7 @@ exports.updateclinic = async(req, res, next) => {
 }
 
 exports.getSpecialistByClinic = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     specialist.getSpecialistByClinic(req.body, (err, result) => {
         if (err) {
@@ -288,7 +288,7 @@ exports.import = async (req, res, next) => {
 }
 
 exports.updateorganizations = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['write'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     
     let entry = {
@@ -302,7 +302,7 @@ exports.updateorganizations = async(req, res, next) => {
 }
 
 exports.getOrgan = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     
     let entry = {
@@ -315,7 +315,7 @@ exports.getOrgan = async(req, res, next) => {
 }
 
 exports.getClinics = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     
     let entry = {
@@ -328,7 +328,7 @@ exports.getClinics = async(req, res, next) => {
 }
 
 exports.getSpecialistByMeasureId = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
     
     let entry = {
@@ -345,7 +345,7 @@ exports.getSpecialistByMeasureId = async(req, res, next) => {
 }
 
 exports.updateClinics = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['write'], 'SPECIALIST_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
 
     let entry = {

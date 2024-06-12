@@ -1,8 +1,9 @@
 
 const relationship = require('../../repositories/settings/relationship');
+const Acl = require('../../middleware/acl');
 
 exports.getOrganizationByClinic = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['read'], 'SPECIALIST_ORGAN_ASSOCIATE');
     if(!can)return res.status(405).json('Not Permission');
 
     let entry = {
@@ -16,7 +17,7 @@ exports.getOrganizationByClinic = async(req, res, next) => {
 }
 
 exports.getOrganizationBySpecialist = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['read'], 'SPECIALIST_ORGAN_ASSOCIATE');
     if(!can)return res.status(405).json('Not Permission');
 
     let entry = {
@@ -29,7 +30,7 @@ exports.getOrganizationBySpecialist = async(req, res, next) => {
 }
 
 exports.getOrganizationNames = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['read'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
 
     let entry = {
@@ -49,7 +50,7 @@ exports.getOrganizationNames = async(req, res, next) => {
 }
 
 exports.add = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['create'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
 
     let entry = {
@@ -64,7 +65,7 @@ exports.add = async(req, res, next) => {
 }
 
 exports.updateOrganization = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['write'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
 
     let entry = {
@@ -79,7 +80,7 @@ exports.updateOrganization = async(req, res, next) => {
 }
 
 exports.delete = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['create'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
 
     let entry = {
@@ -92,7 +93,7 @@ exports.delete = async(req, res, next) => {
 }
 
 exports.set = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['write'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
 
     let entry = {

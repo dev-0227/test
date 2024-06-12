@@ -11,7 +11,7 @@ if(typeof String.prototype.replaceAll === "undefined") {
     }
 }
 exports.list = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_PROVIDERS');
     if(!can)return res.status(405).json('Not Permission');
 
     provider.list(req.query, (err, result) => {
@@ -29,7 +29,7 @@ exports.list = async(req, res, next) => {
     });
 }
 exports.add = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['create'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['create'], 'CLINIC_PROVIDERS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         fname: req.body.fname,
@@ -71,7 +71,7 @@ exports.add = async(req, res, next) => {
     }
 }
 exports.update = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['write'], 'CLINIC_PROVIDERS');
     if(!can)return res.status(405).json('Not Permission');
 
     var imgpath = '';
@@ -126,7 +126,7 @@ exports.update = async(req, res, next) => {
     });
 }
 exports.chosen = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_PROVIDERS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
@@ -153,7 +153,7 @@ exports.chosen = async(req, res, next) => {
     });
 }
 exports.delete = async(req, response, next) => {
-    var can = await Acl.can(req.user, ['create'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['create'], 'CLINIC_PROVIDERS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
@@ -178,7 +178,7 @@ exports.delete = async(req, response, next) => {
     });
 }
 exports.updatepwd = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['write'], 'CLINIC_PROVIDERS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
@@ -193,7 +193,7 @@ exports.updatepwd = async(req, res, next) => {
     });
 }
 exports.updateanswer = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['write'], 'CLINIC_PROVIDERS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
@@ -209,7 +209,7 @@ exports.updateanswer = async(req, res, next) => {
     });
 }
 exports.updateclinic = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['write'], 'CLINIC_PROVIDERS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
@@ -225,7 +225,7 @@ exports.updateclinic = async(req, res, next) => {
 }
 
 exports.getProviderByClinic = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_PROVIDERS');
     if(!can)return res.status(405).json('Not Permission');
     provider.getProviderByClinic(req.body, (err, result) => {
         if (err) {
@@ -237,7 +237,7 @@ exports.getProviderByClinic = async(req, res, next) => {
 }
 
 exports.getClinic = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_PROVIDERS');
     if(!can)return res.status(405).json('Not Permission');
     provider.getClinic(req.body, (err, result) => {
         if (err) {
@@ -249,7 +249,7 @@ exports.getClinic = async(req, res, next) => {
 }
 
 exports.setPCPInfo = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['write'], 'CLINIC_PROVIDERS');
     if(!can)return res.status(405).json('Not Permission');
 
     provider.setPCPInfo(req.body, (err, result) => {
@@ -262,7 +262,7 @@ exports.setPCPInfo = async(req, res, next) => {
 }
 
 exports.getPCPInfo = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_PROVIDERS');
     if(!can)return res.status(405).json('Not Permission');
 
     provider.getPCPInfo(req.body, (err, result) => {

@@ -2,8 +2,6 @@
 const qualification = require('../../repositories/settings/qualification');
 
 exports.list = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
-    if(!can)return res.status(405).json('Not Permission');
     qualification.list((err, result) => {
         if (err) {
             res.status(404).json(err);
@@ -14,8 +12,6 @@ exports.list = async(req, res, next) => {
 }
 
 exports.add = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
-    if(!can)return res.status(405).json('Not Permission');
     let entry = {
         code: req.body.code,
         system: req.body.system,
@@ -38,8 +34,6 @@ exports.add = async(req, res, next) => {
 }
 
 exports.chosen = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
-    if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
     }
@@ -53,8 +47,6 @@ exports.chosen = async(req, res, next) => {
 }
 
 exports.update = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
-    if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
         code: req.body.code,
@@ -77,8 +69,6 @@ exports.update = async(req, res, next) => {
 }
 
 exports.delete = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
-    if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
     }

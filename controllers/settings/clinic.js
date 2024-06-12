@@ -13,7 +13,7 @@ exports.list = async(req, res, next) => {
     });
 }
 exports.listForSearch = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
 
     clinic.listForSearch(req.query, (err, result) => {
@@ -25,7 +25,7 @@ exports.listForSearch = async(req, res, next) => {
     });
 }
 exports.getByStatus = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'USER_MANAGE');
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_MANAGE');
     if(!can)return res.status(405).json('Not Permission');
 
     clinic.getByStatus((err, result) => {

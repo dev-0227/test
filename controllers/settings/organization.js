@@ -1,9 +1,10 @@
 const organization = require('../../repositories/settings/organization');
+const Acl = require('../../middleware/acl');
 
 // organization type
 
 exports.list_type = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['read'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
     organization.list_type((err, result) => {
         if (err) {
@@ -15,7 +16,7 @@ exports.list_type = async(req, res, next) => {
 }
 
 exports.add_type = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['create'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         code: req.body.code,
@@ -39,7 +40,7 @@ exports.add_type = async(req, res, next) => {
 }
 
 exports.chosen_type = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['read'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
@@ -54,7 +55,7 @@ exports.chosen_type = async(req, res, next) => {
 }
 
 exports.update_type = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['write'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
@@ -78,7 +79,7 @@ exports.update_type = async(req, res, next) => {
 }
 
 exports.delete_type = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['create'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
@@ -95,7 +96,7 @@ exports.delete_type = async(req, res, next) => {
  // organization
 
 exports.list = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['read'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
     organization.list(req.query, (err, result) => {
         if (err) {
@@ -108,7 +109,7 @@ exports.list = async(req, res, next) => {
 }
 
 exports.add = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['create'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         status: req.body.status,
@@ -154,7 +155,7 @@ exports.add = async(req, res, next) => {
 }
 
 exports.chosen = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['read'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
@@ -169,7 +170,7 @@ exports.chosen = async(req, res, next) => {
 }
 
 exports.update = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['write'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id,
@@ -216,7 +217,7 @@ exports.update = async(req, res, next) => {
 }
 
 exports.delete = async(req, res, next) => {
-    var can = req.user['role']=="0"?true:false;
+    var can = await Acl.can(req.user, ['create'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
     let entry = {
         id: req.body.id
@@ -231,7 +232,7 @@ exports.delete = async(req, res, next) => {
 }
 
 exports.getAll = async(req, res, next) => {
-    var can = req.user['role'] == "0" ? true : false;
+    var can = await Acl.can(req.user, ['read'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
 
     organization.getAll((err, result) => {
@@ -241,7 +242,7 @@ exports.getAll = async(req, res, next) => {
 }
 
 exports.getAllUsingFilter = async(req, res, next) => {
-    var can = req.user['role']=="0" ? true : false;
+    var can = await Acl.can(req.user, ['read'], 'ORGANIZATIONS');
     if(!can)return res.status(405).json('Not Permission');
 
     organization.getAllUsingFilter(req.query, (err, result) => {
