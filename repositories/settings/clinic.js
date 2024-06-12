@@ -34,6 +34,12 @@ const accounts = {
             });
         });
     },
+    getByStatus: (callback) => {
+        let query = "SELECT * FROM `clinics` WHERE `status` = '1' ORDER BY `name`"
+        connection.query(query, (err, result) => {
+            callback(err, result)
+        })
+    },
     add: (account, callback) => {
         let query = "INSERT INTO `clinics` (`id`, `name`, `acronym`, `address1`,`address2`,`city`,`state`,`zip`,`country`,`phone`,`cel`,`email`,`web`,`portal`,`placeservice`,`status`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
         connection.query(query, [account.name, account.acronym, account.address1, account.address2, account.city, account.state, account.zip, account.country, account.tel, account.fax, account.email, account.web, account.portal, account.pos, account.status], (err, result) => {

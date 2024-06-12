@@ -20,6 +20,7 @@ const upload = multer({
 // Get all logs route 
 router.get('/', AuthGuard, controller.list);
 router.get('/listforsearch', AuthGuard, controller.listForSearch);
+router.post('/getByStatus', AuthGuard, controller.getByStatus)
 router.post('/add', AuthGuard, controller.add);
 router.post('/update', AuthGuard, controller.update);
 router.post('/chosen', AuthGuard, controller.chosen);
