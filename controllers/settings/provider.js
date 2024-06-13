@@ -231,7 +231,13 @@ exports.getProviderByClinic = async(req, res, next) => {
         if (err) {
             res.status(404).json(err);
         } else {
-            res.status(200).json({ data: result });
+            for (var i = 0; i < result.length; i ++) {
+                if (result[i]['photo'] != '')
+                    result[i]['photo'] = config.common.uploads + 'photoes/' + result[i]['photo'];
+            }
+            readfile(result, 0, (res1) => {
+                res.status(200).json({data: result});
+            });
         }
     });
 }

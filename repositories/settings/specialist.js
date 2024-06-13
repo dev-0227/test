@@ -250,6 +250,12 @@ const accounts = {
         connection.query(query, (err, result) => {
             callback(err, result);
         })
+    },
+    getSpecialistByClinic: (entry, callback) => {
+        let query = 'SELECT `id`, `fname`, `lname`, `mname`, `address`, `phone`, `status`, `photo` FROM `specialist` WHERE FIND_IN_SET(?, `clinic`) ORDER BY `fname`'
+        connection.query(query, [entry.clinic_id], (err, result) => {
+            callback(err, result);
+        })
     }
 }
 module.exports = accounts;

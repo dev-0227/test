@@ -256,7 +256,7 @@ const encounterRepo = {
             callback(err, result);
         });
     },
-
+    
     appointmentType: (entry, callback) => {
         let query = "SELECT t.*, c.name as categoryName FROM `f_appointment_type` as t ";
         query += "LEFT JOIN `f_appointment_category` as c ON c.id=t.category";

@@ -356,3 +356,24 @@ exports.updateClinics = async(req, res, next) => {
         else res.status(200).json({data: result});
     })
 }
+
+exports.getSpecialistByClinic = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'SPECIALIST_MANAGE');
+    if(!can)return res.status(405).json('Not Permission');
+
+    let entry = {
+         clinic_id: req.body.clinic_id
+    }
+    specialist.getSpecialistByClinic(entry, (err, result) => {
+        if (err) res.status(404).json(err);
+        else {
+            for (var i = 0; i < result.length; i ++) {
+                if (result[i]['photo'] != '')
+                    result[i]['photo'] = config.common.uploads + 'photoes/' + result[i]['photo'];
+            }
+            readfile(result, 0, (res1) => {
+                res.status(200).json({data: result});
+            });
+        }
+    })
+}
