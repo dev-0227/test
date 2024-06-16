@@ -495,6 +495,29 @@ const encounterRepo = {
             callback(err, result);
         });
     },
+    getAppointmentSpecialtyByClinic: (entry, callback) => {
+        let query = "SELECT DISTINCT `specialist`.`specialty_id` FROM `clinics`, `specialist` WHERE FIND_IN_SET(`clinics`.`id`, `specialist`.`clinic`) AND `clinics`.`id` = ?";
+        connection.query(query, [entry.clinic_id], (err, result) => {
+            if (!err) {
+                query = 'SELECT DISTINCT `specialty`.* FROM `specialty`, `specialist` WHERE ';
+                if (result.length < 1) {
+                    callback(err, []);
+                    return;
+                } else if (result.length == 1) query += "`specialist`.`specialty_id` = `specialty`.`id` AND `specialist`.`specialty_id` = '" + result[0].specialty_id + "'";
+                else if (result.length > 1) {
+                    result.forEach(item => {
+                        query += "(`specialist`.`specialty_id` = `specialty`.`id` AND `specialist`.`specialty_id` = '" + item.specialty_id + "') OR ";
+                    })
+                    query = query.substr(0, query.length - 3); query += ';';
+                }
+                connection.query(query, (err1, result1) => {
+                    if (!err1) {
+                        callback(err1, result1)
+                    } else callback(err1, [])
+                })
+            } else callback(err, [])
+        });
+    },
     getReferralSpecialtyByClinic: (entry, callback) => {
         let query = "SELECT GROUP_CONCAT(DISTINCT m_id) as m_id FROM `f_referral` WHERE clinic_id=? ORDER BY name";
         

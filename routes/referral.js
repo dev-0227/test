@@ -34,6 +34,7 @@ router.post('/appointmentSpecialty/update', AuthGuard, EncounterController.updat
 router.post('/appointmentSpecialty/chosen', AuthGuard, EncounterController.chosenAppointmentSpecialty);
 router.post('/appointmentSpecialty/delete', AuthGuard, EncounterController.deleteAppointmentSpecialty);
 router.post('/appointmentSpecialty/getSpecialtyByMeasure', AuthGuard, EncounterController.getAppointmentSpecialtyByMeasure);
+router.post('/getAppointmentSpecialtyByClinic', AuthGuard, EncounterController.getAppointmentSpecialtyByClinic)
 
 router.get('/appointmentStatus', AuthGuard, EncounterController.appointmentStatus);
 router.post('/appointmentStatus/create', AuthGuard, EncounterController.createAppointmentStatus);
