@@ -116,7 +116,7 @@ const setting = {
         });
     },
     allClinic: (callback) => {
-        let query = "SELECT id,name FROM `clinics` WHERE status = 1";
+        let query = "SELECT id,name FROM `clinics`";
         connection.query(query, (err, result) => {
             callback(err, result);
         });

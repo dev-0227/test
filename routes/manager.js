@@ -1,6 +1,7 @@
 const express = require('express');
 //const tokenMid = require('../middlewares/tokens');
 const controller = require('../controllers/manager');
+const AuthGuard = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -15,5 +16,8 @@ router.post('/updateanswer', controller.updateanswer);
 router.post('/updateclinics', controller.updateclinics);
 router.post('/updatehedisdaily', controller.updatehedisdaily);
 router.post('/updatehedisncompliant', controller.updatehedisncompliant);
+
+router.post('/setapptview', AuthGuard, controller.setAppointmentCalendarViewSetting);
+router.post('/getapptview', AuthGuard, controller.getAppointmentCalendarViewSetting);
 
 module.exports = router;

@@ -95,5 +95,17 @@ const accounts = {
             callback(err, result);
         });
     },
+    setAppointmentCalendarViewSetting: (entry, callback) => {
+        let query = "UPDATE `managers` SET `appt_view_setting` = ? WHERE `id` = ?"
+        connection.query(query, [entry.view, entry.userid], (err, result) => {
+            callback(err, result)
+        })
+    },
+    getAppointmentCalendarViewSetting: (entry, callback) => {
+        let query = "SELECT `appt_view_setting` FROM `managers` WHERE `id` = ?"
+        connection.query(query, [entry.userid], (err, result) => {
+            callback(err, result)
+        })
+    }
 }
 module.exports = accounts;

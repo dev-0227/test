@@ -144,3 +144,23 @@ exports.updatehedisncompliant = (req, res, next) => {
         }
     });
 }
+
+exports.setAppointmentCalendarViewSetting = async(req, res, next) => {
+    manager.setAppointmentCalendarViewSetting(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({data: result})
+        }
+    })
+}
+
+exports.getAppointmentCalendarViewSetting = async(req, res, next) => {
+    manager.getAppointmentCalendarViewSetting(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({data: result})
+        }
+    })
+}
