@@ -88,7 +88,7 @@ const accounts = {
         });
     },
     getProviderByClinic: (entry, callback) => {
-        let query = "SELECT * FROM `doctors` WHERE FIND_IN_SET(?, `clinic`) ORDER BY fname";
+        let query = "SELECT `doctors`.`id`, `doctors`.`fname`, `doctors`.`lname`, `doctors`.`address`, `doctors`.`phone`, `doctors`.`photo`, `f_vs_qualification`.`display` AS `qualification` FROM  `doctors`, `f_vs_qualification` WHERE FIND_IN_SET(?, `doctors`.`clinic`) AND `f_vs_qualification`.`id` = `doctors`.`qualification` ORDER BY `doctors`.`fname`";
         connection.query(query,[entry.clinic_id], (err, result) => {
             callback(err, result);
         });

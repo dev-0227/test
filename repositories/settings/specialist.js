@@ -252,7 +252,7 @@ const accounts = {
         })
     },
     getSpecialistByClinic: (entry, callback) => {
-        let query = 'SELECT `id`, `fname`, `lname`, `mname`, `address`, `phone`, `status`, `photo` FROM `specialist` WHERE FIND_IN_SET(?, `clinic`) ORDER BY `fname`'
+        let query = 'SELECT `specialist`.`id`, `specialist`.`fname`, `specialist`.`lname`, `specialist`.`mname`, `specialist`.`address`, `specialist`.`phone`, `specialist`.`status`, `specialist`.`photo`, `specialty`.`name` AS `specialty` FROM `specialist`, `specialty` WHERE FIND_IN_SET(?, `specialist`.`clinic`) AND FIND_IN_SET(`specialty`.`id`, `specialist`.`specialty_id`) ORDER BY `specialist`.`fname`'
         connection.query(query, [entry.clinic_id], (err, result) => {
             callback(err, result);
         })
