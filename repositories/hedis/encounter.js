@@ -519,11 +519,11 @@ const encounterRepo = {
         });
     },
     getReferralSpecialtyByClinic: (entry, callback) => {
-        let query = "SELECT GROUP_CONCAT(DISTINCT m_id) as m_id FROM `f_referral` WHERE clinic_id=? ORDER BY name";
+        let query = "SELECT GROUP_CONCAT(DISTINCT m_id) as m_id FROM `f_referral` WHERE clinic_id=? ORDER BY m_id";
         
         connection.query(query, [entry.clinic_id], (err, result) => {
             if(!err){
-                if(result.length>0){
+                if(result[0].m_id != null){
                     query = "SELECT * FROM `specialty` WHERE ";
                     var mids = result[0]['m_id'].split(",");
                     for(var i=0; i<mids.length; i++){
