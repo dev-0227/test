@@ -228,13 +228,15 @@ const encounterRepo = {
     },
     getAppointment: (entry, callback) => {
         let query = "SELECT DISTINCT a.*, p.FNAME, p.LNAME, p.PHONE, p.ADDRESS, p.DOB, p.GENDER, p.Language, p.EMAIL, p.MOBILE, ";
-        query += "usr.fname as spec_fname, usr.lname as spec_lname, usr.phone as sphone, usr.address as saddress, usr.city as scity, usr.zip as szip, "
-        query += "dtr.fname as doctor_fname, dtr.lname as doctor_lname, dtr.phone as dphone, dtr.address as daddress, dtr.city as dcity, dtr.zip as dzip "
+        query += "usr.fname as spec_fname, usr.lname as spec_lname, usr.phone as sphone, usr.address as saddress, usr.city as scity, usr.zip as szip, usr.specialty_id as sspecialty, usr.npi as snpi, "
+        query += "dtr.fname as doctor_fname, dtr.lname as doctor_lname, dtr.phone as dphone, dtr.address as daddress, dtr.city as dcity, dtr.zip as dzip, "
+        query += 'org.organizationid as sorgans '
         query += "FROM `f_appointment` as a "
         query += "LEFT JOIN patient_list as p ON a.patient_id = p.id "
         query += "LEFT JOIN specialist as usr ON usr.id = a.provider_id "
         query += "LEFT JOIN doctors as dtr ON dtr.id = a.provider_id "
         query += "LEFT JOIN specialty as spc ON FIND_IN_SET(a.measure, spc.mid) "
+        query += 'LEFT JOIN relationship_c_s_o as org ON usr.id = org.specialistid AND org.clinicid = ' + entry.clinic_id + ' '
         query += "WHERE `clinic_id`=? ";
         query += "AND FIND_IN_SET(usr.type, (";
         query += "SELECT GROUP_CONCAT(value) FROM `f_settings` WHERE type='appointment_doctor'";
@@ -256,7 +258,32 @@ const encounterRepo = {
             callback(err, result);
         });
     },
-    
+    getDatasForReferralDocument: (entry, callback) => {
+        let query = `SELECT DISTINCT a.approve_date AS adate, a.start_date AS astartd, a.end_date AS aendd, a.provider AS aprovider, a.reason AS areason, a.notes AS anote, `
+        query += `p.FNAME AS pfname, p.LNAME AS plname, p.GENDER AS pgender, p.DOB AS pdob, p.PHONE AS pphone, p.MOBILE AS pmobile, p.EMAIL AS pemail, p.ADDRESS AS paddress, p.CITY AS pcity, p.State AS pstate, p.ZIP AS pzip, p.Language AS planguage, `
+        query += `c.name AS cname, c.address1 AS caddress, c.city AS ccity, c.state AS cstate, c.zip AS czip, c.phone AS cphone, c.cel AS ccel, c.email AS cemail, c.web AS cweb, `
+        query += `s.fname AS sfname, s.mname AS smname, s.lname AS slname, s.email AS semail, s.npi AS snpi, s.phone AS sphone, s.fax AS sfax, s.address AS saddress, s.state AS sstate, s.city AS scity, s.zip AS szip, s.web AS sweb, `
+        query += `d.fname AS dfname, d.mname AS dmname, d.lname AS dlname, d.email AS demail, d.npi AS dnpi, d.phone AS dphone, d.address AS daddress, d.state AS dstate, d.city AS dcity, d.zip AS dzip, `
+        query += `i.insName AS iname, i.insaddress AS iaddress, i.inscity AS icity, i.insstate AS istate, i.inszip AS izip, i.insphone AS iphone, i.insfax AS ifax, i.insemail AS iemail, `
+        query += `m.fname AS mfname, m.lname AS mlname, m.mname AS mmname, m.email AS memail, m.phone AS mphone, m.fax AS mfax, m.address AS maddress, m.city AS mcity, m.state AS mstate, m.zip AS mzip, m.npi AS mnpi, m.web AS mweb, `
+        query += `a_s.display AS a_sdisplay, a_p.display AS a_pdisplay, t1.name AS sspecialty, t2.name AS dspecialty `
+        query += `FROM f_appointment AS a `
+        query += `LEFT JOIN patient_list AS p ON a.patient_id = p.id `
+        query += `LEFT JOIN clinics AS c ON a.clinic_id = c.id `
+        query += `LEFT JOIN specialist AS s ON a.provider_id = s.id `
+        query += `LEFT JOIN doctors AS d ON a.provider_id = d.id `
+        query += `LEFT JOIN insurances AS i ON p.INS_ID = i.id `
+        query += `LEFT JOIN f_vs_appt_status AS a_s ON a.status = a_s.id `
+        query += `LEFT JOIN f_vs_act_priority AS a_p ON a.priority = a_p.id `
+        query += `LEFT JOIN specialty AS t1 ON FIND_IN_SET(t1.id, s.specialty_id) `
+        query += `LEFT JOIN specialty AS t2 ON FIND_IN_SET(t2.id, d.specialty) `
+        query += `LEFT JOIN managers AS m ON m.id = ? `
+        query += `WHERE a.id = ?`
+        connection.query(query, [entry.userid, entry.id], (err, result) => {
+            callback(err, result)
+        })
+    },
+
     appointmentType: (entry, callback) => {
         let query = "SELECT t.*, c.name as categoryName FROM `f_appointment_type` as t ";
         query += "LEFT JOIN `f_appointment_category` as c ON c.id=t.category";
@@ -621,33 +648,44 @@ const encounterRepo = {
         if(entry.provider=="1"){
             provider_id = entry.specialist_provider;
         }
-        let query = "INSERT INTO `f_referral` (";
-        query += "`clinic_id`, `ins_id`, `m_id`,`patient_id`,`emr_id`,`subscrber_no`,`year`,";
-        query += "`referral_id`, `r_date`,`ref_from`,`ref_to`, `spe_npi`,";
-        query += "`reason`,`priority`,`specialty`,`facility_id`,`appointment_id`";
-        query += ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
-        var values = []
-        values.push(entry.clinic_id);
-        values.push(entry.ins_id);
-        values.push(entry.measure);
-        values.push(entry.patient_id);
-        values.push(entry.emr_id);
-        values.push(entry.subscrber_no);
-        values.push(entry.year);
-        values.push('0');
-        values.push(new Date().toISOString());
-        values.push('');
-        values.push(provider_id);
-        values.push('');
-        values.push(entry.reason);
-        values.push(entry.priority);
-        values.push(entry.specialty); //specialty
-        values.push(''); //facility_id
-        values.push(entry.appointment_id);
-        
-        connection.query(query, values, (err, result) => {
-            callback(err, result);
-        });
+
+        let query = 'SELECT `specialist`.`specialty_id` as specialty, `specialist`.`npi` as npi, `relationship_c_s_o`.`organizationid` as organization FROM `specialist`, `relationship_c_s_o` WHERE `specialist`.`id` = ? AND (`relationship_c_s_o`.`clinicid` = ? AND `relationship_c_s_o`.`specialistid` = ?)'
+        connection.query(query, [entry.specialist_provider, entry.clinic_id, entry.specialist_provider], (err1, result1) => {
+            console.log(result1)
+            query = "INSERT INTO `f_referral` (";
+            query += "`clinic_id`, `ins_id`, `m_id`,`patient_id`,`emr_id`,`subscrber_no`,`year`,";
+            query += "`referral_id`, `r_date`,`ref_from`,`ref_to`, `spe_npi`,";
+            query += "`reason`,`priority`,`specialty`,`facility_id`,`appointment_id`";
+            query += ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+            var values = []
+            values.push(entry.clinic_id);
+            values.push(entry.ins_id);
+            values.push(entry.measure);
+            values.push(entry.patient_id);
+            values.push(entry.emr_id);
+            values.push(entry.subscrber_no);
+            values.push(entry.year);
+            values.push('0');
+            values.push(new Date().toISOString());
+            values.push('');
+            values.push(provider_id);
+            if (entry.provider == '1' && result1.length) values.push(result1[0].npi);
+            else values.push('');
+            values.push(entry.reason);
+            values.push(entry.priority);
+            if (entry.provider == '1' && result1.length) {
+                values.push(result1[0].specialty); //specialty
+                values.push(result1[0].organization); //facility_id
+            } else {
+                values.push(''); //specialty
+                values.push(''); //facility_id
+            }
+            values.push(entry.appointment_id);
+            
+            connection.query(query, values, (err2, result2) => {
+                callback(err2, result2);
+            });
+        })
     },
     getReferralTracking: (entry, callback) => {
         let query = "SELECT t.* FROM `f_referral_tracking` as t ";

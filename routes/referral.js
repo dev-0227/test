@@ -15,6 +15,7 @@ router.post('/appointment/update', AuthGuard, EncounterController.updateAppointm
 router.post('/appointment/chosen', AuthGuard, EncounterController.chosenAppointment);
 router.post('/appointment/delete', AuthGuard, EncounterController.deleteAppointment);
 router.post('/appointment/get', AuthGuard, EncounterController.getAppointment);
+router.post('/appointment/referraldoc', AuthGuard, EncounterController.getDatasForReferralDocument)
 
 router.get('/appointmentType', AuthGuard, EncounterController.appointmentType);
 router.post('/appointmentType/create', AuthGuard, EncounterController.createAppointmentType);

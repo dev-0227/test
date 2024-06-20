@@ -234,6 +234,18 @@ exports.getAppointment = async(req, res, next) => {
     });
 }
 
+exports.getDatasForReferralDocument = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'REFERRAL_APPOINTMENT');
+    if(!can)return res.status(405).json('Not Permission');
+    encounter.getDatasForReferralDocument(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
 exports.appointmentType = async(req, res, next) => {
     var can = await Acl.can(req.user, ['create'], 'REFERRAL_APPOINTMENT');
     if(!can)return res.status(405).json('Not Permission');
