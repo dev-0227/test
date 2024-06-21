@@ -266,6 +266,9 @@ const encounterRepo = {
         query += `d.fname AS dfname, d.mname AS dmname, d.lname AS dlname, d.email AS demail, d.npi AS dnpi, d.phone AS dphone, d.address AS daddress, d.state AS dstate, d.city AS dcity, d.zip AS dzip, `
         query += `i.insName AS iname, i.insaddress AS iaddress, i.inscity AS icity, i.insstate AS istate, i.inszip AS izip, i.insphone AS iphone, i.insfax AS ifax, i.insemail AS iemail, `
         query += `m.fname AS mfname, m.lname AS mlname, m.mname AS mmname, m.email AS memail, m.phone AS mphone, m.fax AS mfax, m.address AS maddress, m.city AS mcity, m.state AS mstate, m.zip AS mzip, m.npi AS mnpi, m.web AS mweb, `
+        query += `q.title AS qtitle, `
+        query += `o.name AS oname, o.preferredReportName as opreferredreportname, o.title AS otitle, o.description AS odescription, o.lastdate AS olastdate, o.purpose AS opurpose, o.category AS ocategory, o.ICD AS oicd, o.CPT AS ocpt, o.HCPCS AS ohcpcs, o.LOINC AS oloinc, o.SNOMED AS osnomed, `
+        query += `h.icdImpacted AS hicd, `
         query += `a_s.display AS a_sdisplay, a_p.display AS a_pdisplay, t1.name AS sspecialty, t2.name AS dspecialty `
         query += `FROM f_appointment AS a `
         query += `LEFT JOIN patient_list AS p ON a.patient_id = p.id `
@@ -275,11 +278,14 @@ const encounterRepo = {
         query += `LEFT JOIN insurances AS i ON p.INS_ID = i.id `
         query += `LEFT JOIN f_vs_appt_status AS a_s ON a.status = a_s.id `
         query += `LEFT JOIN f_vs_act_priority AS a_p ON a.priority = a_p.id `
+        query += `LEFT JOIN f_qpp_measure_data AS q ON a.measure = q.measureId AND q.eyear = ? `
+        query += `LEFT JOIN measure_observation_definition AS o ON a.measure = o.m_id `
+        query += `LEFT JOIN measure_hedis AS h ON a.measure = h.measureId `
         query += `LEFT JOIN specialty AS t1 ON FIND_IN_SET(t1.id, s.specialty_id) `
         query += `LEFT JOIN specialty AS t2 ON FIND_IN_SET(t2.id, d.specialty) `
         query += `LEFT JOIN managers AS m ON m.id = ? `
         query += `WHERE a.id = ?`
-        connection.query(query, [entry.userid, entry.id], (err, result) => {
+        connection.query(query, [new Date().getFullYear(), entry.userid, entry.id], (err, result) => {
             callback(err, result)
         })
     },
