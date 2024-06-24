@@ -64,12 +64,12 @@ exports.ptloader = async (req, res, next) => {
         subtype_id: 38, //create
         outcome_id: 5, //'success',
         action_id: 1, //'Create',
-        description: 'Loaded patients from csv-file'
+        description: 'Loaded patients from csv-file',
+        model_id: 0,
     }
     var event_result = await event.logger(entry);
     var pt_ids = "";
     for (row of pureSheet) {
-        
         if (rowCounter != 0) {
             let entry = [];
             if(!tmppts.includes(row[headers.indexOf("uid")])){
@@ -100,7 +100,6 @@ exports.ptloader = async (req, res, next) => {
                 var result = await patientlist.ptloader(entry);
                 if(pt_ids != "")pt_ids += ",";
                 pt_ids += result['insertId'];
-                
             }   
         }
         rowCounter++;

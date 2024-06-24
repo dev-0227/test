@@ -17,7 +17,7 @@ const events = {
             entry.period?entry.period:null, 
             entry.description?entry.description:'', 
             entry.model_name?entry.model_name:'', 
-            entry.model_id?entry.model_id:'', 
+            entry.model_id?entry.model_id:'',
             new Date()
             ], 
             (err, result) => {
@@ -51,7 +51,7 @@ const events = {
         query += "', '";
         query += entry.model_name?entry.model_name:"";
         query += "', ";
-        query += entry.model_id?entry.model_id:"NULL";
+        query += entry.model_id?entry.model_id:"0";
         query += ", '";
         var d = new Date;
         query += [d.getFullYear(),
