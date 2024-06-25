@@ -34,9 +34,9 @@ const patientlist = {
     },
 
     ptloader: (entry, callback) => {
-        var query = "INSERT INTO `patient_list` (`id`, `clinicid`, `patientid`, `FNAME`,`LNAME`,`MNAME`,`PHONE`,`MOBILE`,`EMAIL`,`ADDRESS`,`CITY`,`ZIP`,`State`,`GENDER`,`AGE`,`DOB`,`flag`,`race`,`ethnicity_CDC`,`Language`,`marital_status`,`Deceased`,`Deceased_at`,`event_id`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        var query = "INSERT INTO `patient_list` (`id`, `clinicid`, `patientid`, `FNAME`,`LNAME`,`MNAME`,`PHONE`,`MOBILE`,`EMAIL`,`ADDRESS`,`CITY`,`ZIP`,`State`,`GENDER`,`AGE`,`DOB`,`flag`,`race`,`ethnicity_CDC`,`Language`,`marital_status`,`Deceased`,`Deceased_at`,`event_id`,`ptseen`,`newpttype`,`loaddate`,`loadby`,`loadmethod`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return new Promise((resolve, reject) => {
-            connection.query(query, [entry.clinicid, entry.uid, entry.ufname, entry.ulname, entry.uminitial, entry.upPhone, entry.umobileno, entry.uemail, entry.upaddress, entry.upcity, entry.zipcode, entry.upstate, entry.sex, entry.Age, entry.DOB, 1, entry.race, entry.ethnicity, entry.language, entry.marital, entry.deceased, entry.deceasedDate, entry.event_id], (err, result) => {
+            connection.query(query, [entry.clinicid, entry.uid, entry.ufname, entry.ulname, entry.uminitial, entry.upPhone, entry.umobileno, entry.uemail, entry.upaddress, entry.upcity, entry.zipcode, entry.upstate, entry.sex, entry.Age, entry.DOB, 1, entry.race, entry.ethnicity, entry.language, entry.marital, entry.deceased, entry.deceasedDate, entry.event_id,0,1,new Date(Date.now()).toISOString().substr(0, 10),entry.userid,`Excel`], (err, result) => {
                 if (err) {
                     reject(err);
                     } else {

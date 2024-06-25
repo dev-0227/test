@@ -74,6 +74,7 @@ exports.ptloader = async (req, res, next) => {
             let entry = [];
             if(!tmppts.includes(row[headers.indexOf("uid")])){
                 entry = {
+                    userid: userid,
                     clinicid:clinicid,
                     uid:row[headers.indexOf("uid")],
                     ufname:row[headers.indexOf("ufname")],

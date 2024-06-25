@@ -31,6 +31,7 @@ const diagnosisgroup = require('./routes/diagnosisgroup');
 const organization = require('./routes/organization');
 const qualification = require('./routes/qualification');
 const provider = require('./routes/provider');
+const tracking = require('./routes/tracking')
 
 
 const corsOptions = {
@@ -74,5 +75,6 @@ app.use('/diagnosisgroup', diagnosisgroup);
 app.use('/organization', organization);
 app.use('/qualification', qualification);
 app.use('/provider', provider);
+app.use('/tracking', tracking)
 
 module.exports = app;
