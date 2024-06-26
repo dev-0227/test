@@ -143,5 +143,34 @@ const accounts = {
             callback(err, result);
         });
     },
+    getClinicsByUserType: (entry) => {
+        return new Promise((resolve, reject) => {
+            let query = 'SELECT `value` FROM `rolepermissions` WHERE `role_id` = ? AND perm_id = 3'
+            connection.query(query, [entry.usertype], (err, result) => {
+                if (!err) {
+                    if (result) {
+                        var value = result[0].value
+                        if (value >= 100) query = `SELECT id, name FROM clinics ORDER BY name LIMIT ${entry.start},${entry.length}`
+                        else query = `SELECT id, name FROM clinics WHERE id = ${entry.clinicid} ORDER BY name LIMIT ${entry.start},${entry.length}`
+                        connection.query(query, (err1, result1) => {
+                            if (!err) {
+                                if (value >= 100) query = `SELECT COUNT(*) AS total FROM clinics`
+                                else query = `SELECT COUNT(*) AS total FROM clinics WHERE id = ${entry.clinicid}`
+                                connection.query(query, (err2, result2) => {
+                                    if (!err) {
+                                        var total = 0
+                                        if (result2) {
+                                            total = result2[0].total
+                                        }
+                                        resolve({data: result1, total: total})
+                                    }
+                                })
+                            } else reject(err1)
+                        })
+                    }
+                }
+            })
+        })
+    }
 }
 module.exports = accounts;

@@ -248,5 +248,14 @@ const patientlist = {
             callback(err, result);
         });
     },
+    statisticPtbyClinic: (entry, callback) => {
+        let query = `SELECT COUNT(*) AS cnt FROM patient_list WHERE loaddate LIKE '%${entry.year}-${entry.month}%' AND clinicid = ${entry.clinicid}`
+        connection.query(query, (err, result) => {
+            if (!err) {
+                if (result) callback(result[0].cnt)
+            } else callback(0)
+        })
+    }
 }
+
 module.exports = patientlist;

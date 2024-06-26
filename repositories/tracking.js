@@ -11,6 +11,7 @@ const tracking = {
         query += `LEFT JOIN managers AS m ON m.id = p.loadby `
         query += `LEFT JOIN newpttype AS n ON p.newpttype = n.id `
         query += `WHERE p.clinicid = ${entry.clinicid} `
+        query += `AND p.loaddate LIKE '%${entry.year}-${entry.month}%' `
 
         let where = ``
         where += `AND (p.patientid LIKE '%${entry.all}%' OR p.FNAME LIKE '%${entry.all}%' OR p.LNAME LIKE '%${entry.all}%' OR p.PHONE LIKE '%${entry.all}%' OR p.DOB LIKE '%${entry.all}%' OR m.fname LIKE '%${entry.all}%' OR m.mname LIKE '%${entry.all}%' OR m.lname LIKE '%${entry.all}%' OR p.loadmethod LIKE '%${entry.all}%' OR p.newpttype LIKE '%${entry.all}%' `
@@ -33,6 +34,7 @@ const tracking = {
                 query += `LEFT JOIN managers AS m ON m.id = p.loadby `
                 query += `LEFT JOIN newpttype AS n ON p.newpttype = n.id `
                 query += `WHERE p.clinicid = ${entry.clinicid} `
+                query += `AND p.loaddate LIKE '%${entry.year}-${entry.month}%' `
 
                 query += where
                 connection.query(query, (err1, result1) => {
