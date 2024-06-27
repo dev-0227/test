@@ -378,31 +378,34 @@ exports.statisticNewPatients = async(req, res, next) => {
     let statistics = []
     let clinics = await getClinicsByUserType(req.query)
     var E = 0
-    await clinics.data.forEach(clinic => {
-        var statistic = []
-        var months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
-        var e = 0
-        months.forEach(month => {
-            patientlist.statisticPtbyClinic({year: req.query.year, month: month, clinicid: clinic.id}, (result) => {
-                statistic.push({
-                    month: month,
-                    count: result
-                })
-                e ++
-                if (e == months.length) {
-                    statistics.push({
-                        id: clinic.id,
-                        clinicname: clinic.name,
-                        s: statistic
+    if (!clinics.data) res.status(200).json({data: [], recordsFiltered: 0, recordsTotal: 0})
+    else {
+        await clinics.data.forEach(clinic => {
+            var statistic = []
+            var months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+            var e = 0
+            months.forEach(month => {
+                patientlist.statisticPtbyClinic({year: req.query.year, month: month, clinicid: clinic.id}, (result) => {
+                    statistic.push({
+                        month: month,
+                        count: result
                     })
-                    E ++
-                    if (E == clinics.data.length) {
-                        res.status(200).json({data: statistics, recordsFiltered: clinics.total, recordsTotal: clinics.total})
+                    e ++
+                    if (e == months.length) {
+                        statistics.push({
+                            id: clinic.id,
+                            clinicname: clinic.name,
+                            s: statistic
+                        })
+                        E ++
+                        if (E == clinics.data.length) {
+                            res.status(200).json({data: statistics, recordsFiltered: clinics.total, recordsTotal: clinics.total})
+                        }
                     }
-                }
+                })
             })
         })
-    })
+    }
 }
 
 exports.export = async(req, res, next) => {
