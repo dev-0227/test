@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
+const path = require('path');
 const cors = require('cors');
 
 
@@ -75,6 +76,9 @@ app.use('/diagnosisgroup', diagnosisgroup);
 app.use('/organization', organization);
 app.use('/qualification', qualification);
 app.use('/provider', provider);
-app.use('/tracking', tracking)
+app.use('/tracking', tracking);
+
+
+app.use('/uploads', express.static(path.join(__dirname, './uploads')));
 
 module.exports = app;

@@ -3,6 +3,7 @@ const patientlist = require('../repositories/patientlist');
 const event = require('../repositories/event');
 const Acl = require('../middleware/acl');
 const {getClinicsByUserType} = require('../repositories/settings/clinic')
+const csv = require('xlsx')
 
 var nodemailer = require('nodemailer');
 const Excel = require('exceljs');
@@ -401,5 +402,31 @@ exports.statisticNewPatients = async(req, res, next) => {
                 }
             })
         })
+    })
+}
+
+exports.export = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['write'], 'PATIENT_TRACKING');
+    if(!can)return res.status(405).json('Not Permission');
+    
+    await patientlist.getNewPatient(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json([])
+        } else {
+            var url = 'uploads'
+            var filename = `$PATIENT-${req.body.name}(${req.body.year}-${req.body.month}).csv`
+            var myWorkSheet = csv.utils.json_to_sheet(result)
+            var myWorkBook = csv.utils.book_new()
+            csv.utils.book_append_sheet(myWorkBook, myWorkSheet, 'myWorkSheet')
+            var write = async () => {
+                await csv.writeFile(myWorkBook, url + '/' + filename)
+            }
+            write().then(() => {
+                res.status(200).json({data: {
+                    filename: filename,
+                    url: url
+                }})
+            })
+        }
     })
 }

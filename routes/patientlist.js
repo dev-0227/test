@@ -38,5 +38,7 @@ router.post('/get', AuthGuard, controller.get);
 router.post('/add', AuthGuard, controller.add);
 router.post('/update', AuthGuard, controller.update);
 router.post('/search', AuthGuard, controller.search);
-router.get('/statistic', AuthGuard, controller.statisticNewPatients)
+router.get('/statistic', AuthGuard, controller.statisticNewPatients);
+router.post('/export', AuthGuard, controller.export);
+
 module.exports = router;

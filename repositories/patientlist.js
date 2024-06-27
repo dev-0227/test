@@ -255,6 +255,12 @@ const patientlist = {
                 if (result) callback(result[0].cnt)
             } else callback(0)
         })
+    },
+    getNewPatient: (entry, callback) => {
+        let query = `SELECT p.patientid AS uid, p.FNAME AS ufname, p.LNAME AS ulname, p.GENDER AS sex, p.DOB, p.PHONE AS upPhone, p.MOBILE AS umobileno, p.EMAIL AS uemail, p.ADDRESS AS upaddress, p.CITY AS upcity, p.State AS upstate, p.ZIP AS zipcode, p.Language AS language, p.ethnicity_CDC AS ethnicity, p.race FROM patient_list AS p WHERE clinicid = ${entry.clinicid} AND loaddate LIKE '%${entry.year}-${entry.month}%'`
+        connection.query(query, (err, result) => {
+            callback(err, result)
+        })
     }
 }
 
