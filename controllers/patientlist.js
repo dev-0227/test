@@ -414,7 +414,7 @@ exports.export = async(req, res, next) => {
             res.status(404).json([])
         } else {
             var url = 'uploads'
-            var filename = `$PATIENT-${req.body.name}(${req.body.year}-${req.body.month}).csv`
+            var filename = `PATIENT-${req.body.name}(${req.body.year}-${req.body.month}).csv`
             var myWorkSheet = csv.utils.json_to_sheet(result)
             var myWorkBook = csv.utils.book_new()
             csv.utils.book_append_sheet(myWorkBook, myWorkSheet, 'myWorkSheet')
