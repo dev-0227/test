@@ -49,6 +49,12 @@ const tracking = {
             }
         })
     },
+    getPtInsTrackByPtId: (entry, callback) => {
+        let query = `SELECT * FROM pt_ins_track WHERE ptemrid = ${entry.patientid}`
+        connection.query(query, (err, result) => {
+            callback(err, result)
+        })
+    },
     getAllPtInsTracking: () => {
         return new Promise((resolve, reject) => {
             let query = `SELECT ins_id, ptemrid FROM pt_ins_track`
@@ -63,7 +69,7 @@ const tracking = {
     },
     setPtInsTracking: (entry) => {
         return new Promise((resolve, reject) => {
-            let query = `INSERT INTO pt_ins_track (ins_id, insurance_name, subscriberid, clinic_id, ptemrid, create_date) VALUES ('${entry.ins_id}', '${entry.insurance_name}', '${entry.subscriberid}', ${entry.clinic_id}, '${entry.ptemrid}', ${entry.create_date})`
+            let query = `INSERT INTO pt_ins_track (ins_id, insurance_name, subscriberid, clinic_id, ptemrid, create_date) VALUES ('${entry.ins_id}', '${entry.insurance_name}', '${entry.subscriberid}', ${entry.clinic_id}, '${entry.ptemrid}', '${entry.created_date}')`
             connection.query(query, (err1, result1) => {
                 if (!err1) {
                     resolve({status: 0, result: result1})

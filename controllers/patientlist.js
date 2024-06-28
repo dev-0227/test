@@ -125,13 +125,14 @@ exports.ptloader = async (req, res, next) => {
     // 2. Patient Insurance Information begin //
     rowCounter = 0
     var allTrack = await tracking.getAllPtInsTracking()
+    var date = new Date(Date.now()).toISOString().substr(0, 10)
     for(row of pureSheet) {
         if (rowCounter > 0) {
             let data = {
                 ins_id: row[headers.indexOf('insid')] ? row[headers.indexOf('insid')] : '',
                 insurance_name: row[headers.indexOf('insuranceName')] ? row[headers.indexOf('insuranceName')] : '',
                 subscriberid: row[headers.indexOf('subscriberno')] ? row[headers.indexOf('subscriberno')] : '',
-                create_date: new Date(Date.now()).toISOString().substr(0, 10),
+                created_date: date,
                 clinic_id: req.body.clinicid,
                 ptemrid: row[headers.indexOf('uid')] ? row[headers.indexOf('uid')] : ''
             }
