@@ -3,7 +3,7 @@ const connection = require('../utilities/database');
 
 const tracking = {
     getAllPatientTracking: (entry, callback) => {
-        let query = `SELECT DISTINCT p.id, p.patientid, p.FNAME AS pfname, p.LNAME AS plname, p.PHONE AS pphone, p.DOB AS pdob, p.loadby, p.loadmethod, p.ptseen, s.display AS visitstatus, t.name AS visittype, t.color, n.display AS newpttype, m.fname, m.lname, m.mname, a.reason, a.created_date `
+        let query = `SELECT DISTINCT p.id, p.patientid, p.FNAME AS pfname, p.LNAME AS plname, p.PHONE AS pphone, p.DOB AS pdob, p.loadby, p.loadmethod, p.ptseen, p.INS_ID AS pinsid, s.display AS visitstatus, t.name AS visittype, t.color, n.display AS newpttype, m.fname, m.lname, m.mname, a.reason, a.created_date `
         query += `FROM patient_list AS p `
         query += `LEFT JOIN f_appointment AS a ON a.patient_id = p.id AND a.clinic_id = ${entry.clinicid} `
         query += `LEFT JOIN f_vs_appt_status AS s ON a.status = s.id `
@@ -48,6 +48,28 @@ const tracking = {
                 })
             }
         })
+    },
+    getAllPtInsTracking: () => {
+        return new Promise((resolve, reject) => {
+            let query = `SELECT ins_id, ptemrid FROM pt_ins_track`
+            connection.query(query, (err, result) => {
+                if (!err) {
+                    resolve(result)
+                } else {
+                    reject(err)
+                }
+            })
+        })
+    },
+    setPtInsTracking: (entry) => {
+        return new Promise((resolve, reject) => {
+            let query = `INSERT INTO pt_ins_track (ins_id, insurance_name, subscriberid, clinic_id, ptemrid, create_date) VALUES ('${entry.ins_id}', '${entry.insurance_name}', '${entry.subscriberid}', ${entry.clinic_id}, '${entry.ptemrid}', ${entry.create_date})`
+            connection.query(query, (err1, result1) => {
+                if (!err1) {
+                    resolve({status: 0, result: result1})
+                } else reject([])
+            })
+})
     }
 }
 

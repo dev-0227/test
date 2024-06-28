@@ -1,5 +1,6 @@
 const xlsx = require('node-xlsx');
 const patientlist = require('../repositories/patientlist');
+const tracking = require('../repositories/tracking')
 const event = require('../repositories/event');
 const Acl = require('../middleware/acl');
 const {getClinicsByUserType} = require('../repositories/settings/clinic')
@@ -71,6 +72,7 @@ exports.ptloader = async (req, res, next) => {
     }
     var event_result = await event.logger(entry);
     var pt_ids = "";
+    // 1. Patient Information begin //
     for (row of pureSheet) {
         if (rowCounter != 0) {
             let entry = [];
@@ -98,6 +100,9 @@ exports.ptloader = async (req, res, next) => {
                     deceasedDate:(row[headers.indexOf("deceasedDate")]==null||row[headers.indexOf("deceasedDate")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("deceasedDate")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("deceasedDate")])),
                     DOB:(row[headers.indexOf("DOB")]==null||row[headers.indexOf("DOB")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("DOB")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("DOB")])),
                     event_id:event_result['insertId'],
+                    insid:row[headers.indexOf('insid')],
+                    insuranceName:row[headers.indexOf('insuranceName')],
+                    subscriberno:row[headers.indexOf('subscriberno')],
                     marital:1,
                 };
                 var result = await patientlist.ptloader(entry);
@@ -116,6 +121,28 @@ exports.ptloader = async (req, res, next) => {
         description: 'Loaded '+load_count+' patients from csv-file'
     }
     event.update(entry);
+    // 1. Patient Information end //
+    // 2. Patient Insurance Information begin //
+    rowCounter = 0
+    var allTrack = await tracking.getAllPtInsTracking()
+    for(row of pureSheet) {
+        if (rowCounter > 0) {
+            let data = {
+                ins_id: row[headers.indexOf('insid')] ? row[headers.indexOf('insid')] : '',
+                insurance_name: row[headers.indexOf('insuranceName')] ? row[headers.indexOf('insuranceName')] : '',
+                subscriberid: row[headers.indexOf('subscriberno')] ? row[headers.indexOf('subscriberno')] : '',
+                create_date: new Date(Date.now()).toISOString().substr(0, 10),
+                clinic_id: req.body.clinicid,
+                ptemrid: row[headers.indexOf('uid')] ? row[headers.indexOf('uid')] : ''
+            }
+            if (!allTrack.find(o => o.ins_id == data.ins_id && o.ptemrid == data.ptemrid)) {
+                var callback = await tracking.setPtInsTracking(data)
+            }
+        }
+        rowCounter ++
+    }
+    // 2. Patient Information end //
+
     entry = {
         clinicid: req.body.clinicid,
     }
