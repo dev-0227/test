@@ -50,7 +50,10 @@ const tracking = {
         })
     },
     getPtInsTrackByPtId: (entry, callback) => {
-        let query = `SELECT * FROM pt_ins_track WHERE ptemrid = ${entry.patientid}`
+        // let query = `SELECT * FROM pt_ins_track WHERE ptemrid = ${entry.patientid}`
+        let query = `SELECT DISTINCT t.*, p.FNAME, p.LNAME, p.ADDRESS, p.CITY, p.ZIP, p.GENDER, p.DOB, p.LANGUAGE, p.PHONE, p.MOBILE, p.EMAIL FROM pt_ins_track AS t `
+        query += `LEFT JOIN patient_list AS p ON p.patientid = t.ptemrid AND p.clinicid = ${entry.clinicid} `
+        query += `WHERE t.ptemrid = ${entry.patientid} AND t.clinic_id = ${entry.clinicid}`
         connection.query(query, (err, result) => {
             callback(err, result)
         })

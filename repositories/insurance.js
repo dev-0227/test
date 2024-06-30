@@ -1,7 +1,7 @@
 const connection = require('../utilities/database');
 const accounts = {
     list: (callback) => {
-        let query = "SELECT id,insName,insaddress,insaddress2,abbrName,hedis_active,Inactive FROM `insurances` WHERE 1 ORDER BY insName";
+        let query = "SELECT id,insId,insName,insaddress,insaddress2,abbrName,hedis_active,Inactive FROM `insurances` WHERE 1 ORDER BY insName";
         connection.query(query, (err, result) => {
             callback(err, result);
         });
