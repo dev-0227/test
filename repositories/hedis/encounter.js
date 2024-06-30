@@ -250,9 +250,9 @@ const encounterRepo = {
         if(entry.date){
             var date = new Date(entry.date+" 23:59:00");
             var this_month = new Date(date.getFullYear(), date.getMonth(), 1);
-            var next_month = new Date(date.getFullYear(), date.getMonth()+1, 1);
+            var next_month = new Date(date.getFullYear(), date.getMonth()+1, 2);
             query += "AND a.approve_date >= '"+this_month.toISOString().split("T")[0]+"' ";
-            query += "AND a.approve_date < '"+next_month.toISOString().split("T")[0]+"' ";
+            query += "AND a.approve_date <= '"+next_month.toISOString().split("T")[0]+"' ";
         }
         connection.query(query, [entry.clinic_id], (err, result) => {
             callback(err, result);
@@ -260,7 +260,7 @@ const encounterRepo = {
     },
     getDatasForReferralDocument: (entry, callback) => {
         let query = `SELECT DISTINCT a.approve_date AS adate, a.start_date AS astartd, a.end_date AS aendd, a.provider AS aprovider, a.reason AS areason, a.notes AS anote, `
-        query += `p.FNAME AS pfname, p.LNAME AS plname, p.GENDER AS pgender, p.DOB AS pdob, p.PHONE AS pphone, p.MOBILE AS pmobile, p.EMAIL AS pemail, p.ADDRESS AS paddress, p.CITY AS pcity, p.State AS pstate, p.ZIP AS pzip, p.Language AS planguage, `
+        query += `p.FNAME AS pfname, p.LNAME AS plname, p.GENDER AS pgender, p.DOB AS pdob, p.PHONE AS pphone, p.MOBILE AS pmobile, p.EMAIL AS pemail, p.ADDRESS AS paddress, p.CITY AS pcity, p.State AS pstate, p.ZIP AS pzip, p.Language AS planguage, p.subscriberno AS psubscriberno, p.INS_ID AS pinsid, p.INS_NAME AS pinsname, `
         query += `c.name AS cname, c.address1 AS caddress, c.city AS ccity, c.state AS cstate, c.zip AS czip, c.phone AS cphone, c.cel AS ccel, c.email AS cemail, c.web AS cweb, `
         query += `s.fname AS sfname, s.mname AS smname, s.lname AS slname, s.email AS semail, s.npi AS snpi, s.phone AS sphone, s.fax AS sfax, s.address AS saddress, s.state AS sstate, s.city AS scity, s.zip AS szip, s.web AS sweb, `
         query += `d.fname AS dfname, d.mname AS dmname, d.lname AS dlname, d.email AS demail, d.npi AS dnpi, d.phone AS dphone, d.address AS daddress, d.state AS dstate, d.city AS dcity, d.zip AS dzip, `

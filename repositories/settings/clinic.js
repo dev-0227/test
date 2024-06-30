@@ -151,16 +151,16 @@ const accounts = {
                     if (result) {
                         var value = result[0].value
                         if (value >= 100) {
-                            if (entry.clinics != '') query = `SELECT id, name FROM clinics WHERE FIND_IN_SET(id, '${entry.clinics}') `
-                            else query = `SELECT id, name FROM clinics `
+                            if (entry.clinics != '') query = `SELECT id, name FROM clinics WHERE FIND_IN_SET(id, '${entry.clinics}') AND status = '1' `
+                            else query = `SELECT id, name FROM clinics WHERE status = '1' `
                         }
                         else query = `SELECT id, name FROM clinics WHERE id = ${entry.clinicid} `
                         query += `ORDER BY name LIMIT ${entry.start},${entry.length}`
                         connection.query(query, (err1, result1) => {
                             if (!err) {
                                 if (value >= 100) {
-                                    if (entry.clinics != '') query = `SELECT COUNT(*) AS total FROM clinics WHERE FIND_IN_SET(id, '${entry.clinics}')`
-                                    else query = `SELECT COUNT(*) AS total FROM clinics`
+                                    if (entry.clinics != '') query = `SELECT COUNT(*) AS total FROM clinics WHERE FIND_IN_SET(id, '${entry.clinics}') AND status = '1'`
+                                    else query = `SELECT COUNT(*) AS total FROM clinics WHERE status = '1'`
                                 }
                                 else query = `SELECT COUNT(*) AS total FROM clinics WHERE id = ${entry.clinicid}`
                                 connection.query(query, (err2, result2) => {

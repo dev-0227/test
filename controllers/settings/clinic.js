@@ -32,7 +32,7 @@ exports.getByStatus = async(req, res, next) => {
         if (err) {
             res.status(404).json("Failed!");
         } else {
-            res.status(200).json(result);
+            res.status(200).json({data: result});
         }
     });
 }
