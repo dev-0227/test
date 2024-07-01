@@ -1031,6 +1031,16 @@ exports.addInsMap = (req, res, next) => {
     })
 }
 
+exports.updateInsMap = (req, res, next) => {
+    setting.updateInsMap(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+
 exports.getAllInsMap = (req, res, next) => {
     setting.getAllInsMap(req.query, (err, result) => {
         if (err) {
@@ -1053,6 +1063,16 @@ exports.getByClinicId = (req, res, next) => {
 
 exports.getByInsId = (req, res, next) => {
     setting.getByInsId(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+
+exports.getInsMap = (req, res, next) => {
+    setting.getInsMap(req.body, (err, result) => {
         if (err) {
             res.status(404).json(err)
         } else {

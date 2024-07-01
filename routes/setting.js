@@ -123,8 +123,10 @@ router.post('/relationship/getOrganizationNames', AuthGuard, relateController.ge
 
 router.get('/map/get', AuthGuard, controller.getAllInsMap)
 router.post('/map/add', AuthGuard, controller.addInsMap)
+router.post('/map/update', AuthGuard, controller.updateInsMap)
 router.post('/map/getbyclinicid', AuthGuard, controller.getByClinicId)
 router.post('/map/getbyinsid', AuthGuard, controller.getByInsId)
+router.post('/map/get', AuthGuard, controller.getInsMap)
 router.post('/map/delete', AuthGuard, controller.deleteInsMap)
 router.post('/map/deletebyinsid', AuthGuard, controller.deleteByInsId)
 

@@ -969,11 +969,29 @@ const setting = {
             callback(err, result)
         })
     },
+    updateInsMap: (entry, callback) => {
+        let query = `UPDATE ins_emr_map SET insid = ?, emrid = ?, fhirid = ?, clinicid = ?`
+        connection.query(query, [entry.insid, entry.emrid, entry.fhirid, entry.clinicid], (err, result) => {
+            callback(err, result)
+        })
+    },
     getAllInsMap: (entry, callback) => {
-        let query = `SELECT * FROM ins_emr_map WHERE 1`
+        console.log(entry)
+        let query = `SELECT ins_emr_map.*, insurances.insName FROM ins_emr_map LEFT JOIN insurances ON insurances.id = ins_emr_map.insid `
+        if (entry.clinicid == '0') query += `WHERE ins_emr_map.clinicid > 0 `
+        else if (entry.clinicid != '0') query += `WHERE ins_emr_map.clinicid = ${entry.clinicid} `
+        if (entry.insid == '0') query += `AND ins_emr_map.insid > 0 `
+        else if (entry.insid != '0') query += `AND ins_emr_map.insid = ${entry.insid}`
+
         connection.query(query, [], (err, result) => {
+            console.log(err)
             if (!err) {
-                query = `SELECT COUNT(*) AS total FROM ins_emr_map WHERE 1`
+                query = `SELECT COUNT(*) AS total FROM ins_emr_map LEFT JOIN insurances ON insurances.id = ins_emr_map.insid `
+                if (entry.clinicid == '0') query += `WHERE ins_emr_map.clinicid > 0 `
+                else if (entry.clinicid != '0') query += `WHERE ins_emr_map.clinicid = ${entry.clinicid} `
+                if (entry.insid == '0') query += `AND ins_emr_map.insid > 0 `
+                else if (entry.insid != '0') query += `AND ins_emr_map.insid = ${entry.insid}`
+
                 connection.query(query, [], (err1, result1) => {
                     var total = 0
                     if (result1.length) total = result1[0].total
@@ -994,9 +1012,15 @@ const setting = {
             callback(err, result)
         })
     },
+    getInsMap: (entry, callback) => {
+        let query = `SELECT * FROM ins_emr_map WHERE id = ?`
+        connection.query(query, [entry.id], (err, result) => {
+            callback(err, result)
+        })
+    },
     deleteInsMap: (entry, callback) => {
         query = `DELETE FROM ins_emr_map WHERE id = ?`
-        connection.query(query, [entry.id], (err, callback) => {
+        connection.query(query, [entry.id], (err, result) => {
             callback(err, result)
         })
     },
