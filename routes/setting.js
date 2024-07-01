@@ -121,4 +121,11 @@ router.post('/relationship/set', AuthGuard, relateController.set);
 router.post('/relationship/getOrganizationBySpecialist', AuthGuard, relateController.getOrganizationBySpecialist);
 router.post('/relationship/getOrganizationNames', AuthGuard, relateController.getOrganizationNames);
 
+router.get('/map/get', AuthGuard, controller.getAllInsMap)
+router.post('/map/add', AuthGuard, controller.addInsMap)
+router.post('/map/getbyclinicid', AuthGuard, controller.getByClinicId)
+router.post('/map/getbyinsid', AuthGuard, controller.getByInsId)
+router.post('/map/delete', AuthGuard, controller.deleteInsMap)
+router.post('/map/deletebyinsid', AuthGuard, controller.deleteByInsId)
+
 module.exports = router;

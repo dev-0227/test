@@ -78,7 +78,7 @@ const tracking = {
                     resolve({status: 0, result: result1})
                 } else reject([])
             })
-})
+        })
     }
 }
 

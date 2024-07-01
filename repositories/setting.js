@@ -961,5 +961,51 @@ const setting = {
         });
         
     },
+
+    // Insurance Mapping begin //
+    addInsMap: (entry, callback) => {
+        let query = `INSERT INTO ins_emr_map (insid, emrid, fhirid, clinicid) VALUES (?, ?, ?, ?)`
+        connection.query(query, [entry.insid, entry.emrid, entry.fhirid, entry.clinicid], (err, result) => {
+            callback(err, result)
+        })
+    },
+    getAllInsMap: (entry, callback) => {
+        let query = `SELECT * FROM ins_emr_map WHERE 1`
+        connection.query(query, [], (err, result) => {
+            if (!err) {
+                query = `SELECT COUNT(*) AS total FROM ins_emr_map WHERE 1`
+                connection.query(query, [], (err1, result1) => {
+                    var total = 0
+                    if (result1.length) total = result1[0].total
+                    callback(err, {data: result, recordsFiltered: total, recordsTotal: total })
+                })
+            } else callback(err, {data: [], recordsFiltered: 0, recordsTotal: 0 })
+        })
+    },
+    getByClinicId: (entry, callback) => {
+        let query = `SELECT * FROM ins_emr_map WHERE clinicid = ?`
+        connection.query(query, [entry.clinicid], (err, result) => {
+            callback(err, result)
+        })
+    },
+    getByInsId: (entry, callback) => {
+        let query = `SELECT * FROM ins_emr_map WHERE insid = ?`
+        connection.query(query, [entry.insid], (err, result) => {
+            callback(err, result)
+        })
+    },
+    deleteInsMap: (entry, callback) => {
+        query = `DELETE FROM ins_emr_map WHERE id = ?`
+        connection.query(query, [entry.id], (err, callback) => {
+            callback(err, result)
+        })
+    },
+    deleteByInsId: (entry, callback) => {
+        query = `DELETE FROM ins_emr_map WHERE insid = ?`
+        connection.query(query, [entry.insid], (err, result) => {
+            callback(err, result)
+        })
+    },
+    // Insurance Mapping end //
 }
 module.exports = setting;

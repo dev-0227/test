@@ -1019,3 +1019,65 @@ exports.setAppointmentDoctorType = (req, res, next) => {
         }
     });
 }
+
+// Insurance Mapping begin //
+exports.addInsMap = (req, res, next) => {
+    setting.addInsMap(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+
+exports.getAllInsMap = (req, res, next) => {
+    setting.getAllInsMap(req.query, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json(result)
+        }
+    })
+}
+
+exports.getByClinicId = (req, res, next) => {
+    setting.getByClinicId(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+
+exports.getByInsId = (req, res, next) => {
+    setting.getByInsId(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+
+exports.deleteInsMap = (req, res, next) => {
+    setting.deleteInsMap(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+
+exports.deleteByInsId = (req, res, next) => {
+    setting.deleteByInsId(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+// Insurance Mapping end //
