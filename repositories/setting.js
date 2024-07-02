@@ -964,29 +964,27 @@ const setting = {
 
     // Insurance Mapping begin //
     addInsMap: (entry, callback) => {
-        let query = `INSERT INTO ins_emr_map (insid, emrid, fhirid, clinicid) VALUES (?, ?, ?, ?)`
-        connection.query(query, [entry.insid, entry.emrid, entry.fhirid, entry.clinicid], (err, result) => {
+        let query = `INSERT INTO ins_emr_map (insid, lob, emrid, fhirid, clinicid) VALUES (?, ?, ?, ?, ?)`
+        connection.query(query, [entry.insid, entry.lob, entry.emrid, entry.fhirid, entry.clinicid], (err, result) => {
             callback(err, result)
         })
     },
     updateInsMap: (entry, callback) => {
-        let query = `UPDATE ins_emr_map SET insid = ?, emrid = ?, fhirid = ?, clinicid = ? WHERE id = ?`
-        connection.query(query, [entry.insid, entry.emrid, entry.fhirid, entry.clinicid, entry.id], (err, result) => {
+        let query = `UPDATE ins_emr_map SET insid = ?, lob = ?, emrid = ?, fhirid = ?, clinicid = ? WHERE id = ?`
+        connection.query(query, [entry.insid, entry.lob, entry.emrid, entry.fhirid, entry.clinicid, entry.id], (err, result) => {
             callback(err, result)
         })
     },
     getAllInsMap: (entry, callback) => {
-        console.log(entry)
-        let query = `SELECT ins_emr_map.*, insurances.insName, clinics.name AS clinicname FROM ins_emr_map LEFT JOIN insurances ON insurances.id = ins_emr_map.insid LEFT JOIN clinics ON clinics.id = ins_emr_map.clinicid `
+        let query = `SELECT ins_emr_map.*, inslob.lob AS lobname, insurances.insName, clinics.name AS clinicname FROM ins_emr_map LEFT JOIN insurances ON insurances.id = ins_emr_map.insid LEFT JOIN clinics ON clinics.id = ins_emr_map.clinicid LEFT JOIN inslob ON ins_emr_map.lob = inslob.id `
         if (entry.clinicid == '0') query += `WHERE ins_emr_map.clinicid > 0 `
         else if (entry.clinicid != '0') query += `WHERE ins_emr_map.clinicid = ${entry.clinicid} `
         if (entry.insid == '0') query += `AND ins_emr_map.insid > 0 `
         else if (entry.insid != '0') query += `AND ins_emr_map.insid = ${entry.insid}`
 
         connection.query(query, [], (err, result) => {
-            console.log(err)
             if (!err) {
-                query = `SELECT COUNT(*) AS total FROM ins_emr_map LEFT JOIN insurances ON insurances.id = ins_emr_map.insid LEFT JOIN clinics ON clinics.id = ins_emr_map.clinicid `
+                query = `SELECT COUNT(*) AS total FROM ins_emr_map LEFT JOIN insurances ON insurances.id = ins_emr_map.insid LEFT JOIN clinics ON clinics.id = ins_emr_map.clinicid LEFT JOIN inslob ON ins_emr_map.lob = inslob.id `
                 if (entry.clinicid == '0') query += `WHERE ins_emr_map.clinicid > 0 `
                 else if (entry.clinicid != '0') query += `WHERE ins_emr_map.clinicid = ${entry.clinicid} `
                 if (entry.insid == '0') query += `AND ins_emr_map.insid > 0 `
