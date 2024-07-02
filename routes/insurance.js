@@ -10,6 +10,8 @@ router.post('/add', controller.add);
 router.post('/update', controller.update);
 router.post('/chosen', controller.chosen);
 router.post('/delete', controller.delete);
+
+router.get('/lob/list', controller.lobList);
 router.post('/getlob', controller.getlob);
 router.post('/addlob', controller.addlob);
 router.post('/updatelob', controller.updatelob);

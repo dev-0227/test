@@ -970,14 +970,14 @@ const setting = {
         })
     },
     updateInsMap: (entry, callback) => {
-        let query = `UPDATE ins_emr_map SET insid = ?, emrid = ?, fhirid = ?, clinicid = ?`
-        connection.query(query, [entry.insid, entry.emrid, entry.fhirid, entry.clinicid], (err, result) => {
+        let query = `UPDATE ins_emr_map SET insid = ?, emrid = ?, fhirid = ?, clinicid = ? WHERE id = ?`
+        connection.query(query, [entry.insid, entry.emrid, entry.fhirid, entry.clinicid, entry.id], (err, result) => {
             callback(err, result)
         })
     },
     getAllInsMap: (entry, callback) => {
         console.log(entry)
-        let query = `SELECT ins_emr_map.*, insurances.insName FROM ins_emr_map LEFT JOIN insurances ON insurances.id = ins_emr_map.insid `
+        let query = `SELECT ins_emr_map.*, insurances.insName, clinics.name AS clinicname FROM ins_emr_map LEFT JOIN insurances ON insurances.id = ins_emr_map.insid LEFT JOIN clinics ON clinics.id = ins_emr_map.clinicid `
         if (entry.clinicid == '0') query += `WHERE ins_emr_map.clinicid > 0 `
         else if (entry.clinicid != '0') query += `WHERE ins_emr_map.clinicid = ${entry.clinicid} `
         if (entry.insid == '0') query += `AND ins_emr_map.insid > 0 `
@@ -986,7 +986,7 @@ const setting = {
         connection.query(query, [], (err, result) => {
             console.log(err)
             if (!err) {
-                query = `SELECT COUNT(*) AS total FROM ins_emr_map LEFT JOIN insurances ON insurances.id = ins_emr_map.insid `
+                query = `SELECT COUNT(*) AS total FROM ins_emr_map LEFT JOIN insurances ON insurances.id = ins_emr_map.insid LEFT JOIN clinics ON clinics.id = ins_emr_map.clinicid `
                 if (entry.clinicid == '0') query += `WHERE ins_emr_map.clinicid > 0 `
                 else if (entry.clinicid != '0') query += `WHERE ins_emr_map.clinicid = ${entry.clinicid} `
                 if (entry.insid == '0') query += `AND ins_emr_map.insid > 0 `

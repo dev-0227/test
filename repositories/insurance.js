@@ -36,6 +36,22 @@ const accounts = {
             callback(err, result);
         });
     },
+
+    lobList: (entry, callback) => {
+        let query = `SELECT * FROM inslob WHERE insid = ? ORDER BY lob`
+        connection.query(query, [entry.insid], (err1, result1) => {
+            if (!err1) {
+                query = `SELECT COUNT(*) AS total FROM inslob WHERE insid = ?`
+                connection.query(query, [entry.insid], (err2, result2) => {
+                    var total = 0
+                    if (!err2) {
+                        if (result2.length > 0) total = result2[0].total
+                    }
+                    callback(err2, {data: result1, recordsFiltered: total, recordsTotal: total})
+                })
+            } else callback(err1, {data: [entry.insid], recordsFiltered: 0, recordsTotal: 0})
+        })
+    },
     getlob: (entry,callback) => {
         let query = "SELECT * FROM `inslob` WHERE insid = ? ORDER BY lob";
         connection.query(query,[entry.id], (err, result) => {
@@ -43,7 +59,7 @@ const accounts = {
         });
     },
     addlob: (account, callback) => {
-        let query = "INSERT INTO `inslob` (`id`, `insid`, `lob`, `description`,`variation`,`type`) VALUES (NULL, ? , ? , ? , ?,  ?)";
+        let query = "INSERT INTO `inslob` (`insid`, `lob`, `description`,`variation`,`type`) VALUES (? , ? , ? , ?,  ?)";
         connection.query(query, [account.insid, account.name, account.desc, account.variation, account.type], (err, result) => {
             callback(err, result);
         });

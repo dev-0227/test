@@ -93,6 +93,16 @@ exports.delete = (req, res, next) => {
         }
     });
 }
+
+exports.lobList = (req, res, next) => {
+    insurance.lobList(req.query, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json(result)
+        }
+    })
+}
 exports.getlob = (req, res, next) => {
     let entry = {
         id: req.body.id
