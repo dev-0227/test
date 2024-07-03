@@ -104,10 +104,13 @@ exports.ptloader = async (req, res, next) => {
                     insuranceName:row[headers.indexOf('insuranceName')],
                     subscriberno:row[headers.indexOf('subscriberno')],
                     marital:1,
+                    startDate:(row[headers.indexOf("startDate")]==null||row[headers.indexOf("startDate")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("startDate")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("startDate")])),
                 };
-                var result = await patientlist.ptloader(entry);
-                if(pt_ids != "")pt_ids += ",";
-                pt_ids += result['insertId'];
+                var result = await patientlist.ptloader(entry)
+                if (result != null && result['insertId']) {
+                    if(pt_ids != "")pt_ids += ","
+                    pt_ids += result['insertId']
+                }
             }   
         }
         rowCounter++;
@@ -134,7 +137,9 @@ exports.ptloader = async (req, res, next) => {
                 subscriberid: row[headers.indexOf('subscriberno')] ? row[headers.indexOf('subscriberno')] : '',
                 created_date: date,
                 clinic_id: req.body.clinicid,
-                ptemrid: row[headers.indexOf('uid')] ? row[headers.indexOf('uid')] : ''
+                ptemrid: row[headers.indexOf('uid')] ? row[headers.indexOf('uid')] : '',
+                startDate: (row[headers.indexOf("startDate")]==null||row[headers.indexOf("startDate")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("startDate")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("startDate")])),
+                seq_no: 1
             }
             if (!allTrack.find(o => o.ins_id == data.ins_id && o.ptemrid == data.ptemrid)) {
                 var callback = await tracking.setPtInsTracking(data)

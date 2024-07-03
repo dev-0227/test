@@ -34,17 +34,40 @@ const patientlist = {
     },
 
     ptloader: (entry, callback) => {
-        var query = "INSERT INTO `patient_list` (`id`, `clinicid`, `patientid`, `FNAME`,`LNAME`,`MNAME`,`PHONE`,`MOBILE`,`EMAIL`,`ADDRESS`,`CITY`,`ZIP`,`State`,`GENDER`,`AGE`,`DOB`,`flag`,`race`,`ethnicity_CDC`,`Language`,`marital_status`,`Deceased`,`Deceased_at`,`event_id`,`ptseen`,`newpttype`,`loaddate`,`loadby`,`loadmethod`, `INS_ID`, `INS_NAME`, `subscriberno`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        //exist
+        let query = `SELECT id, startDate FROM patient_list WHERE patientid = ${entry.uid}`
         return new Promise((resolve, reject) => {
-            connection.query(query, [entry.clinicid, entry.uid, entry.ufname, entry.ulname, entry.uminitial, entry.upPhone, entry.umobileno, entry.uemail, entry.upaddress, entry.upcity, entry.zipcode, entry.upstate, entry.sex, entry.Age, entry.DOB, 1, entry.race, entry.ethnicity, entry.language, entry.marital, entry.deceased, entry.deceasedDate, entry.event_id,0,1,new Date(Date.now()).toISOString().substr(0, 10),entry.userid,`Excel`,entry.insid,entry.insuranceName,entry.subscriberno], (err, result) => {
-                if (err) {
-                    reject(err);
+            connection.query(query, [], (err1, result1) => {
+                if (!err1) {
+                    if (result1.length) {
+                        if (result1[0].startDate && entry.startDate > result1[0].startDate) {
+                            query = `UPDATE patient_list SET startDate = ${entry.startDate}`
+                            connection.query(query, [], (err2, result2) => {
+                                if (err2) {
+                                    reject(err2)
+                                } else {
+                                    resolve(result2)
+                                }
+                            })
+                        } else {
+                            resolve(null)
+                        }
                     } else {
-                    resolve(result);
+                        query = "INSERT INTO `patient_list` (`id`, `clinicid`, `patientid`, `FNAME`,`LNAME`,`MNAME`,`PHONE`,`MOBILE`,`EMAIL`,`ADDRESS`,`CITY`,`ZIP`,`State`,`GENDER`,`AGE`,`DOB`,`flag`,`race`,`ethnicity_CDC`,`Language`,`marital_status`,`Deceased`,`Deceased_at`,`event_id`,`ptseen`,`newpttype`,`loaddate`,`loadby`,`loadmethod`, `INS_ID`, `INS_NAME`, `subscriberno`, `startDate`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        connection.query(query, [entry.clinicid, entry.uid, entry.ufname, entry.ulname, entry.uminitial, entry.upPhone, entry.umobileno, entry.uemail, entry.upaddress, entry.upcity, entry.zipcode, entry.upstate, entry.sex, entry.Age, entry.DOB, 1, entry.race, entry.ethnicity, entry.language, entry.marital, entry.deceased, entry.deceasedDate, entry.event_id,0,1,new Date(Date.now()).toISOString().substr(0, 10),entry.userid,`Excel`,entry.insid,entry.insuranceName,entry.subscriberno,entry.startDate], (err, result) => {
+                            if (err) {
+                                reject(err)
+                                } else {
+                                resolve(result)
+                                }
+                            }
+                        )
                     }
+                } else {
+                    reject(err1)
                 }
-            );
-        });
+            })
+        })
     },
     get: (entry, callback) => {
         var query = "";
