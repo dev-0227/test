@@ -32,7 +32,11 @@ const diagnosisgroup = require('./routes/diagnosisgroup');
 const organization = require('./routes/organization');
 const qualification = require('./routes/qualification');
 const provider = require('./routes/provider');
-const tracking = require('./routes/tracking')
+const tracking = require('./routes/tracking');
+// const prescribe = require('./routes/prescribe');
+// const medadherance = require('./routes/medadherance');
+// PT Risk and Barriers
+const barriers = require('./routes/barriers');
 
 
 const corsOptions = {
@@ -77,6 +81,9 @@ app.use('/organization', organization);
 app.use('/qualification', qualification);
 app.use('/provider', provider);
 app.use('/tracking', tracking);
+// app.use('/prescribe', prescribe);
+// app.use('/medadherance', medadherance);
+app.use('/barriers', barriers);
 
 
 app.use('/uploads', express.static(path.join(__dirname, './uploads')));
