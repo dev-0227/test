@@ -51,8 +51,8 @@ const accounts = {
         });
     },
     add: (account, callback) => {
-        let query = "INSERT INTO `doctors` (`fname`, `lname`, `mname`, `dob`, `gender`, `qualification`, `npi`, `license`, `email`, `password`, `phone`, `phone2`, `address`, `address2`, `city`, `country`, `state`, `zip`, `type`, `specialty`, `photo`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        connection.query(query, [account.fname, account.lname, account.mname, account.dob, account.gender, account.qualification, account.npi, account.license, account.email, account.password, account.phone, account.phone2, account.address, account.address2, account.city, account.country, account.state, account.zip, account.type, account.specialty, account.photo, account.status], (err, result) => {
+        let query = "INSERT INTO `doctors` (`fname`, `lname`, `mname`, `dob`, `gender`, `qualification`, `npi`, `license`, `email`, `password`, `phone`, `phone2`, `address`, `address2`, `city`, `country`, `state`, `zip`, `type`, `specialty`, `photo`, `status`, `sign`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        connection.query(query, [account.fname, account.lname, account.mname, account.dob, account.gender, account.qualification, account.npi, account.license, account.email, account.password, account.phone, account.phone2, account.address, account.address2, account.city, account.country, account.state, account.zip, account.type, account.specialty, account.photo, account.status, account.sign], (err, result) => {
             callback(err, result);
         });
     },
@@ -63,8 +63,8 @@ const accounts = {
         });
     },
     update: (account, callback) => {
-        let query = "UPDATE `doctors` SET `fname`= ?, `lname` = ?, `mname` = ?, `dob`= ?, `gender` = ?, `qualification` = ?, `npi` = ?, `license` = ?, `email` = ?,  `phone` = ?, `phone2` = ?,  `address` = ?, `address2` = ?, `password` = ?, `city` = ?, `state` = ?, `zip` = ?, `country` = ?, `photo` = ?, `type` = ?, `specialty` = ?, `status` = ? WHERE `id`= ? ";
-        connection.query(query, [account.fname, account.lname, account.mname, account.dob, account.gender, account.qualification, account.npi, account.license, account.email, account.phone, account.phone2, account.address, account.address2, account.password, account.city, account.state, account.zip, account.country, account.photo, account.type, account.specialty, account.status, account.id], (err, result) => {
+        let query = "UPDATE `doctors` SET `fname`= ?, `lname` = ?, `mname` = ?, `dob`= ?, `gender` = ?, `qualification` = ?, `npi` = ?, `license` = ?, `email` = ?,  `phone` = ?, `phone2` = ?,  `address` = ?, `address2` = ?, `password` = ?, `city` = ?, `state` = ?, `zip` = ?, `country` = ?, `photo` = ?, `type` = ?, `specialty` = ?, `status` = ?, `sign` = ? WHERE `id`= ? ";
+        connection.query(query, [account.fname, account.lname, account.mname, account.dob, account.gender, account.qualification, account.npi, account.license, account.email, account.phone, account.phone2, account.address, account.address2, account.password, account.city, account.state, account.zip, account.country, account.photo, account.type, account.specialty, account.status, account.sign, account.id], (err, result) => {
             callback(err, result);
         });
     },
@@ -88,7 +88,7 @@ const accounts = {
         });
     },
     getProviderByClinic: (entry, callback) => {
-        let query = "SELECT `doctors`.`id`, `doctors`.`fname`, `doctors`.`lname`, `doctors`.`address`, `doctors`.`phone`, `doctors`.`photo`, `f_vs_qualification`.`display` AS `qualification` FROM  `doctors`, `f_vs_qualification` WHERE FIND_IN_SET(?, `doctors`.`clinic`) AND `f_vs_qualification`.`id` = `doctors`.`qualification` ORDER BY `doctors`.`fname`";
+        let query = "SELECT `doctors`.`id`, `doctors`.`fname`, `doctors`.`lname`, `doctors`.`address`, `doctors`.`phone`, `doctors`.`photo`, `sign`, `f_vs_qualification`.`display` AS `qualification` FROM  `doctors`, `f_vs_qualification` WHERE FIND_IN_SET(?, `doctors`.`clinic`) AND `f_vs_qualification`.`id` = `doctors`.`qualification` ORDER BY `doctors`.`fname`";
         connection.query(query,[entry.clinic_id], (err, result) => {
             callback(err, result);
         });
@@ -130,10 +130,28 @@ const accounts = {
             callback(err, result);
         });
     },
+    getSignName: (id, callback) => {
+        let query = "SELECT sign FROM doctors WHERE `id` = ?";
+        connection.query(query, [id], (err, result) => {
+            callback(err, result)
+        })
+    },
+    getImageNames: (id, callback) => {
+        let query = "SELECT photo, sign FROM doctors WHERE `id` = ?"
+        connection.query(query, [id], (err, result) => {
+            callback(err, result)
+        })
+    },
     deleteImage: (filepath, callback) => {
-        fs.unlink(filepath, (err) => {
-            callback(err);
-        });
+        return new Promise((resolve, reject) => {
+            fs.unlink(filepath, (err) => {
+                if (err) {
+                    reject({ status: 'fail' })
+                } else {
+                    resolve({ status: 'success' })
+                }
+            });
+        })
     },
     setPCPInfo: (entry, callback) => {
         // delete old data

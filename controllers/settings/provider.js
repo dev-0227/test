@@ -3,30 +3,40 @@ const Acl = require('../../middleware/acl');
 const xls = require('xlsx');
 const config = require('../../config');
 const fs = require('fs');
-const readfile = require('../../utilities/utils');
+const loadFile = require('../../utilities/utils');
 
 if(typeof String.prototype.replaceAll === "undefined") {
     String.prototype.replaceAll = function(match, replace) {
-       return this.replace(new RegExp(match, 'g'), () => replace);
+       return this.replace(new RegExp(match, 'g'), () => replace)
     }
 }
 exports.list = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'CLINIC_PROVIDERS');
-    if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_PROVIDERS')
+    if(!can)return res.status(405).json('Not Permission')
 
-    provider.list(req.query, (err, result) => {
+    provider.list(req.query, async (err, result) => {
         if (err) {
-            res.status(404).json("Failed!");
+            res.status(404).json("Failed!")
         } else {
             for (var i = 0; i < result['data'].length; i ++) {
-                if (result['data'][i]['photo'] != '')
-                    result['data'][i]['photo'] = config.common.uploads + 'photoes/' + result['data'][i]['photo'];
+                if (result['data'][i]['photo'] != '') {
+                    let buffer = await loadFile(`${config.common.uploads}photoes/${result['data'][i]['photo']}`)
+                    if (buffer.length == 0) {
+                        result['data'][i]['photo'] = result['data'][i]['fname'].substr(0, 1).toUpperCase()
+                    } else {
+                        result['data'][i]['photo'] = buffer
+                    }
+                } else {
+                    result['data'][i]['photo'] = result['data'][i]['fname'].substr(0, 1).toUpperCase()
+                }
+                if (result['data'][i]['sign'] != '') {
+                    let buffer = await loadFile(`${config.common.uploads}photoes/${result['data'][i]['sign']}`)
+                    buffer.length == 0 ? result['data'][i]['sign'] = '' : result['data'][i]['sign'] = buffer
+                }
             }
-            readfile(result['data'], 0, (res1) => {
-                res.status(200).json(result);
-            });
         }
-    });
+        res.status(200).json(result)
+    })
 }
 exports.add = async(req, res, next) => {
     var can = await Acl.can(req.user, ['create'], 'CLINIC_PROVIDERS');
@@ -54,6 +64,7 @@ exports.add = async(req, res, next) => {
         specialty: req.body.specialty,
         status: req.body.status,
         photo: req.body.photo,
+        sign: req.body.sign,
         user: req.body.user
     }
     let check = await provider.checkuser(entry.fname, entry.lname, entry.mname, entry.phone);
@@ -74,21 +85,31 @@ exports.update = async(req, res, next) => {
     var can = await Acl.can(req.user, ['write'], 'CLINIC_PROVIDERS');
     if(!can)return res.status(405).json('Not Permission');
 
-    var imgpath = '';
-    await provider.getPhotoName(req.body.id, (err, res1) => {
-        if (!err) imgpath = res1[0].photo;
+    var imgpath_photo = '';
+    var imgpath_sign = '';
+
+    provider.getImageNames(req.body.id, async(err, res1) => {
+        if (!err) {
+            imgpath_photo = res1[0].photo;
+            imgpath_sign = res1[0].sign;
+        }
+        // provider photo
         //if state is update, read photo name uploaded.
         if (req.body.photostate == 'update' ) {    
-            if (imgpath != '') {
-                new Promise((resolve, reject) => {
-                    provider.deleteImage(config.common.uploads + 'photoes/' + imgpath, (err) => {
-                        if (err) reject(err);
-                        else resolve();
-                    });
-                });
+            if (imgpath_photo != '') {
+                var result = await provider.deleteImage(config.common.uploads + 'photoes/' + imgpath_photo)
             }
         } else if (req.body.photostate == 'none') {
-            req.body.photo = res1[0].photo;
+            req.body.photo = res1[0].photo
+        }
+        // provider sign
+        //if state is update, read sign name uploaded.
+        if (req.body.signstate == 'update' ) {
+            if (imgpath_sign != '') {
+                var result = await provider.deleteImage(config.common.uploads + 'photoes/' + imgpath_sign)
+            }
+        } else if (req.body.signstate == 'none') {
+            req.body.sign = res1[0].sign
         }
 
         let entry = {
@@ -114,7 +135,8 @@ exports.update = async(req, res, next) => {
             type: req.body.type,
             specialty: req.body.specialty,
             status: req.body.status,
-            photo: req.body.photo
+            photo: req.body.photo,
+            sign: req.body.sign,
         }
         provider.update(entry, (err, result) => {
             if (err) {
@@ -122,8 +144,8 @@ exports.update = async(req, res, next) => {
             } else {
                 res.status(200).json({ data: result });
             }
-        });
-    });
+        })
+    })
 }
 exports.chosen = async(req, res, next) => {
     var can = await Acl.can(req.user, ['read'], 'CLINIC_PROVIDERS');
@@ -131,24 +153,26 @@ exports.chosen = async(req, res, next) => {
     let entry = {
         id: req.body.id
     }
-    provider.chosen(entry, (err, result) => {
+    provider.chosen(entry, async (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
+            // read provider photo
             if (result[0]['photo'] != '') {
-                const filepath = config.common.uploads + 'photoes/';
-                fs.readFile(filepath + result[0]['photo'], (err, data) => {
-                    if (err) {
-                        result[0]['photo'] = '';
-                        res.status(200).json({ data: result });
-                    } else {
-                        result[0]['photo'] = Buffer.from(data).toString('base64');
-                        res.status(200).json({ data: result });
-                    }
-                });
-            } else {
-                res.status(200).json({ data: result });
+                let buffer = await loadFile(`${config.common.uploads}photoes/${result[0]['photo']}`)
+                if (buffer.length == 0) {
+                    result[0]['photo'] = result[0]['fname'].substr(0, 1).toUpperCase()
+                } else {
+                    result[0]['photo'] = buffer
+                }
             }
+            // read provider sign
+            if (result[0]['sign'] != '') {
+                let buffer = await loadFile(`${config.common.uploads}photoes/${result[0]['sign']}`)
+                buffer.length == 0 ? result[0]['sign'] = '' : result[0]['sign'] = buffer
+            }
+
+            res.status(200).json({ data: result })
         }
     });
 }
@@ -225,19 +249,25 @@ exports.updateclinic = async(req, res, next) => {
 }
 
 exports.getProviderByClinic = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'CLINIC_PROVIDERS');
-    if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_PROVIDERS')
+    if(!can)return res.status(405).json('Not Permission')
     provider.getProviderByClinic(req.body, (err, result) => {
         if (err) {
-            res.status(404).json(err);
+            res.status(404).json(err)
         } else {
             for (var i = 0; i < result.length; i ++) {
-                if (result[i]['photo'] != '')
-                    result[i]['photo'] = config.common.uploads + 'photoes/' + result[i]['photo'];
+                if (result[i]['photo'] != '') {
+                    let buffer = loadFile(`${config.common.uploads}photoes/${result[i]['photo']}`)
+                    if (buffer.length == 0) {
+                        result[i]['photo'] = result[i]['fname'].substr(0, 1).toUpperCase()
+                    } else {
+                        result[i]['photo'] = buffer
+                    }
+                } else {
+                    result[i]['photo'] = buffer
+                }
             }
-            readfile(result, 0, (res1) => {
-                res.status(200).json({data: result});
-            });
+            res.status(200).json({data: result})
         }
     });
 }

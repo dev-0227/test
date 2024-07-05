@@ -21,9 +21,18 @@ const storage_photo = multer.diskStorage({
         cb(null, generateRandomString(32) + path.extname(file.originalname));
     }
 });
+// const upload_photo = multer({
+//     storage: storage_photo
+// }).array('ephoto', 'esign');
 const upload_photo = multer({
     storage: storage_photo
-}).array('ephoto');
+}).fields([{
+    name: 'ephoto',
+    maxCount: 1
+}, {
+    name: 'esign',
+    maxCount: 1
+}]);
 
 const router = express.Router();
 
@@ -50,7 +59,7 @@ router.post('/import', AuthGuard, (req, res, next) => {
 router.post('/uploadimage', AuthGuard, (req, res, next) => {
     upload_photo(req, res, (err) => {
         if (!err) {
-            res.status(200).json({data: req.files[0]});
+            res.status(200).json({data: req.files});
         } else res.status(404).json(err);
     });
 });

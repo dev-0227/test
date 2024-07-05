@@ -11,6 +11,7 @@ module.exports = generateRandomString = (length) => {
 module.exports = async function readfile (pathlist, index, callback) {
     if (pathlist.length == 0) callback(pathlist);
     else {
+        // provider photo
         if (pathlist[index]['photo'] == '') {
             pathlist[index]['photo'] = pathlist[index]['fname'].substr(0, 1).toUpperCase();
             if (pathlist.length -1 == index) callback(pathlist);
@@ -27,4 +28,20 @@ module.exports = async function readfile (pathlist, index, callback) {
             });
         }
     }
+}
+
+module.exports = async function loadFile(path, callback) {
+    let buffer = ''
+    return new Promise((resolve, reject) => {
+        if (path == '')
+            resolve(buffer)
+        else {
+            fs.readFile(path, (err, data) => {
+                if (!err) {
+                    buffer = Buffer.from(data).toString('base64')
+                }
+                resolve(buffer)
+            })
+        }
+    })
 }
