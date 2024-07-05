@@ -574,7 +574,6 @@ const encounterRepo = {
         });
     },
     referral: (entry, callback) => {
-        
         let query = "SELECT ref.*, ins.insName as insurance, pt.FNAME as pt_fname, pt.LNAME as pt_lname, pt.PHONE as pt_phone, pt.MOBILE as pt_mobile, pt.EMAIL as pt_email, pt.DOB as pt_dob, ";
         query += "usr.fname as doctor_fname, usr.lname as doctor_lname, usr.id as doctor_id, mes.title as measure, spc.name as specialty_name, app.approve_date as appt_date, ";
         query += "ret.display as referral_type, trk.referral_type_id as rt_type, trk.created_at as rt_date, ";
@@ -586,13 +585,13 @@ const encounterRepo = {
         query += "LEFT JOIN `f_appointment` as app ON app.id=ref.appointment_id ";
         query += "LEFT JOIN `f_encounters` as enc ON enc.appointment_id=ref.appointment_id ";
         query += "LEFT JOIN `patient_list` as pt ON pt.id=ref.patient_id ";
-        query += "LEFT JOIN `managers` as usr ON usr.id=ref.ref_to ";
+        query += "LEFT JOIN `specialist` as usr ON usr.id=ref.ref_to ";
         query += "LEFT JOIN `f_referral_tracking` as trk ON trk.id=( SELECT trk2.id FROM `f_referral_tracking` as trk2 WHERE trk2.referral_id=ref.id ORDER BY trk2.created_at desc LIMIT 1 )";
         query += "LEFT JOIN `f_referral_type` as ret ON ret.id=trk.referral_type_id ";
         query += "WHERE ref.clinic_id='"+entry.clinic_id+"' ";
-        query += "AND FIND_IN_SET(usr.type, (";
-        query += "SELECT GROUP_CONCAT(value) FROM `f_settings` WHERE type='appointment_doctor'";
-        query += ")) ";
+        // query += "AND FIND_IN_SET(usr.type, (";
+        // query += "SELECT GROUP_CONCAT(value) FROM `f_settings` WHERE type='appointment_doctor'";
+        // query += ")) ";
         if(entry.doctors){
             query += "AND FIND_IN_SET(ref.ref_to, '"+entry.doctors+"') ";
         }
