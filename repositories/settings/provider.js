@@ -150,7 +150,7 @@ const accounts = {
                 } else {
                     resolve({ status: 'success' })
                 }
-            });
+            })
         })
     },
     setPCPInfo: (entry, callback) => {

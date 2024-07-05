@@ -82,22 +82,22 @@ exports.add = async(req, res, next) => {
     }
 }
 exports.update = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'CLINIC_PROVIDERS');
-    if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['write'], 'CLINIC_PROVIDERS')
+    if(!can)return res.status(405).json('Not Permission')
 
-    var imgpath_photo = '';
-    var imgpath_sign = '';
+    var imgpath_photo = ''
+    var imgpath_sign = ''
 
     provider.getImageNames(req.body.id, async(err, res1) => {
         if (!err) {
-            imgpath_photo = res1[0].photo;
-            imgpath_sign = res1[0].sign;
+            imgpath_photo = res1[0].photo
+            imgpath_sign = res1[0].sign
         }
         // provider photo
         //if state is update, read photo name uploaded.
         if (req.body.photostate == 'update' ) {    
             if (imgpath_photo != '') {
-                var result = await provider.deleteImage(config.common.uploads + 'photoes/' + imgpath_photo)
+                await provider.deleteImage(config.common.uploads + 'photoes/' + imgpath_photo)
             }
         } else if (req.body.photostate == 'none') {
             req.body.photo = res1[0].photo
@@ -106,7 +106,7 @@ exports.update = async(req, res, next) => {
         //if state is update, read sign name uploaded.
         if (req.body.signstate == 'update' ) {
             if (imgpath_sign != '') {
-                var result = await provider.deleteImage(config.common.uploads + 'photoes/' + imgpath_sign)
+                await provider.deleteImage(config.common.uploads + 'photoes/' + imgpath_sign)
             }
         } else if (req.body.signstate == 'none') {
             req.body.sign = res1[0].sign
@@ -140,9 +140,9 @@ exports.update = async(req, res, next) => {
         }
         provider.update(entry, (err, result) => {
             if (err) {
-                res.status(404).json(err);
+                res.status(404).json(err)
             } else {
-                res.status(200).json({ data: result });
+                res.status(200).json({ data: result })
             }
         })
     })
@@ -165,6 +165,8 @@ exports.chosen = async(req, res, next) => {
                 } else {
                     result[0]['photo'] = buffer
                 }
+            } else {
+                result[0]['photo'] = result[0]['fname'].substr(0, 1).toUpperCase()
             }
             // read provider sign
             if (result[0]['sign'] != '') {
@@ -174,7 +176,7 @@ exports.chosen = async(req, res, next) => {
 
             res.status(200).json({ data: result })
         }
-    });
+    })
 }
 exports.delete = async(req, response, next) => {
     var can = await Acl.can(req.user, ['create'], 'CLINIC_PROVIDERS');
@@ -182,24 +184,24 @@ exports.delete = async(req, response, next) => {
     let entry = {
         id: req.body.id
     }
-    provider.getPhotoName(entry.id, (err1, res) => {
-        var imgpath = '';
-        if (!err1) imgpath = res[0]['photo'];
+    provider.getImageNames(entry.id, async (err1, res) => {
+        var imgpath_photo = ''
+        var imgpath_sign = ''
+        if (!err1) {
+            imgpath_photo = res[0]['photo']
+            imgpath_sign = res[0]['sign']
+        }
 
-        provider.delete(entry, (err2, result) => {
+        provider.delete(entry, async (err2, result) => {
             if (err2) {
-                response.status(404).json("Failed!");
+                response.status(404).json("Failed!")
             } else {
-                provider.deleteImage(config.common.uploads + 'photoes/' + imgpath, (err3) => {
-                    setTimeout(() => {
-                        // if (!err3) response.status(200).json({ data: result });
-                        // else response.status(201).json({ data: result });
-                        response.status(200).json({ data: result });
-                    }, 200);
-                });
+                await provider.deleteImage(`${config.common.uploads}photoes/${imgpath_photo}`)
+                await provider.deleteImage(`${config.common.uploads}photoes/${imgpath_sign}`)
+                response.status(200).json({ data: result })
             }
-        });
-    });
+        })
+    })
 }
 exports.updatepwd = async(req, res, next) => {
     var can = await Acl.can(req.user, ['write'], 'CLINIC_PROVIDERS');
@@ -248,23 +250,23 @@ exports.updateclinic = async(req, res, next) => {
     });
 }
 
-exports.getProviderByClinic = async(req, res, next) => {
+exports.getProviderByClinic = async (req, res, next) => {
     var can = await Acl.can(req.user, ['read'], 'CLINIC_PROVIDERS')
     if(!can)return res.status(405).json('Not Permission')
-    provider.getProviderByClinic(req.body, (err, result) => {
+    provider.getProviderByClinic(req.body, async (err, result) => {
         if (err) {
             res.status(404).json(err)
         } else {
             for (var i = 0; i < result.length; i ++) {
                 if (result[i]['photo'] != '') {
-                    let buffer = loadFile(`${config.common.uploads}photoes/${result[i]['photo']}`)
+                    let buffer = await loadFile(`${config.common.uploads}photoes/${result[i]['photo']}`)
                     if (buffer.length == 0) {
                         result[i]['photo'] = result[i]['fname'].substr(0, 1).toUpperCase()
                     } else {
                         result[i]['photo'] = buffer
                     }
                 } else {
-                    result[i]['photo'] = buffer
+                    result[i]['photo'] = result[i]['fname'].substr(0, 1).toUpperCase()
                 }
             }
             res.status(200).json({data: result})

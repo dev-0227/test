@@ -3,7 +3,7 @@ const Acl = require('../../middleware/acl');
 const xls = require('xlsx');
 const config = require('../../config');
 const fs = require('fs');
-const readfile = require('../../utilities/utils');
+const loadFile = require('../../utilities/utils');
 
 if(typeof String.prototype.replaceAll === "undefined") {
     String.prototype.replaceAll = function(match, replace) {
@@ -11,21 +11,28 @@ if(typeof String.prototype.replaceAll === "undefined") {
     }
 }
 exports.list = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['read'], 'SPECIALIST_MANAGE');
-    if(!can)return res.status(405).json('Not Permission');
-    specialist.list(req.query, (err, result) => {
+    var can = await Acl.can(req.user, ['read'], 'SPECIALIST_MANAGE')
+    if(!can)return res.status(405).json('Not Permission')
+
+    specialist.list(req.query, async (err, result) => {
         if (err) {
-            res.status(404).json("Failed!");
+            res.status(404).json("Failed!")
         } else {
             for (var i = 0; i < result['data'].length; i ++) {
-                if (result['data'][i]['photo'] != '')
-                    result['data'][i]['photo'] = config.common.uploads + 'photoes/' + result['data'][i]['photo'];
+                if (result['data'][i]['photo'] != '') {
+                    let buffer = await loadFile(`${config.common.uploads}photoes/${result['data'][i]['photo']}`)
+                    if (buffer.length == 0) {
+                        result['data'][i]['photo'] = result['data'][i]['fname'].substr(0, 1).toUpperCase()
+                    } else {
+                        result['data'][i]['photo'] = buffer
+                    }
+                } else {
+                    result['data'][i]['photo'] = result['data'][i]['fname'].substr(0, 1).toUpperCase()
+                }
             }
-            readfile(result['data'], 0, (res1) => {
-                res.status(200).json(result);
-            });
         }
-    });
+        res.status(200).json(result)
+    })
 }
 exports.listBymeasureID = async(req, res, next) => {
     var can = await Acl.can(req.user, ['read'], 'SPECIALIST_MANAGE');
@@ -92,24 +99,21 @@ exports.add = async(req, res, next) => {
     }
 }
 exports.update = async(req, res, next) => {
-    var can = await Acl.can(req.user, ['write'], 'SPECIALIST_MANAGE');
-    if(!can)return res.status(405).json('Not Permission');
+    var can = await Acl.can(req.user, ['write'], 'SPECIALIST_MANAGE')
+    if(!can)return res.status(405).json('Not Permission')
 
-    var imgpath = '';
-    await specialist.getPhotoName(req.body.id, (err, res1) => {
-        if (!err) imgpath = res1[0].photo;
+    var imgpath = ''
+    specialist.getPhotoName(req.body.id, async(err, res1) => {
+        if (!err) {
+            imgpath = res1[0].photo
+        }
         //if state is update, read photo name uploaded.
         if (req.body.photostate == 'update' ) {    
             if (imgpath != '') {
-                new Promise((resolve, reject) => {
-                    specialist.deleteImage(config.common.uploads + 'photoes/' + imgpath, (err) => {
-                        if (err) reject(err);
-                        else resolve();
-                    });
-                });
+                await specialist.deleteImage(config.common.uploads + 'photoes/' + imgpath)
             }
         } else if (req.body.photostate == 'none') {
-            req.body.photo = res1[0].photo;
+            req.body.photo = res1[0].photo
         }
 
         let entry = {
@@ -147,12 +151,12 @@ exports.update = async(req, res, next) => {
         }
         specialist.update(entry, (err, result) => {
             if (err) {
-                res.status(404).json(err);
+                res.status(404).json(err)
             } else {
-                res.status(200).json({ data: result });
+                res.status(200).json({ data: result })
             }
-        });
-    });
+        })
+    })
 }
 exports.chosen = async(req, res, next) => {
     var can = await Acl.can(req.user, ['read'], 'SPECIALIST_MANAGE');
@@ -160,27 +164,23 @@ exports.chosen = async(req, res, next) => {
     let entry = {
         id: req.body.id
     }
-    specialist.chosen(entry, (err, result) => {
+    specialist.chosen(entry, async (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
             if (result[0]['photo'] != '') {
-                const filepath = config.common.uploads + 'photoes/';
-                fs.readFile(filepath + result[0]['photo'], (err, data) => {
-                    if (err) {
-                        result[0]['photo'] = '';
-                        console.log("Loading Image Error");
-                        res.status(200).json({ data: result });
-                    } else {
-                        result[0]['photo'] = Buffer.from(data).toString('base64');
-                        res.status(200).json({ data: result });
-                    }
-                });
+                let buffer = await loadFile(`${config.common.uploads}photoes/${result[0]['photo']}`)
+                if (buffer.length == 0) {
+                    result[0]['photo'] = result[0]['fname'].substr(0, 1).toUpperCase()
+                } else {
+                    result[0]['photo'] = buffer
+                }
             } else {
-                res.status(200).json({ data: result });
+                result[0]['photo'] = result[0]['fname'].substr(0, 1).toUpperCase()
             }
+            res.status(200).json({ data: result })
         }
-    });
+    })
 }
 exports.delete = async(req, response, next) => {
     var can = await Acl.can(req.user, ['create'], 'SPECIALIST_MANAGE');
@@ -188,24 +188,20 @@ exports.delete = async(req, response, next) => {
     let entry = {
         id: req.body.id
     }
-    specialist.getPhotoName(entry.id, (err1, res) => {
-        var imgpath = '';
-        if (!err1) imgpath = res[0]['photo'];
+    specialist.getPhotoName(entry.id, async (err1, res) => {
+        var imgpath = ''
+        if (!err1)
+            imgpath = res[0]['photo']
 
-        specialist.delete(entry, (err2, result) => {
+        specialist.delete(entry, async (err2, result) => {
             if (err2) {
-                response.status(404).json("Failed!");
+                response.status(404).json("Failed!")
             } else {
-                specialist.deleteImage(config.common.uploads + 'photoes/' + imgpath, (err3) => {
-                    setTimeout(() => {
-                        // if (!err3) response.status(200).json({ data: result });
-                        // else response.status(201).json({ data: result });
-                        response.status(200).json({ data: result });
-                    }, 200);
-                });
+                await specialist.deleteImage(`${config.common.uploads}photoes/${imgpath}`)
+                response.status(200).json({ data: result })
             }
-        });
-    });
+        })
+    })
 }
 exports.updatepwd = async(req, res, next) => {
     var can = await Acl.can(req.user, ['write'], 'SPECIALIST_MANAGE');
@@ -364,16 +360,22 @@ exports.getSpecialistByClinic = async(req, res, next) => {
     let entry = {
          clinic_id: req.body.clinic_id
     }
-    specialist.getSpecialistByClinic(entry, (err, result) => {
-        if (err) res.status(404).json(err);
+    specialist.getSpecialistByClinic(entry, async (err, result) => {
+        if (err) res.status(404).json(err)
         else {
             for (var i = 0; i < result.length; i ++) {
-                if (result[i]['photo'] != '')
-                    result[i]['photo'] = config.common.uploads + 'photoes/' + result[i]['photo'];
+                if (result[i]['photo'] != '') {
+                    let buffer = await loadFile(`${config.common.uploads}photoes/${result[i]['photo']}`)
+                    if (buffer.length == 0) {
+                        result[i]['photo'] = result[i]['fname'].substr(0, 1).toUpperCase()
+                    } else {
+                        result[i]['photo'] = buffer
+                    }
+                } else {
+                    result[i]['photo'] = result[i]['fname'].substr(0, 1).toUpperCase()
+                }
             }
-            readfile(result, 0, (res1) => {
-                res.status(200).json({data: result});
-            });
+            res.status(200).json({data: result})
         }
     })
 }

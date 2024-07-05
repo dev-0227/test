@@ -210,8 +210,14 @@ const accounts = {
         });
     },
     deleteImage: (filepath, callback) => {
-        fs.unlink(filepath, (err) => {
-            callback(err);
+        return new Promise((resolve, reject) => {
+            fs.unlink(filepath, (err) => {
+                if (err) {
+                    reject({ status: 'fail' })
+                } else {
+                    resolve({ status: 'success' })
+                }
+            })
         })
     },
     updateorganizations: (entry, callback) => {
