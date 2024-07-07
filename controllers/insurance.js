@@ -215,11 +215,11 @@ exports.gettypeItem = (req, res, next) => {
 * Insurance Type Controller
 */
 exports.gettype = (req, res, next) => {
-    insurance.gettype((err, result) => {
+    insurance.gettype(req.query, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
-            res.status(200).json({ data: result });
+            res.status(200).json(result);
         }
     });
 }

@@ -57,7 +57,6 @@ const accounts = {
     getlob: (entry,callback) => {
         let query = "SELECT inslob.*, ins_type.display as type  FROM `inslob` LEFT JOIN `ins_type` on `inslob`.`type_id` = `ins_type`.`id` WHERE insid = ? ORDER BY lob";
         connection.query(query,[entry.id], (err, result) => {
-            console.log(query, err)
             callback(err, result);
         });
     },
@@ -120,10 +119,24 @@ const accounts = {
     /*
     * Insurance Type Modal
     */
-    gettype: (callback) => {
-        let query = "SELECT * FROM `ins_type` ORDER BY id";
+    gettype: (entry, callback) => {
+        let query = `SELECT * FROM ins_type `
+        if (entry.filter && entry.filter.lehgth > 0) query += `WHERE display LIKE '%${entry.filter}%' OR description LIKE '%${entry.filter}%'`
+        query += ` ORDER BY display`
         connection.query(query, (err, result) => {
-            callback(err, result);
+            if (!err) {
+                query = `SELECT COUNT(*) AS total FROM ins_type`
+                if (entry.filter && entry.filter.lehgth > 0) query += ` WHERE display LIKE '%${entry.filter}%' OR description LIKE '%${entry.filter}%'`
+                connection.query(query, (err1, result1) => {
+                    if (!err1) {
+                        var total = 0
+                        if (result1.length) {
+                            total = result1[0].total
+                        }
+                    }
+                    callback(err1, {data: result, recordsFiltered: total, recordsTotal: total})
+                })
+            } else callback(err, {data: [], recordsFiltered: 0, recordsTotal: 0})
         });
     },
     addtype: (type, callback) => {
