@@ -93,7 +93,9 @@ exports.delete = (req, res, next) => {
         }
     });
 }
-
+/*
+* Insurance Lob Controller
+*/
 exports.lobList = (req, res, next) => {
     insurance.lobList(req.query, (err, result) => {
         if (err) {
@@ -122,6 +124,8 @@ exports.addlob = (req, res, next) => {
         desc: req.body.desc,
         variation: req.body.variation,
         type: req.body.type,
+        emrid: req.body.emrid,
+        fhirid: req.body.fhirid
     }
     insurance.addlob(entry, (err, result) => {
         if (err) {
@@ -138,6 +142,8 @@ exports.updatelob = (req, res, next) => {
         desc: req.body.desc,
         variation: req.body.variation,
         type: req.body.type,
+        emrid: req.body.emrid,
+        fhirid: req.body.fhirid
     }
     insurance.updatelob(entry, (err, result) => {
         if (err) {
@@ -164,6 +170,174 @@ exports.deletelob = (req, res, next) => {
         id: req.body.id
     }
     insurance.deletelob(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+exports.setDefaultIns = (req, res, next) => {
+    let entry = {
+        ins_id: req.body.ins_id,
+        user_id: req.body.user_id
+    }
+    insurance.setDefaultIns(entry, (err, result) => {
+        if (err) {
+            res.status(500).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+exports.getDefaultIns = (req, res, next) => {
+    let entry = {
+        user_id: req.body.user_id
+    }
+    insurance.getDefaultIns(entry, (err, result) => {
+        if (err) {
+            res.status(500).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+exports.gettypeItem = (req, res, next) => {
+    insurance.gettypeItem((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+/*
+* Insurance Type Controller
+*/
+exports.gettype = (req, res, next) => {
+    insurance.gettype((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.addtype = (req, res, next) => {
+    let type = {
+        display: req.body.display,
+        description: req.body.description
+    }
+    insurance.addtype(type, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.deletetype = (req, res, next) => {
+    let entry = {
+        id: req.body.id
+    }
+    insurance.deletetype(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.chosentype = (req, res, next) => {
+    let entry = {
+        id: req.body.id
+    }
+    insurance.chosentype(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.updatetype = (req, res, next) => {
+    let entry = {
+        id: req.body.id,
+        display: req.body.display,
+        description: req.body.description,
+    }
+    insurance.updatetype(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+/*
+* Payment Method Controller
+*/
+exports.getPaymentMethod = (req, res, next) => {
+    insurance.getPaymentMethod((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.addPaymentMethod = (req, res, next) => {
+    let type = {
+        display: req.body.display,
+        description: req.body.description
+    }
+    insurance.addPaymentMethod(type, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.delPaymentMethod = (req, res, next) => {
+    let entry = {
+        id: req.body.id
+    }
+    insurance.delPaymentMethod(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.getPaymentMethodById = (req, res, next) => {
+    let entry = {
+        id: req.body.id
+    }
+    insurance.getPaymentMethodById(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.updatePaymentMethod = (req, res, next) => {
+    let entry = {
+        id: req.body.id,
+        display: req.body.display,
+        description: req.body.description,
+    }
+    insurance.updatePaymentMethod(entry, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
