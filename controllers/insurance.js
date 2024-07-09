@@ -138,12 +138,13 @@ exports.addlob = (req, res, next) => {
 exports.updatelob = (req, res, next) => {
     let entry = {
         id: req.body.id,
+        insid: req.body.insid,
         name: req.body.name,
         desc: req.body.desc,
         variation: req.body.variation,
         type: req.body.type,
         emrid: req.body.emrid,
-        fhirid: req.body.fhirid
+        fhirid: req.body.fhirid,
     }
     insurance.updatelob(entry, (err, result) => {
         if (err) {

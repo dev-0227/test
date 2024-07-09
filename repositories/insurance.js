@@ -40,11 +40,15 @@ const accounts = {
     * Insurance Lob Modal
     */
     lobList: (entry, callback) => {
-        let query = `SELECT * FROM inslob WHERE insid = ? ORDER BY lob`
-        connection.query(query, [entry.insid], (err1, result1) => {
+        let query = `SELECT inslob.*, ins_type.display AS type, insurances.insName FROM inslob LEFT JOIN ins_type ON inslob.type_id = ins_type.id LEFT JOIN insurances ON inslob.insid = insurances.id `
+        if (entry.insid > 0) query += `WHERE inslob.insid = ${entry.insid} `
+        query +=  `ORDER BY inslob.lob`
+        connection.query(query, [], (err1, result1) => {
             if (!err1) {
-                query = `SELECT COUNT(*) AS total FROM inslob WHERE insid = ?`
-                connection.query(query, [entry.insid], (err2, result2) => {
+                query = `SELECT COUNT(*) AS total FROM inslob LEFT JOIN ins_type ON inslob.type_id = ins_type.id LEFT JOIN insurances ON inslob.insid = insurances.id `
+                if (entry.insid > 0) query += `WHERE inslob.insid = ${entry.insid} `
+                query +=  `ORDER BY inslob.lob`
+                connection.query(query, [], (err2, result2) => {
                     var total = 0
                     if (!err2) {
                         if (result2.length > 0) total = result2[0].total
@@ -61,7 +65,7 @@ const accounts = {
         });
     },
     addlob: (account, callback) => {
-        let query = "INSERT INTO `inslob` (`id`, `insid`, `lob`, `description`,`variation`,`type_id`, `ins_emrid`, `ins_fhirid`) VALUES (NULL, ? , ? , ? , ?, ?, ? ,?)";
+        let query = "INSERT INTO `inslob` (`insid`, `lob`, `description`,`variation`,`type_id`, `ins_emrid`, `ins_fhirid`) VALUES (? , ? , ? , ?, ?, ? ,?)";
         connection.query(query, [account.insid, account.name, account.desc, account.variation, account.type, account.emrid, account.fhirid], (err, result) => {
             callback(err, result);
         });
@@ -73,8 +77,8 @@ const accounts = {
         });
     },
     updatelob: (entry, callback) => {
-        let query = "UPDATE `inslob` SET `lob`= ?, `description` = ?, `variation` = ?,  `type_id` = ?, `ins_emrid` = ?, `ins_fhirid` = ? WHERE `id`= ? ";
-        connection.query(query, [entry.name, entry.desc, entry.variation, entry.type, entry.emrid, entry.fhirid, entry.id], (err, result) => {
+        let query = "UPDATE `inslob` SET `insid` = ?, `lob`= ?, `description` = ?, `variation` = ?,  `type_id` = ?, `ins_emrid` = ?, `ins_fhirid` = ? WHERE `id`= ? ";
+        connection.query(query, [entry.insid, entry.name, entry.desc, entry.variation, entry.type, entry.emrid, entry.fhirid, entry.id], (err, result) => {
             callback(err, result);
         });
     },
