@@ -269,8 +269,11 @@ const encounterRepo = {
         query += `q.title AS qtitle, `
         query += `o.name AS oname, o.preferredReportName as opreferredreportname, o.title AS otitle, o.description AS odescription, o.lastdate AS olastdate, o.purpose AS opurpose, o.category AS ocategory, o.ICD AS oicd, o.CPT AS ocpt, o.HCPCS AS ohcpcs, o.LOINC AS oloinc, o.SNOMED AS osnomed, `
         query += `h.icdImpacted AS hicd, `
+        query += `ns.note AS nsnote, `
         query += `a_s.display AS a_sdisplay, a_p.display AS a_pdisplay, t1.name AS sspecialty, t2.name AS dspecialty `
+        
         query += `FROM f_appointment AS a `
+
         query += `LEFT JOIN patient_list AS p ON a.patient_id = p.id `
         query += `LEFT JOIN clinics AS c ON a.clinic_id = c.id `
         query += `LEFT JOIN specialist AS s ON a.provider_id = s.id `
@@ -278,6 +281,7 @@ const encounterRepo = {
         query += `LEFT JOIN insurances AS i ON p.INS_ID = i.id `
         query += `LEFT JOIN f_vs_appt_status AS a_s ON a.status = a_s.id `
         query += `LEFT JOIN f_vs_act_priority AS a_p ON a.priority = a_p.id `
+        query += `LEFT JOIN referral_note_spec AS ns ON ns.id = 1 `
         query += `LEFT JOIN f_qpp_measure_data AS q ON a.measure = q.measureId AND q.eyear = ? `
         query += `LEFT JOIN measure_observation_definition AS o ON a.measure = o.m_id `
         query += `LEFT JOIN measure_hedis AS h ON a.measure = h.measureId `
@@ -801,6 +805,19 @@ const encounterRepo = {
         connection.query(query, [entry.id], (err, result) => {
             callback(err, result);
         });
+    },
+
+    setNoteForSpecialist: (entry, callback) => {
+        let query = `UPDATE referral_note_spec SET note = '${entry.note}' WHERE id = 1`
+        connection.query(query, (err, result) => {
+            callback(err, result)
+        })
+    },
+    getNoteForSpecialist: (entry, callback) => {
+        let query = `SELECT note FROM referral_note_spec  WHERE id = 1`
+        connection.query(query, (err, result) => {
+            callback(err, result)
+        })
     },
     
 }

@@ -37,6 +37,7 @@ const tracking = require('./routes/tracking');
 // const medadherance = require('./routes/medadherance');
 // PT Risk and Barriers
 const barriers = require('./routes/barriers');
+const reportBuilder = require('./routes/reportBuilder');
 
 
 const corsOptions = {
@@ -84,6 +85,7 @@ app.use('/tracking', tracking);
 // app.use('/prescribe', prescribe);
 // app.use('/medadherance', medadherance);
 app.use('/barriers', barriers);
+app.use('/reportBuilder', reportBuilder);
 
 
 app.use('/uploads', express.static(path.join(__dirname, './uploads')));

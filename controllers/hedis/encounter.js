@@ -804,6 +804,26 @@ exports.deleteReferralCategory = async(req, res, next) => {
 
 
 
+exports.setNoteForSpecialist = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'REFERRAL_TRACKING')
+    if(!can)return res.status(405).json('Not Permission')
+    encounter.setNoteForSpecialist(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    })
+}
 
-
-
+exports.getNoteForSpecialist = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'REFERRAL_TRACKING')
+    if(!can)return res.status(405).json('Not Permission')
+    encounter.getNoteForSpecialist(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    })
+}

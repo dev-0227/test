@@ -68,4 +68,7 @@ router.post('/referral/category/chosen', AuthGuard, EncounterController.chosenRe
 router.post('/referral/category/update', AuthGuard, EncounterController.updateReferralCategory);
 router.post('/referral/category/delete', AuthGuard, EncounterController.deleteReferralCategory);
 
+router.post('/note/spec/set', AuthGuard, EncounterController.setNoteForSpecialist);
+router.post('/note/spec/get', AuthGuard, EncounterController.getNoteForSpecialist);
+
 module.exports = router;
