@@ -23,31 +23,6 @@ const reportBuilderModel = {
         });
     },  
     getQualityProgramList: (params, callback) => {
-        // let query = "SELECT ins_lob_id FROM `quality_program` WHERE `ins_id` = ? ORDER BY id ASC";
-        // connection.query(query, [params.ins_id], (err, result) => {
-        //     if (err) {
-        //         callback(err, null);
-        //         return;
-        //     }            
-        //     let lobs = [];
-        //     // Initialize an array to store parsed JSON arrays
-        //     let insLobIdArrays = [];            
-        //     // Iterate over each row fetched from the database
-        //     result.forEach(row => {
-        //         let insLobIds = JSON.parse(row.ins_lob_id);
-                
-        //         insLobIds.forEach(insId => {
-        //             let query = "SELECT lob FROM `inslob` WHERE `id` = ?";
-        //             connection.query(query, [insId], (err, res) => {                        
-                        
-        //                 console.log(res);
-                        
-        //             })
-        //         });
-        //         // Add the parsed array to the result array
-                
-        //     });
-        // });        
         let query = "SELECT quality_program.*, GROUP_CONCAT(lob SEPARATOR ',') as lob FROM quality_program, quality_lob, inslob WHERE quality_lob.quality_program_id = quality_program.id AND  quality_lob.inslob_id = inslob.id AND quality_program.ins_id = ?  GROUP BY quality_lob.quality_program_id";
         connection.query(query, [params.ins_id], (err, result) => {
             callback(err, result);
@@ -123,6 +98,31 @@ const reportBuilderModel = {
             callback(err, res);
         });
     },
+    setDefaultIns: (params, callback) => {
+        let query = "SELECT userid FROM `report_default_ins` WHERE `userid` = ? ";
+        connection.query(query, [params.userid], (err, result) => {
+            if (err) {
+                return callback(err, null);
+            }
     
+            if (result.length == 0) {
+                let insertQuery = "INSERT INTO `report_default_ins` (`insid`, `userid`) VALUES (?, ?) ";
+                connection.query(insertQuery, [params.insid, params.userid], (err, result) => {
+                    return callback(err, result);
+                });
+            } else {
+                let updateQuery = "UPDATE `report_default_ins` SET `insid` = ? WHERE `userid`= ?";
+                connection.query(updateQuery, [params.insid, params.userid], (err, result) => {
+                    return callback(err, result);
+                });
+            }
+        });
+    },
+    getDefaultIns: (params, callback) => {
+        let query = "SELECT insid FROM `report_default_ins` WHERE `userid` = ?";
+        connection.query(query, [params.userid], (err, result) => {
+            callback(err, result);
+        });
+    },
 }
 module.exports = reportBuilderModel;

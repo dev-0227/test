@@ -114,6 +114,28 @@ exports.getSelectLOBList = (req, res, next) => {
     });
 }
 
-
-
-
+exports.setDefaultIns = (req, res, next) => {
+    let entry = {
+        insid: req.body.ins_id,
+        userid: req.body.user_id
+    }
+    reportBuilderModel.setDefaultIns(entry, (err, result) => {
+        if (err) {
+            res.status(500).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+exports.getDefaultIns = (req, res, next) => {
+    let entry = {
+        userid: req.body.user_id
+    }
+    reportBuilderModel.getDefaultIns(entry, (err, result) => {
+        if (err) {
+            res.status(500).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
