@@ -114,6 +114,292 @@ exports.getSelectLOBList = (req, res, next) => {
     });
 }
 
+// Measure-CutPoint List 
+exports.GetCutPointList = (req, res, next) => {
+    reportBuilderModel.GetCutPointList((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.AddCutPointItem = (req, res, next) => {
+    let params = {
+        display: req.body.display,
+        target_rate: req.body.target_rate,
+        active: req.body.active,
+    }
+    reportBuilderModel.AddCutPointItem(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.DelCutPointItem = (req, res, next) => {
+    let entry = {
+        id: req.body.id
+    }
+    reportBuilderModel.DelCutPointItem(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.UpdateCutPointItem = (req, res, next) => {
+    let params = {
+        id: req.body.id,
+        display: req.body.display,
+        target_rate: req.body.target_rate,
+        active: req.body.active
+    }
+    reportBuilderModel.UpdateCutPointItem(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+// OverallQualityScore List
+exports.GetOverallQualityScoreList = (req, res, next) => {
+    reportBuilderModel.GetOverallQualityScoreList((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.AddOverallQualityScoreItem = (req, res, next) => {
+    let params = {
+        display: req.body.display,
+        target_rate: req.body.target_rate,
+        active: req.body.active,
+    }
+    reportBuilderModel.AddOverallQualityScoreItem(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.DelOverallQualityScoreItem = (req, res, next) => {
+    let entry = {
+        id: req.body.id
+    }
+    reportBuilderModel.DelOverallQualityScoreItem(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.UpdateOverallQualityScoreItem = (req, res, next) => {
+    let params = {
+        id: req.body.id,
+        display: req.body.display,
+        target_rate: req.body.target_rate,
+        active: req.body.active
+    }
+    reportBuilderModel.UpdateOverallQualityScoreItem(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+// Quarterly Measure List
+
+exports.GetQuarterlyMeasureList = (req, res, next) => {
+    reportBuilderModel.GetQuarterlyMeasureList((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.AddQuarterlyMeasureItem = (req, res, next) => {
+    let params = {
+        display: req.body.display,
+        description: req.body.description,
+        target_rate: req.body.target_rate,
+        active: req.body.active,
+    }
+    reportBuilderModel.AddQuarterlyMeasureItem(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.DelQuarterlyMeasureItem = (req, res, next) => {
+    let entry = {
+        id: req.body.id
+    }
+    reportBuilderModel.DelQuarterlyMeasureItem(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.UpdateQuarterlyMeasureItem = (req, res, next) => {
+    let params = {
+        id: req.body.id,
+        display: req.body.display,
+        description: req.body.description,
+        target_rate: req.body.target_rate,
+        active: req.body.active
+    }
+    reportBuilderModel.UpdateQuarterlyMeasureItem(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+// Specific Incentive Type List
+
+exports.GetSpecificIncentiveTypeList = (req, res, next) => {
+    reportBuilderModel.GetSpecificIncentiveTypeList((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.AddSpecificIncentiveTypeItem = (req, res, next) => {
+    let params = {
+        code: req.body.code,
+        display: req.body.display,
+        description: req.body.description,        
+        formula: req.body.formula,
+    }
+    reportBuilderModel.AddSpecificIncentiveTypeItem(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.DelSpecificIncentiveTypeItem = (req, res, next) => {
+    let entry = {
+        id: req.body.id
+    }
+    reportBuilderModel.DelSpecificIncentiveTypeItem(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.UpdateSpecificIncentiveTypeItem = (req, res, next) => {
+    let params = {
+        id: req.body.id,
+        code: req.body.code,
+        display: req.body.display,
+        description: req.body.description,        
+        formula: req.body.formula,
+    }
+    reportBuilderModel.UpdateSpecificIncentiveTypeItem(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+
+
+
+// ProgramOverallQualityScore List
+exports.GetProgramOQSList = (req, res, next) => {
+    let params = {
+        quality_program_id: req.body.quality_program_id
+    }
+    reportBuilderModel.GetProgramOQSList(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.GetOverallQualityScoreItme = (req, res, next) => {
+    let params = {
+        id: req.body.id
+    }
+    reportBuilderModel.GetOverallQualityScoreItme(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+
+exports.AddProgramOQSItem = (req, res, next) => {
+    let params = {
+        quality_program_id :  req.body.quality_program_id, 
+        paid_OQS : req.body.paid_OQS,
+        date : req.body.date,
+        OQS_id : req.body.OQS_id
+    }
+    reportBuilderModel.AddProgramOQSItem(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.DelProgramOQSItem = (req, res, next) => {
+    let entry = {
+        id: req.body.id
+    }
+    reportBuilderModel.DelProgramOQSItem(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
 exports.setDefaultIns = (req, res, next) => {
     let entry = {
         insid: req.body.ins_id,
