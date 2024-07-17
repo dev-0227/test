@@ -4,6 +4,7 @@ const diagnosticProcedures = require('../controllers/settings/diagnosticprocedur
 const vitalController = require('../controllers/settings/vital');
 const AuthGuard = require('../middleware/auth');
 const relateController = require('../controllers/settings/relationship');
+const ecwbulk = require('../controllers/settings/ecwbulk')
 const router = express.Router();
 
 // Get all logs route 
@@ -129,5 +130,13 @@ router.post('/map/getbyinsid', AuthGuard, controller.getByInsId)
 router.post('/map/get', AuthGuard, controller.getInsMap)
 router.post('/map/delete', AuthGuard, controller.deleteInsMap)
 router.post('/map/deletebyinsid', AuthGuard, controller.deleteByInsId)
+
+router.post('/bulk/getForPatient', AuthGuard, ecwbulk.getForPatient)
+router.post('/bulk/getForPatientById', AuthGuard, ecwbulk.getForPatientById)
+router.post('/bulk/getForEncounter', AuthGuard, ecwbulk.getForEncounter)
+router.post('/bulk/getForEncounterById', AuthGuard, ecwbulk.getForEncounterById)
+router.post('/bulk/add', AuthGuard, ecwbulk.addBulk)
+router.post('/bulk/edit', AuthGuard, ecwbulk.editBulk)
+router.post('/bulk/delete', AuthGuard, ecwbulk.deleteBulk)
 
 module.exports = router;
