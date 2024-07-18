@@ -120,6 +120,7 @@ exports.getlob = (req, res, next) => {
 exports.addlob = (req, res, next) => {
     let entry = {
         insid: req.body.insid,
+        clinicid: req.body.clinicid,
         name: req.body.name,
         desc: req.body.desc,
         variation: req.body.variation,
@@ -139,6 +140,7 @@ exports.updatelob = (req, res, next) => {
     let entry = {
         id: req.body.id,
         insid: req.body.insid,
+        clinicid: req.body.clinicid,
         name: req.body.name,
         desc: req.body.desc,
         variation: req.body.variation,
