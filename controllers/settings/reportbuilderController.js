@@ -400,6 +400,137 @@ exports.DelProgramOQSItem = (req, res, next) => {
     });
 }
 
+exports.GetMeasureNameList = (req, res, next) => {
+    reportBuilderModel.GetMeasureNameList((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.GetClinicNameList = (req, res, next) => {
+    reportBuilderModel.GetClinicNameList((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.GetReportNameList = (req, res, next) => {
+    reportBuilderModel.GetReportNameList((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.GetCutpointNameList = (req, res, next) => {
+    reportBuilderModel.GetCutpointNameList((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+
+exports.AddSpecificCutpointMeasureItem = (req, res, next) => {
+    let params = {
+        measure : req.body.measure, 
+        clinic : req.body.clinic, 
+        report : req.body.report, 
+        cutpoint : req.body.cutpoint, 
+        range : req.body.range, 
+        active : req.body.active,
+        created_date: req.body.created_date
+    }
+    reportBuilderModel.AddSpecificCutpointMeasureItem(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.GetSpecificCutpointMeasureList = (req, res, next) => {
+    reportBuilderModel.GetSpecificCutpointMeasureList((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.DelSpecificCutpointMeasureItem = (req, res, next) => {
+    let entry = {
+        id: req.body.id
+    }
+    reportBuilderModel.DelSpecificCutpointMeasureItem(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.GetSpecificCutpointMeasureById = (req, res, next) => {
+    let params = {
+        id: req.body.id
+    }
+    reportBuilderModel.GetSpecificCutpointMeasureById(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.UpdateSpecificCutpointMeasureItem = (req, res, next) => {
+    let params = {
+        id: req.body.id,
+        measure : req.body.measure, 
+        clinic : req.body.clinic, 
+        report : req.body.report, 
+        cutpoint : req.body.cutpoint, 
+        range : req.body.range, 
+        active : req.body.active,
+        created_date: req.body.created_date
+    }
+    reportBuilderModel.UpdateSpecificCutpointMeasureItem(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+exports.GetMeasureQualityId = (req, res, next) => {
+    let params = {
+        id: req.body.id
+    }
+    reportBuilderModel.GetMeasureQualityId(params, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result});
+        }
+    });
+}
+
+
+
 exports.setDefaultIns = (req, res, next) => {
     let entry = {
         insid: req.body.ins_id,

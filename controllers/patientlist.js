@@ -13,6 +13,11 @@ const config = require('../config');
 var striptags = require('striptags');
 let ejs = require("ejs");
 let path = require("path");
+const axios = require('axios')
+const cors = require('cors');
+const { BrandVettingContext } = require('twilio/lib/rest/messaging/v1/brandRegistration/brandVetting');
+const { type } = require('os');
+
 var mail = nodemailer.createTransport({
     host: config.emailaccess.host,
     port: config.emailaccess.port,
@@ -104,6 +109,7 @@ exports.ptloader = async (req, res, next) => {
                     insuranceName:row[headers.indexOf('insuranceName')],
                     subscriberno:row[headers.indexOf('subscriberno')],
                     marital:1,
+                    loadmethod: 'Excel',
                     startDate:(row[headers.indexOf("startDate")]==null||row[headers.indexOf("startDate")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("startDate")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("startDate")])),
                 };
                 var result = await patientlist.ptloader(entry)
@@ -465,4 +471,46 @@ exports.export = async(req, res, next) => {
             })
         }
     })
+}
+
+exports.ecwbulk = async(req, res, next) => {
+    let response = await axios.get(`${req.body.url}?key=${req.body.key}`)
+    var existPTs = await patientlist.getAllPts()
+
+    var cnt = 0
+    for (item of response.data) {
+        if (!existPTs.find(o => o.fhirid == item.id)) {
+            var name = ''
+            item.name[0].prefix !=null && item.name[0].prefix.length ? name = item.name[0].text.substr(item.name[0].prefix.length + 1, item.name[0].text.length) : name = item.name[0].text
+            let entry = {
+                fname: name.split(' ')[0],
+                lname: name.substr(name.split(' ')[0].length + 1, name.length),
+                mname: '',
+                dob: item.birthDate,
+                gender: 'male',
+                clinicid: item.clinic,
+                emr_id: '',
+                fhirid: item.id,
+                phone: item.telecom.length > 0 ? item.telecom[0].value : '',
+                mobile: item.telecom.length > 0 && item.telecom[1] && item.telecom[1].use == 'mobile' ? item.telecom[1].value : '',
+                email: item.telecom.length > 0 && item.telecom[1] && item.telecom[1].system == 'email' ? item.telecom[1].value : '',
+                city: item.address ? item.address[0].city : '',
+                state: item.address ? item.address[0].state : '',
+                country: item.address ? item.address[0].country : '',
+                zip: item.address ? item.address[0].postalCode : '',
+                address: item.address ? item.address[0].line[0] : '',
+                address2: '',
+                loadmethod: 'ECW API',
+                marital:1,
+                language: 'English',
+                flag: 0,
+                loadby: req.body.userid,
+            }
+            if (item.telecom[2]) entry.email = item.telecom[2].value
+            await patientlist.addForEcwbulk(entry)
+            cnt ++
+        }
+    }
+
+    res.status(200).json({total: response.data.length, new: cnt})
 }

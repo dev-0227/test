@@ -236,6 +236,72 @@ const reportBuilderModel = {
             callback(err, result);
         });
     },
+    GetMeasureNameList: (callback) => {
+        let query = "SELECT id, title as name FROM f_qpp_measure_data WHERE measureId IS NOT NULL AND eyear = 2024";
+        connection.query(query, (err, result) => {
+            callback(err, result);
+        });
+    },
+    GetClinicNameList: (callback) => {
+        let query = "SELECT id, name FROM clinics";
+        connection.query(query, (err, result) => {
+            callback(err, result);
+        });
+    },
+    GetReportNameList: (callback) => {
+        let query = "SELECT id, name FROM quality_program";
+        connection.query(query, (err, result) => {
+            callback(err, result);
+        });
+    },
+    GetCutpointNameList: (callback) => {
+        let query = "SELECT id, display as `name` FROM cutpoint_measure";
+        connection.query(query, (err, result) => {
+            callback(err, result);
+        });
+    },
+    AddSpecificCutpointMeasureItem: (params, callback) => {
+        let query = "INSERT INTO specific_cutpoint_measure (measure_id, clinic_id, report_id, cutpoint_id, measure_range, active, create_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        connection.query(query, [params.measure, params.clinic, params.report, params.cutpoint, params.range, params.active, params.created_date], (err, result) => {
+            callback(err, result);
+        });
+    },
+    GetSpecificCutpointMeasureList: (callback) => {
+        let query = "SELECT specific_cutpoint_measure.id, f_qpp_measure_data.measureId as quality_id, f_qpp_measure_data.title as measure, clinics.name as clinic, quality_program.name as report, cutpoint_measure.display as cutpoint, specific_cutpoint_measure.measure_range as measure_range, specific_cutpoint_measure.active as active, specific_cutpoint_measure.create_date as created_date FROM specific_cutpoint_measure JOIN f_qpp_measure_data ON specific_cutpoint_measure.measure_id = f_qpp_measure_data.id JOIN clinics on specific_cutpoint_measure.clinic_id = clinics.id JOIN quality_program ON specific_cutpoint_measure.report_id = quality_program.id JOIN cutpoint_measure ON specific_cutpoint_measure.cutpoint_id = cutpoint_measure.id";
+        connection.query(query, (err, result) => {
+            callback(err, result);
+        });
+    },
+
+    DelSpecificCutpointMeasureItem: (params, callback) => {
+        let query1 = "DELETE FROM specific_cutpoint_measure WHERE id= ? ";
+        connection.query(query1, [params.id], (err, result) => {
+            callback(err, result);
+        });
+    },
+
+    GetSpecificCutpointMeasureById: (params, callback) => {
+        let query = "SELECT * FROM specific_cutpoint_measure WHERE id = ?";
+        connection.query(query, [params.id], (err, result) => {
+            callback(err, result);
+        });
+    },
+
+    UpdateSpecificCutpointMeasureItem: (params, callback) => {
+        let query = "UPDATE specific_cutpoint_measure SET measure_id= ?, clinic_id=?, report_id= ?, cutpoint_id = ?, measure_range = ?, active = ?, create_date = ? WHERE id= ? ";
+        connection.query(query, [params.measure, params.clinic, params.report, params.cutpoint, params.range, params.active, params.created_date, params.id], (err, result) => {
+            callback(err, result);
+        });
+    },
+    
+    GetMeasureQualityId: (params, callback) => {
+        let query = "SELECT measureId FROM f_qpp_measure_data WHERE id = ?";
+        connection.query(query, [params.id], (err, result) => {
+            callback(err, result);
+        });
+    },
+
+
     setDefaultIns: (params, callback) => {
         let query = "SELECT userid FROM `report_default_ins` WHERE `userid` = ? ";
         connection.query(query, [params.userid], (err, result) => {
@@ -256,6 +322,7 @@ const reportBuilderModel = {
             }
         });
     },
+
     getDefaultIns: (params, callback) => {
         let query = "SELECT insid FROM `report_default_ins` WHERE `userid` = ?";
         connection.query(query, [params.userid], (err, result) => {

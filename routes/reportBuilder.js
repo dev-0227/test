@@ -32,12 +32,26 @@ router.get('/GetSpecificIncentiveTypeList', controller.GetSpecificIncentiveTypeL
 router.post('/AddSpecificIncentiveTypeItem', controller.AddSpecificIncentiveTypeItem);
 router.post('/DelSpecificIncentiveTypeItem', controller.DelSpecificIncentiveTypeItem);
 router.post('/UpdateSpecificIncentiveTypeItem', controller.UpdateSpecificIncentiveTypeItem);
-//
 
+//
 router.post('/GetProgramOQSList', controller.GetProgramOQSList);
 router.post('/DelProgramOQSItem', controller.DelProgramOQSItem);
 router.post('/GetOverallQualityScoreItme', controller.GetOverallQualityScoreItme);
 router.post('/AddProgramOQSItem', controller.AddProgramOQSItem);
+
+//
+router.get('/GetMeasureNameList', controller.GetMeasureNameList);
+router.get('/GetClinicNameList', controller.GetClinicNameList);
+router.get('/GetReportNameList', controller.GetReportNameList);
+router.get('/GetCutpointNameList', controller.GetCutpointNameList);
+router.post('/AddSpecificCutpointMeasureItem', controller.AddSpecificCutpointMeasureItem);
+router.get('/GetSpecificCutpointMeasureList', controller.GetSpecificCutpointMeasureList);
+router.post('/DelSpecificCutpointMeasureItem', controller.DelSpecificCutpointMeasureItem);
+router.post('/GetSpecificCutpointMeasureById', controller.GetSpecificCutpointMeasureById);
+router.post('/UpdateSpecificCutpointMeasureItem', controller.UpdateSpecificCutpointMeasureItem);
+router.post('/GetMeasureQualityId', controller.GetMeasureQualityId);
+
+
 
 router.post('/setDefaultIns', controller.setDefaultIns);
 router.post('/getDefaultIns', controller.getDefaultIns);

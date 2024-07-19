@@ -54,7 +54,7 @@ const patientlist = {
                         }
                     } else {
                         query = "INSERT INTO `patient_list` (`id`, `clinicid`, `patientid`, `FNAME`,`LNAME`,`MNAME`,`PHONE`,`MOBILE`,`EMAIL`,`ADDRESS`,`CITY`,`ZIP`,`State`,`GENDER`,`AGE`,`DOB`,`flag`,`race`,`ethnicity_CDC`,`Language`,`marital_status`,`Deceased`,`Deceased_at`,`event_id`,`ptseen`,`newpttype`,`loaddate`,`loadby`,`loadmethod`, `INS_ID`, `INS_NAME`, `subscriberno`, `startDate`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                        connection.query(query, [entry.clinicid, entry.uid, entry.ufname, entry.ulname, entry.uminitial, entry.upPhone, entry.umobileno, entry.uemail, entry.upaddress, entry.upcity, entry.zipcode, entry.upstate, entry.sex, entry.Age, entry.DOB, 1, entry.race, entry.ethnicity, entry.language, entry.marital, entry.deceased, entry.deceasedDate, entry.event_id,0,1,new Date(Date.now()).toISOString().substr(0, 10),entry.userid,`Excel`,entry.insid,entry.insuranceName,entry.subscriberno,entry.startDate], (err, result) => {
+                        connection.query(query, [entry.clinicid, entry.uid, entry.ufname, entry.ulname, entry.uminitial, entry.upPhone, entry.umobileno, entry.uemail, entry.upaddress, entry.upcity, entry.zipcode, entry.upstate, entry.sex, entry.Age, entry.DOB, 1, entry.race, entry.ethnicity, entry.language, entry.marital, entry.deceased, entry.deceasedDate, entry.event_id,0,1,new Date(Date.now()).toISOString().substr(0, 10),entry.userid,entry.loadmethod,entry.insid,entry.insuranceName,entry.subscriberno,entry.startDate], (err, result) => {
                             if (err) {
                                 reject(err)
                                 } else {
@@ -76,7 +76,7 @@ const patientlist = {
         }else if(entry.emr_id!=""){
             query = "SELECT * FROM `patient_list` WHERE patientid='"+entry.emr_id+"'";
         }else{
-            query = "SELECT * FROM `patient_list` WHERE id='-1'";
+            query = "SELECT * FROM `patient_list` WHERE 1";
         }
         
         connection.query(query, (err, result) => {
@@ -283,6 +283,30 @@ const patientlist = {
         let query = `SELECT p.patientid AS uid, p.FNAME AS ufname, p.LNAME AS ulname, p.GENDER AS sex, p.DOB, p.PHONE AS upPhone, p.MOBILE AS umobileno, p.EMAIL AS uemail, p.ADDRESS AS upaddress, p.CITY AS upcity, p.State AS upstate, p.ZIP AS zipcode, p.Language AS language, p.ethnicity_CDC AS ethnicity, p.race, p.INS_ID AS insid, p.INS_NAME AS insuranceName, p.subscriberno FROM patient_list AS p WHERE clinicid = ${entry.clinicid} AND loaddate LIKE '%${entry.year}-${entry.month}%'`
         connection.query(query, (err, result) => {
             callback(err, result)
+        })
+    },
+    getAllPts: () => {
+        return new Promise((resolve, reject) => {
+            let query = `SELECT id, clinicid, patientid, emr_fhirid AS fhirid, FNAME AS fname, LNAME AS lname, PHONE AS phone FROM patient_list WHERE 1`
+            connection.query(query, (err, result) => {
+                if (!err) {
+                    resolve(result)
+                } else {
+                    reject(err)
+                }
+            })
+        })
+    },
+    addForEcwbulk: (entry) => {
+        return new Promise((resolve, reject) => {
+            var query = "INSERT INTO `patient_list` (`clinicid`, `patientid`, `emr_fhirid`, `FNAME`,`LNAME`,`MNAME`,`PHONE`,`MOBILE`,`EMAIL`,`ADDRESS`,`ADDRESS2`,`CITY`,`ZIP`,`State`,`GENDER`,`DOB`,`flag`,`Language`,`loadby`,`loaddate`,`loadmethod`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            connection.query(query, [entry.clinicid, entry.emr_id, entry.fhirid, entry.fname, entry.lname, entry.mname, entry.phone, entry.mobile, entry.email, entry.address, entry.address2, entry.city, entry.zip, entry.state, entry.gender, entry.dob, 0, entry.language, entry.loadby, new Date(Date.now()).toISOString().substr(0, 10), entry.loadmethod], (err, result) => {
+                if (!err) {
+                    resolve({})
+                } else {
+                    reject(err)
+                }
+            })
         })
     }
 }
