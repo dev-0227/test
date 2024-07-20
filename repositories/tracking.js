@@ -52,7 +52,7 @@ const tracking = {
         })
     },
     getPtInsTrackByPtId: (entry, callback) => {
-        let query = `SELECT inslob.id FROM inslob, insurances, patient_list WHERE inslob.insid = insurances.id AND insurances.insId = patient_list.INS_ID AND patient_list.patientid = ${entry.patientid}`
+        let query = `SELECT inslob.id FROM inslob, insurances, patient_list, ins_lob_map WHERE inslob.id = ins_lob_map.lobid AND ins_lob_map.clinicid = ${entry.clinicid} AND ins_lob_map.insid = insurances.id AND insurances.insId = patient_list.INS_ID AND patient_list.patientid = ${entry.patientid}`
         connection.query(query, (err1, result1) => {
             console.log(err1)
             if (!err1) {
