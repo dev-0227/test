@@ -68,7 +68,7 @@ const accounts = {
         });
     },
     addlob: (account, callback) => {
-        let query = "INSERT INTO `inslob` (`insid`, `clinicid`, `lob`, `description`,`variation`,`type_id`, `ins_emrid`, `ins_fhirid`) VALUES (? , ? , ? , ?, ?, ? ,?)";
+        let query = "INSERT INTO `inslob` (`insid`, `clinicid`, `lob`, `description`,`variation`,`type_id`, `ins_emrid`, `ins_fhirid`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         connection.query(query, [account.insid, account.clinicid, account.name, account.desc, account.variation, account.type, account.emrid, account.fhirid], (err, result) => {
             callback(err, result);
         });
