@@ -37,6 +37,78 @@ const accounts = {
         });
     },
     /*
+    * Insurance Lob Map
+    */
+    insLobMapList: (entry, callback) => {
+        let query = `SELECT ins_lob_map.*, insurances.insName, inslob.variation AS lobName, clinics.name AS clinicName FROM ins_lob_map LEFT JOIN insurances ON ins_lob_map.insid = insurances.id LEFT JOIN inslob ON inslob.id = ins_lob_map.lobid LEFT JOIN clinics ON ins_lob_map.clinicid = clinics.id WHERE 1 `
+        if (entry.insid > 0) query += `AND ins_lob_map.insid = ${entry.insid} `
+        if (entry.clinicid > 0) query += `AND ins_lob_map.clinicid = ${entry.clinicid} `
+
+        query +=  `ORDER BY ins_lob_map.inslob`
+        connection.query(query, [], (err1, result1) => {
+            if (!err1) {
+                query = `SELECT COUNT(*) AS total FROM ins_lob_map LEFT JOIN insurances ON ins_lob_map.insid = insurances.id LEFT JOIN inslob ON inslob.id = ins_lob_map.lobid LEFT JOIN clinics ON ins_lob_map.clinicid = clinics.id WHERE 1 `
+                if (entry.insid > 0) query += `AND ins_lob_map.insid = ${entry.insid} `
+                if (entry.clinicid > 0) query += `AND ins_lob_map.clinicid = ${entry.clinicid} `
+                query +=  `ORDER BY ins_lob_map.inslob`
+                connection.query(query, [], (err2, result2) => {
+                    var total = 0
+                    if (!err2) {
+                        if (result2.length > 0) total = result2[0].total
+                    }
+                    callback(err2, {data: result1, recordsFiltered: total, recordsTotal: total})
+                })
+            } else callback(err1, {data: [entry.insid], recordsFiltered: 0, recordsTotal: 0})
+        })
+    },
+    getInsLobMap: (entry,callback) => {
+        let query = "SELECT ins_lob_map.*, inslob.variation AS lobName  FROM `ins_lob_map` LEFT JOIN `inslob` on `ins_lob_map`.`lobid` = `inslob`.`id` WHERE `ins_lob_map`.`id` = ? ORDER BY `ins_lob_map`.`inslob`";
+        connection.query(query,[entry.id], (err, result) => {
+            callback(err, result);
+        });
+    },
+    addInsLobMap: (account, callback) => {
+        let query = "INSERT INTO `ins_lob_map` (`insid`, `clinicid`, `lobid`, `ecw_insid`,`inslob`) VALUES (?, ?, ?, ?, ?)";
+        connection.query(query, [account.insid, account.clinicid, account.lobid, account.ecw_insid, account.inslob], (err, result) => {
+            callback(err, result);
+        });
+    },
+    chosenInsLobMap: (entry, callback) => {
+        let query = "SELECT * FROM `ins_lob_map` WHERE `id`= ? "
+        connection.query(query, [entry.id], (err, result) => {
+            callback(err, result);
+        });
+    },
+    updateInsLobMap: (entry, callback) => {
+        let query = "UPDATE `ins_lob_map` SET `insid` = ?, `clinicid` = ?, `lobid`= ?, `ecw_insid` = ?, `inslob` = ? WHERE `id`= ? ";
+        connection.query(query, [entry.insid, entry.clinicid, entry.lobid, entry.ecw_insid, entry.inslob, entry.id], (err, result) => {
+            callback(err, result);
+        });
+    },
+    deleteInsLobMap: (entry, callback) => {
+        let query = "DELETE FROM `ins_lob_map` WHERE `id`= ? ";
+        connection.query(query, [entry.id], (err, result) => {
+            callback(err, result);
+        });
+    },
+    setInsLobMap: (entry, callback) => {
+        let query = `SELECT id FROM ins_lob_map WHERE clinicid = ? AND inslob = ? AND ecw_insid = ?`
+        connection.query(query, [entry.clinicid, entry.inslob, entry.ecw_insid], (err1, result1) => {
+            if (!err1) {
+                if (result1.length > 0) {
+                    callback(err1, result1)
+                } else {
+                    query = `INSERT INTO ins_lob_map (clinicid, inslob, ecw_insid) VALUES(?, ?, ?)`
+                    connection.query(query, [entry.clinicid, entry.inslob, entry.ecw_insid], (err2, result2) => {
+                        callback(err2, result2)
+                    })
+                }
+            } else {
+                callback(err1, result1)
+            }
+        })
+    },
+    /*
     * Insurance Lob Modal
     */
     lobList: (entry, callback) => {
@@ -62,8 +134,8 @@ const accounts = {
         })
     },
     getlob: (entry,callback) => {
-        let query = "SELECT inslob.*, ins_type.display as type  FROM `inslob` LEFT JOIN `ins_type` on `inslob`.`type_id` = `ins_type`.`id` WHERE insid = ? ORDER BY lob";
-        connection.query(query,[entry.id], (err, result) => {
+        let query = "SELECT inslob.*, ins_type.display as type  FROM `inslob` LEFT JOIN `ins_type` on `inslob`.`type_id` = `ins_type`.`id` WHERE insid = ? AND clinicid = ? ORDER BY lob";
+        connection.query(query,[entry.insid, entry.clinicid], (err, result) => {
             callback(err, result);
         });
     },

@@ -94,6 +94,98 @@ exports.delete = (req, res, next) => {
     });
 }
 /*
+* Insurance Lob Map
+*/
+exports.insLobMapList = (req, res, next) => {
+    insurance.insLobMapList(req.query, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json(result)
+        }
+    })
+}
+exports.getInsLobMap = (req, res, next) => {
+    let entry = {
+        id: req.body.id
+    }
+    insurance.getInsLobMap(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+exports.addInsLobMap = (req, res, next) => {
+    let entry = {
+        inslob: req.body.inslob,
+        insid: req.body.insid,
+        lobid: req.body.lobid,
+        clinicid: req.body.clinicid,
+        ecw_insid: req.body.ecw_insid,
+    }
+    insurance.addInsLobMap(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+exports.updateInsLobMap = (req, res, next) => {
+    let entry = {
+        id: req.body.id,
+        inslob: req.body.inslob,
+        insid: req.body.insid,
+        lobid: req.body.lobid,
+        clinicid: req.body.clinicid,
+        ecw_insid: req.body.ecw_insid,
+    }
+    insurance.updateInsLobMap(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+exports.chosenInsLobMap = (req, res, next) => {
+    let entry = {
+        id: req.body.id
+    }
+    insurance.chosenInsLobMap(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+exports.deleteInsLobMap = (req, res, next) => {
+    let entry = {
+        id: req.body.id
+    }
+    insurance.deleteInsLobMap(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+exports.setInsLobMap = async(req, res, next) => {
+    return new Promise((resolve, reject) => {
+        insurance.setInsLobMap(req.body, (err, result) => {
+            if (!err) {
+                resolve(true)
+            } else {
+                reject(false)
+            }
+        })
+    })
+}
+/*
 * Insurance Lob Controller
 */
 exports.lobList = (req, res, next) => {
@@ -106,10 +198,7 @@ exports.lobList = (req, res, next) => {
     })
 }
 exports.getlob = (req, res, next) => {
-    let entry = {
-        id: req.body.id
-    }
-    insurance.getlob(entry, (err, result) => {
+    insurance.getlob(req.body, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {

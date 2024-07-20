@@ -10,6 +10,13 @@ router.post('/add', controller.add);
 router.post('/update', controller.update);
 router.post('/chosen', controller.chosen);
 router.post('/delete', controller.delete);
+// Insurance Lob Map
+router.get('/inslobmap/list', controller.insLobMapList);
+router.post('/inslobmap/get', controller.getInsLobMap);
+router.post('/inslobmap/add', controller.addInsLobMap);
+router.post('/inslobmap/update', controller.updateInsLobMap);
+router.post('/inslobmap/chosen', controller.chosenInsLobMap);
+router.post('/inslobmap/delete', controller.deleteInsLobMap);
 // Insurance Lob route
 router.get('/lob/list', controller.lobList);
 router.post('/getlob', controller.getlob);

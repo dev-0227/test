@@ -1,6 +1,7 @@
 const xlsx = require('node-xlsx');
 const patientlist = require('../repositories/patientlist');
 const tracking = require('../repositories/tracking')
+const insurance = require('./insurance')
 const event = require('../repositories/event');
 const Acl = require('../middleware/acl');
 const {getClinicsByUserType} = require('../repositories/settings/clinic')
@@ -154,6 +155,19 @@ exports.ptloader = async (req, res, next) => {
         rowCounter ++
     }
     // 2. Patient Information end //
+    // 3. Insurance Lob Map begin //
+    for (row of pureSheet) {
+        let lobmap = {
+            insid: '',
+            clinicid: clinicid,
+            lobid: '',
+            ecw_insid: row[headers.indexOf('insid')] ? row[headers.indexOf('insid')] : '',
+            inslob: row[headers.indexOf('insuranceName')] ? row[headers.indexOf('insuranceName')] : ''
+        }
+        lobmap.inslob = lobmap.inslob.toUpperCase()
+        await insurance.setInsLobMap(lobmap)
+    }
+    // 3. Insurance Lob Map end //
 
     entry = {
         clinicid: req.body.clinicid,
