@@ -91,21 +91,27 @@ const accounts = {
             callback(err, result);
         });
     },
-    setInsLobMap: (entry, callback) => {
-        let query = `SELECT id FROM ins_lob_map WHERE clinicid = ? AND inslob = ? AND ecw_insid = ?`
-        connection.query(query, [entry.clinicid, entry.inslob, entry.ecw_insid], (err1, result1) => {
-            if (!err1) {
-                if (result1.length > 0) {
-                    callback(err1, result1)
+    setInsLobMap: (entry) => {
+        return new Promise((resolve, reject) => {
+            let query = `SELECT id FROM ins_lob_map WHERE clinicid = ? AND inslob = ? AND ecw_insid = ?`
+            connection.query(query, [entry.clinicid, entry.inslob, entry.ecw_insid], (err1, result1) => {
+                if (!err1) {
+                    if (result1.length > 0) {
+                        resolve(err1)
+                    } else {
+                        query = `INSERT INTO ins_lob_map (clinicid, inslob, ecw_insid) VALUES(?, ?, ?)`
+                        connection.query(query, [entry.clinicid, entry.inslob, entry.ecw_insid], (err2, result2) => {
+                            if (!err2) {
+                                resolve(err2)
+                            } else {
+                                reject(err2)
+                            }
+                        })
+                    }
                 } else {
-                    query = `INSERT INTO ins_lob_map (clinicid, inslob, ecw_insid) VALUES(?, ?, ?)`
-                    connection.query(query, [entry.clinicid, entry.inslob, entry.ecw_insid], (err2, result2) => {
-                        callback(err2, result2)
-                    })
+                    reject(err1)
                 }
-            } else {
-                callback(err1, result1)
-            }
+            })
         })
     },
     /*

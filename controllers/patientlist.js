@@ -1,7 +1,7 @@
 const xlsx = require('node-xlsx');
 const patientlist = require('../repositories/patientlist');
 const tracking = require('../repositories/tracking')
-const insurance = require('./insurance')
+const insurance = require('../repositories/insurance')
 const event = require('../repositories/event');
 const Acl = require('../middleware/acl');
 const {getClinicsByUserType} = require('../repositories/settings/clinic')
@@ -491,19 +491,28 @@ exports.ecwbulk = async(req, res, next) => {
     let response = await axios.get(`${req.body.url}?key=${req.body.key}`)
     var existPTs = await patientlist.getAllPts()
 
-    var cnt = 0
+    var cnt = 0, upt = 0, add = 0
     for (item of response.data) {
         if (!existPTs.find(o => o.fhirid == item.id)) {
-            var name = ''
+            // get name begin //
+            var name = '', fname = '', lname = '', mname = ''
             item.name[0].prefix !=null && item.name[0].prefix.length ? name = item.name[0].text.substr(item.name[0].prefix.length + 1, item.name[0].text.length) : name = item.name[0].text
+            var nameList = name.split(' ')
+            if (nameList.length > 2) {
+                mname = nameList[nameList.length - 1]
+                fname = nameList[nameList.length - 2]
+                lname = nameList.splice(nameList.length - 2, 2).join(' ')
+            }
+            // get name end //
+
             let entry = {
-                fname: name.split(' ')[0],
-                lname: name.substr(name.split(' ')[0].length + 1, name.length),
-                mname: '',
+                fname: fname,
+                lname: lname,
+                mname: mname,
                 dob: item.birthDate,
                 gender: 'male',
                 clinicid: item.clinic,
-                emr_id: '',
+                emr_id: item.identifier[0] ? item.identifier[0].value : '',
                 fhirid: item.id,
                 phone: item.telecom.length > 0 ? item.telecom[0].value : '',
                 mobile: item.telecom.length > 0 && item.telecom[1] && item.telecom[1].use == 'mobile' ? item.telecom[1].value : '',
@@ -521,10 +530,21 @@ exports.ecwbulk = async(req, res, next) => {
                 loadby: req.body.userid,
             }
             if (item.telecom[2]) entry.email = item.telecom[2].value
-            await patientlist.addForEcwbulk(entry)
+
+            // check exist
+            var r = await patientlist.existForAsync({emr_id: entry.emr_id, clinicid: entry.clinicid})
+            if (r.length) {
+                entry.id = r[0].id
+                await patientlist.updateForAync(entry)
+                upt ++
+            }
+            else {
+                await patientlist.addForEcwbulk(entry)
+                add ++
+            }
             cnt ++
         }
     }
 
-    res.status(200).json({total: response.data.length, new: cnt})
+    res.status(200).json({total: response.data.length, count: cnt, update: upt, new: add})
 }

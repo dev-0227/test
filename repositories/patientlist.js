@@ -297,10 +297,35 @@ const patientlist = {
             })
         })
     },
+
+    existForAsync: (entry) => {
+        return new Promise((resolve, reject) => {
+            var query = `SELECT * FROM patient_list WHERE patientid = ? AND clinicid = ?`
+            connection.query(query, [entry.emr_id, entry.clinicid], (err, result) => {
+                if (!err) {
+                    resolve(result)
+                } else {
+                    reject(err)
+                }
+            })
+        })
+    },
+    updateForAync: (entry) => {
+        return new Promise((resolve, reject) => {
+            var query = `UPDATE patient_list SET emr_fhirid = ?, PHONE = ?, MOBILE = ?, EMAIL = ?, CITY = ?, STATE = ?, ZIP = ?, ADDRESS = ?, loadby = ?, loaddate = ?, loadmethod = ? WHERE id = ?`
+            connection.query(query, [entry.fhirid, entry.phone, entry.mobile, entry.email, entry.city, entry.state, entry.zip, entry.address, entry.loadby, entry.loaddate, entry.loadmethod, entry.id], (err, result) => {
+                if (!err) {
+                    resolve(result)
+                } else {
+                    reject(err)
+                }
+            })
+        })
+    },
     addForEcwbulk: (entry) => {
         return new Promise((resolve, reject) => {
             var query = "INSERT INTO `patient_list` (`clinicid`, `patientid`, `emr_fhirid`, `FNAME`,`LNAME`,`MNAME`,`PHONE`,`MOBILE`,`EMAIL`,`ADDRESS`,`ADDRESS2`,`CITY`,`ZIP`,`State`,`GENDER`,`DOB`,`flag`,`Language`,`loadby`,`loaddate`,`loadmethod`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            connection.query(query, [entry.clinicid, entry.emr_id, entry.fhirid, entry.fname, entry.lname, entry.mname, entry.phone, entry.mobile, entry.email, entry.address, entry.address2, entry.city, entry.zip, entry.state, entry.gender, entry.dob, 0, entry.language, entry.loadby, new Date(Date.now()).toISOString().substr(0, 10), entry.loadmethod], (err, result) => {
+            connection.query(query, [entry.clinicid, entry.emrid, entry.fhirid, entry.fname, entry.lname, entry.mname, entry.phone, entry.mobile, entry.email, entry.address, entry.address2, entry.city, entry.zip, entry.state, entry.gender, entry.dob, 0, entry.language, entry.loadby, new Date(Date.now()).toISOString().substr(0, 10), entry.loadmethod], (err, result) => {
                 if (!err) {
                     resolve({})
                 } else {
