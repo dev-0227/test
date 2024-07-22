@@ -122,6 +122,7 @@ router.post('/relationship/set', AuthGuard, relateController.set);
 router.post('/relationship/getOrganizationBySpecialist', AuthGuard, relateController.getOrganizationBySpecialist);
 router.post('/relationship/getOrganizationNames', AuthGuard, relateController.getOrganizationNames);
 
+// not used begin //
 router.get('/map/get', AuthGuard, controller.getAllInsMap)
 router.post('/map/add', AuthGuard, controller.addInsMap)
 router.post('/map/update', AuthGuard, controller.updateInsMap)
@@ -130,6 +131,7 @@ router.post('/map/getbyinsid', AuthGuard, controller.getByInsId)
 router.post('/map/get', AuthGuard, controller.getInsMap)
 router.post('/map/delete', AuthGuard, controller.deleteInsMap)
 router.post('/map/deletebyinsid', AuthGuard, controller.deleteByInsId)
+// not used end //
 
 router.post('/bulk/getForPatient', AuthGuard, ecwbulk.getForPatient)
 router.post('/bulk/getForPatientById', AuthGuard, ecwbulk.getForPatientById)

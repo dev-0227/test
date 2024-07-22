@@ -962,6 +962,7 @@ const setting = {
         
     },
 
+    // not used
     // Insurance Mapping begin //
     addInsMap: (entry, callback) => {
         let query = `INSERT INTO ins_emr_map (insid, lob, emrid, fhirid, clinicid) VALUES (?, ?, ?, ?, ?)`

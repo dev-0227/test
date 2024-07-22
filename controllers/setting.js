@@ -1020,6 +1020,7 @@ exports.setAppointmentDoctorType = (req, res, next) => {
     });
 }
 
+// not used
 // Insurance Mapping begin //
 exports.addInsMap = (req, res, next) => {
     setting.addInsMap(req.body, (err, result) => {
