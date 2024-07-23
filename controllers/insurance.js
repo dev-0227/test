@@ -35,7 +35,8 @@ exports.add = async (req, res, next) => {
         state: req.body.state,
         zip: req.body.zip,
         hedis: req.body.hedis,
-        status: req.body.status
+        status: req.body.status,
+        lob: req.body.lob,
     }
     insurance.add(entry, (err, result) => {
         if (err) {
@@ -59,7 +60,8 @@ exports.update = (req, res, next) => {
         state: req.body.state,
         zip: req.body.zip,
         hedis: req.body.hedis,
-        status: req.body.status
+        status: req.body.status,
+        lob: req.body.lob
     }
     insurance.update(entry, (err, result) => {
         if (err) {
@@ -119,7 +121,7 @@ exports.getInsLobMap = (req, res, next) => {
 }
 exports.addInsLobMap = (req, res, next) => {
     let entry = {
-        inslob: req.body.inslob,
+        ecw_loginsid: req.body.ecw_loginsid,
         insid: req.body.insid,
         lobid: req.body.lobid,
         clinicid: req.body.clinicid,
@@ -136,7 +138,7 @@ exports.addInsLobMap = (req, res, next) => {
 exports.updateInsLobMap = (req, res, next) => {
     let entry = {
         id: req.body.id,
-        inslob: req.body.inslob,
+        ecw_loginsid: req.body.ecw_loginsid,
         insid: req.body.insid,
         lobid: req.body.lobid,
         clinicid: req.body.clinicid,

@@ -1,7 +1,7 @@
 const connection = require('../utilities/database');
 const accounts = {
     list: (callback) => {
-        let query = "SELECT id,insId,insName,insaddress,insaddress2,abbrName,hedis_active,Inactive FROM `insurances` WHERE 1 ORDER BY insName";
+        let query = "SELECT id,insId,insName,insaddress,insaddress2,abbrName,hedis_active,Inactive,lob FROM `insurances` WHERE 1 ORDER BY insName";
         connection.query(query, (err, result) => {
             callback(err, result);
         });
@@ -13,8 +13,8 @@ const accounts = {
         });
     },
     add: (account, callback) => {
-        let query = "INSERT INTO `insurances` (`id`, `insName`, `abbrName`, `insemail`, `insphone`,`insfax`,`insaddress`,`insaddress2`,`inscity`,`insstate`,`inszip`,`hedis_active`,`Inactive`) VALUES (NULL, ? , ? , ? , ? , ?,  ? , ?, ?,  ? , ?, ?, ? )";
-        connection.query(query, [account.name, account.abbr, account.email, account.phone, account.fax, account.address1, account.address2, account.city, account.state, account.zip, account.hedis, account.status], (err, result) => {
+        let query = "INSERT INTO `insurances` (`id`, `insName`, `abbrName`, `insemail`, `insphone`,`insfax`,`insaddress`,`insaddress2`,`inscity`,`insstate`,`inszip`,`hedis_active`,`Inactive`,`lob`) VALUES (NULL, ? , ? , ? , ? , ?,  ? , ?, ?,  ? , ?, ?, ?, ? )";
+        connection.query(query, [account.name, account.abbr, account.email, account.phone, account.fax, account.address1, account.address2, account.city, account.state, account.zip, account.hedis, account.status, account.lob], (err, result) => {
             callback(err, result);
         });
     },
@@ -25,8 +25,8 @@ const accounts = {
         });
     },
     update: (entry, callback) => {
-        let query = "UPDATE `insurances` SET `insName`= ?, `abbrName`= ?, `insemail` = ?, `insphone` = ?,  `insfax` = ?,  `insaddress` = ?, `insaddress2` = ?, `inscity` = ?, `insstate` = ?, `inszip` = ?, `hedis_active` = ?, `Inactive` = ? WHERE `id`= ? ";
-        connection.query(query, [entry.name, entry.abbr, entry.email, entry.phone, entry.fax, entry.address1, entry.address2, entry.city, entry.state, entry.zip, entry.hedis, entry.status, entry.id], (err, result) => {
+        let query = "UPDATE `insurances` SET `insName`= ?, `abbrName`= ?, `insemail` = ?, `insphone` = ?,  `insfax` = ?,  `insaddress` = ?, `insaddress2` = ?, `inscity` = ?, `insstate` = ?, `inszip` = ?, `hedis_active` = ?, `Inactive` = ?, `lob` = ? WHERE `id`= ? ";
+        connection.query(query, [entry.name, entry.abbr, entry.email, entry.phone, entry.fax, entry.address1, entry.address2, entry.city, entry.state, entry.zip, entry.hedis, entry.status, entry.lob, entry.id], (err, result) => {
             callback(err, result);
         });
     },
@@ -40,17 +40,16 @@ const accounts = {
     * Insurance Lob Map
     */
     insLobMapList: (entry, callback) => {
-        let query = `SELECT ins_lob_map.*, insurances.insName, inslob.variation AS lobName, clinics.name AS clinicName FROM ins_lob_map LEFT JOIN insurances ON ins_lob_map.insid = insurances.id LEFT JOIN inslob ON inslob.id = ins_lob_map.lobid LEFT JOIN clinics ON ins_lob_map.clinicid = clinics.id WHERE 1 `
+        let query = `SELECT ins_lob_map.*, i.insName, l.insName AS lobName, clinics.name AS clinicName FROM ins_lob_map LEFT JOIN insurances AS i ON ins_lob_map.insid = i.id LEFT JOIN insurances AS l ON l.id = ins_lob_map.lobid LEFT JOIN clinics ON ins_lob_map.clinicid = clinics.id WHERE 1 `
         if (entry.insid > 0) query += `AND ins_lob_map.insid = ${entry.insid} `
         if (entry.clinicid > 0) query += `AND ins_lob_map.clinicid = ${entry.clinicid} `
 
         query +=  `ORDER BY ins_lob_map.inslob`
         connection.query(query, [], (err1, result1) => {
             if (!err1) {
-                query = `SELECT COUNT(*) AS total FROM ins_lob_map LEFT JOIN insurances ON ins_lob_map.insid = insurances.id LEFT JOIN inslob ON inslob.id = ins_lob_map.lobid LEFT JOIN clinics ON ins_lob_map.clinicid = clinics.id WHERE 1 `
+                query = `SELECT COUNT(*) AS total FROM ins_lob_map LEFT JOIN insurances AS i ON ins_lob_map.insid = i.id LEFT JOIN insurances AS l ON l.id = ins_lob_map.lobid LEFT JOIN clinics ON ins_lob_map.clinicid = clinics.id WHERE 1 `
                 if (entry.insid > 0) query += `AND ins_lob_map.insid = ${entry.insid} `
                 if (entry.clinicid > 0) query += `AND ins_lob_map.clinicid = ${entry.clinicid} `
-                query +=  `ORDER BY ins_lob_map.inslob`
                 connection.query(query, [], (err2, result2) => {
                     var total = 0
                     if (!err2) {
@@ -68,8 +67,8 @@ const accounts = {
         });
     },
     addInsLobMap: (account, callback) => {
-        let query = "INSERT INTO `ins_lob_map` (`insid`, `clinicid`, `lobid`, `ecw_insid`,`inslob`) VALUES (?, ?, ?, ?, ?)";
-        connection.query(query, [account.insid, account.clinicid, account.lobid, account.ecw_insid, account.inslob], (err, result) => {
+        let query = "INSERT INTO `ins_lob_map` (`insid`, `clinicid`, `lobid`, `ecw_insid`,`ecw_loginsid`) VALUES (?, ?, ?, ?, ?)";
+        connection.query(query, [account.insid, account.clinicid, account.lobid, account.ecw_insid, account.ecw_loginsid], (err, result) => {
             callback(err, result);
         });
     },
@@ -80,8 +79,8 @@ const accounts = {
         });
     },
     updateInsLobMap: (entry, callback) => {
-        let query = "UPDATE `ins_lob_map` SET `insid` = ?, `clinicid` = ?, `lobid`= ?, `ecw_insid` = ?, `inslob` = ? WHERE `id`= ? ";
-        connection.query(query, [entry.insid, entry.clinicid, entry.lobid, entry.ecw_insid, entry.inslob, entry.id], (err, result) => {
+        let query = "UPDATE `ins_lob_map` SET `insid` = ?, `clinicid` = ?, `lobid`= ?, `ecw_insid` = ?, `ecw_loginsid` = ? WHERE `id`= ? ";
+        connection.query(query, [entry.insid, entry.clinicid, entry.lobid, entry.ecw_insid, entry.ecw_loginsid, entry.id], (err, result) => {
             callback(err, result);
         });
     },
@@ -93,14 +92,14 @@ const accounts = {
     },
     setInsLobMap: (entry) => {
         return new Promise((resolve, reject) => {
-            let query = `SELECT id FROM ins_lob_map WHERE clinicid = ? AND inslob = ? AND ecw_insid = ?`
-            connection.query(query, [entry.clinicid, entry.inslob, entry.ecw_insid], (err1, result1) => {
+            let query = `SELECT id FROM ins_lob_map WHERE clinicid = ? AND ecw_loginsid = ? AND ecw_insid = ?`
+            connection.query(query, [entry.clinicid, entry.ecw_loginsid, entry.ecw_insid], (err1, result1) => {
                 if (!err1) {
                     if (result1.length > 0) {
                         resolve(err1)
                     } else {
-                        query = `INSERT INTO ins_lob_map (clinicid, inslob, ecw_insid) VALUES(?, ?, ?)`
-                        connection.query(query, [entry.clinicid, entry.inslob, entry.ecw_insid], (err2, result2) => {
+                        query = `INSERT INTO ins_lob_map (clinicid, ecw_loginsid, ecw_insid) VALUES(?, ?, ?)`
+                        connection.query(query, [entry.clinicid, entry.ecw_loginsid, entry.ecw_insid], (err2, result2) => {
                             if (!err2) {
                                 resolve(err2)
                             } else {
