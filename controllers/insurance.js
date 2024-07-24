@@ -37,6 +37,8 @@ exports.add = async (req, res, next) => {
         hedis: req.body.hedis,
         status: req.body.status,
         lob: req.body.lob,
+        instype: req.body.instype,
+        payment_method: req.body.payment_method,
     }
     insurance.add(entry, (err, result) => {
         if (err) {
@@ -61,7 +63,9 @@ exports.update = (req, res, next) => {
         zip: req.body.zip,
         hedis: req.body.hedis,
         status: req.body.status,
-        lob: req.body.lob
+        lob: req.body.lob,
+        instype: req.body.instype,
+        payment_method: req.body.payment_method,
     }
     insurance.update(entry, (err, result) => {
         if (err) {
