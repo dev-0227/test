@@ -4,12 +4,12 @@ const connection = require('../utilities/database')
 const affiliation = {
     get: (entry, callback) => {
         let query = `SELECT * FROM affiliation `
-        if (entry.search.value && entry.search.value.length > 0) query += `WHERE name LIKE '%${entry.search.value}%'`
+        if (entry.search.value && entry.search.value.length > 0) query += `WHERE name LIKE '%${entry.search.value}%' OR address LIKE '%${entry.search.value}%'`
         query += ` ORDER BY name`
         connection.query(query, (err, result) => {
             if (!err) {
                 query = `SELECT COUNT(*) AS total FROM affiliation`
-                if (entry.search.value && entry.search.value.length > 0) query += ` WHERE name LIKE '%${entry.search.value}%'`
+                if (entry.search.value && entry.search.value.length > 0) query += ` WHERE name LIKE '%${entry.search.value}%' OR address LIKE '%${entry.search.value}%'`
                 connection.query(query, (err1, result1) => {
                     if (!err1) {
                         var total = 0
@@ -23,13 +23,13 @@ const affiliation = {
         })
     },
     add: (entry, callback) => {
-        let query = `INSERT INTO affiliation (name, tel, fax, email, state, city, status) VALUES ('${entry.name}', '${entry.tel}', '${entry.fax}', '${entry.email}', '${entry.state}', '${entry.city}', ${entry.status})`
+        let query = `INSERT INTO affiliation (name, tel, fax, email, state, city, status, web, address, zip) VALUES ('${entry.name}', '${entry.tel}', '${entry.fax}', '${entry.email}', '${entry.state}', '${entry.city}', ${entry.status}, '${entry.web}', '${entry.address}', '${entry.zip}')`
         connection.query(query, (err, result) => {
             callback(err, result)
         })
     },
     update: (entry, callback) => {
-        let query = `UPDATE affiliation SET name = '${entry.name}', tel = '${entry.tel}', fax = '${entry.fax}', email = '${entry.email}', state = '${entry.state}', city = '${entry.city}', status = ${entry.status} WHERE id = ${entry.id}`
+        let query = `UPDATE affiliation SET name = '${entry.name}', tel = '${entry.tel}', fax = '${entry.fax}', email = '${entry.email}', state = '${entry.state}', city = '${entry.city}', status = ${entry.status}, web = '${entry.web}', address = '${entry.address}', zip = '${entry.zip}' WHERE id = ${entry.id}`
         connection.query(query, (err, result) => {
             callback(err, result)
         })
