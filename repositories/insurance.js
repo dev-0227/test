@@ -205,12 +205,12 @@ const accounts = {
     */
     gettype: (entry, callback) => {
         let query = `SELECT * FROM ins_type `
-        if (entry.filter && entry.filter.lehgth > 0) query += `WHERE display LIKE '%${entry.filter}%' OR description LIKE '%${entry.filter}%'`
+        if (entry.filter && entry.filter.length > 0) query += `WHERE display LIKE '%${entry.filter}%' OR description LIKE '%${entry.filter}%'`
         query += ` ORDER BY display`
         connection.query(query, (err, result) => {
             if (!err) {
                 query = `SELECT COUNT(*) AS total FROM ins_type`
-                if (entry.filter && entry.filter.lehgth > 0) query += ` WHERE display LIKE '%${entry.filter}%' OR description LIKE '%${entry.filter}%'`
+                if (entry.filter && entry.filter.length > 0) query += ` WHERE display LIKE '%${entry.filter}%' OR description LIKE '%${entry.filter}%'`
                 connection.query(query, (err1, result1) => {
                     if (!err1) {
                         var total = 0
