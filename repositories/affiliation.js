@@ -4,12 +4,12 @@ const connection = require('../utilities/database')
 const affiliation = {
     get: (entry, callback) => {
         let query = `SELECT * FROM affiliation `
-        if (entry.filter && entry.filter.length > 0) query += `WHERE name LIKE '%${entry.filter}%'`
+        if (entry.search.value && entry.search.value.length > 0) query += `WHERE name LIKE '%${entry.search.value}%'`
         query += ` ORDER BY name`
         connection.query(query, (err, result) => {
             if (!err) {
                 query = `SELECT COUNT(*) AS total FROM affiliation`
-                if (entry.filter && entry.filter.length > 0) query += ` WHERE name LIKE '%${entry.filter}%'`
+                if (entry.search.value && entry.search.value.length > 0) query += ` WHERE name LIKE '%${entry.search.value}%'`
                 connection.query(query, (err1, result1) => {
                     if (!err1) {
                         var total = 0
