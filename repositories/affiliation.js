@@ -23,13 +23,13 @@ const affiliation = {
         })
     },
     add: (entry, callback) => {
-        let query = `INSERT INTO affiliation (name, tel, fax, email, state, city, status, web, address, zip) VALUES ('${entry.name}', '${entry.tel}', '${entry.fax}', '${entry.email}', '${entry.state}', '${entry.city}', ${entry.status}, '${entry.web}', '${entry.address}', '${entry.zip}')`
+        let query = `INSERT INTO affiliation (name, tel, fax, email, state, city, status, web, address, address2, zip) VALUES ('${entry.name}', '${entry.tel}', '${entry.fax}', '${entry.email}', '${entry.state}', '${entry.city}', ${entry.status}, '${entry.web}', '${entry.address}', '${entry.address2}', '${entry.zip}')`
         connection.query(query, (err, result) => {
             callback(err, result)
         })
     },
     update: (entry, callback) => {
-        let query = `UPDATE affiliation SET name = '${entry.name}', tel = '${entry.tel}', fax = '${entry.fax}', email = '${entry.email}', state = '${entry.state}', city = '${entry.city}', status = ${entry.status}, web = '${entry.web}', address = '${entry.address}', zip = '${entry.zip}' WHERE id = ${entry.id}`
+        let query = `UPDATE affiliation SET name = '${entry.name}', tel = '${entry.tel}', fax = '${entry.fax}', email = '${entry.email}', state = '${entry.state}', city = '${entry.city}', status = ${entry.status}, web = '${entry.web}', address = '${entry.address}', address2 = '${entry.address2}', zip = '${entry.zip}' WHERE id = ${entry.id}`
         connection.query(query, (err, result) => {
             callback(err, result)
         })
