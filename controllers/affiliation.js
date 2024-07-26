@@ -15,6 +15,19 @@ exports.get = async(req, res, next) => {
     })
 }
 
+exports.list = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'AFFILIATIONS')
+    if (!can) return res.status(405).json('Not Permission')
+
+    affiliation.list((err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({data: result})
+        }
+    })
+}
+
 exports.add = async(req, res, next) => {
     var can = await Acl.can(req.user, ['create'], 'AFFILIATIONS')
     if (!can) return res.status(405).json('Not Permission')
@@ -59,6 +72,72 @@ exports.delete = async(req, res, next) => {
     if (!can) return res.status(405).json('Not Permission')
     
     affiliation.delete(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result})
+        }
+    })
+}
+
+
+exports.getInsClinicAffiliation = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'AFFILIATIONS')
+    if (!can) return res.status(405).json('Not Permission')
+    
+    affiliation.getInsClinicAffiliation(req.query, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json(result)
+        }
+    })
+}
+
+exports.addInsClinicAffiliation = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'AFFILIATIONS')
+    if (!can) return res.status(405).json('Not Permission')
+    
+    affiliation.addInsClinicAffiliation(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result})
+        }
+    })
+}
+
+exports.updateInsClinicAffiliation = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'AFFILIATIONS')
+    if (!can) return res.status(405).json('Not Permission')
+    
+    affiliation.updateInsClinicAffiliation(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result})
+        }
+    })
+}
+
+exports.chosenInsClinicAffiliation = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'AFFILIATIONS')
+    if (!can) return res.status(405).json('Not Permission')
+    
+    affiliation.chosenInsClinicAffiliation(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result})
+        }
+    })
+}
+
+exports.deleteInsClinicAffiliation = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'AFFILIATIONS')
+    if (!can) return res.status(405).json('Not Permission')
+    
+    affiliation.deleteInsClinicAffiliation(req.body, (err, result) => {
         if (err) {
             res.status(404).json(err)
         } else {
