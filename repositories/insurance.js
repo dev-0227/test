@@ -13,8 +13,8 @@ const accounts = {
         });
     },
     add: (account, callback) => {
-        let query = "INSERT INTO `insurances` (`id`, `insName`, `abbrName`, `insemail`, `insphone`,`insfax`,`insaddress`,`insaddress2`,`inscity`,`insstate`,`inszip`,`hedis_active`,`Inactive`,`lob`,`instype`,`payment_method`) VALUES (NULL, ? , ? , ? , ? , ?,  ? , ?, ?,  ? , ?, ?, ?, ?, ?, ? )";
-        connection.query(query, [account.name, account.abbr, account.email, account.phone, account.fax, account.address1, account.address2, account.city, account.state, account.zip, account.hedis, account.status, account.lob, account.instype, account.payment_method], (err, result) => {
+        let query = "INSERT INTO `insurances` (`id`, `insName`, `abbrName`, `insemail`, `insphone`,`insfax`,`insaddress`,`insaddress2`,`inscity`,`insstate`,`inszip`,`hedis_active`,`Inactive`,`lob`) VALUES (NULL, ? , ? , ? , ? , ?,  ? , ?, ?,  ? , ?, ?, ?, ? )";
+        connection.query(query, [account.name, account.abbr, account.email, account.phone, account.fax, account.address1, account.address2, account.city, account.state, account.zip, account.hedis, account.status, account.lob], (err, result) => {
             callback(err, result);
         });
     },
@@ -25,8 +25,8 @@ const accounts = {
         });
     },
     update: (entry, callback) => {
-        let query = "UPDATE `insurances` SET `insName`= ?, `abbrName`= ?, `insemail` = ?, `insphone` = ?,  `insfax` = ?,  `insaddress` = ?, `insaddress2` = ?, `inscity` = ?, `insstate` = ?, `inszip` = ?, `hedis_active` = ?, `Inactive` = ?, `lob` = ?, `instype` = ?, `payment_method` = ? WHERE `id`= ? ";
-        connection.query(query, [entry.name, entry.abbr, entry.email, entry.phone, entry.fax, entry.address1, entry.address2, entry.city, entry.state, entry.zip, entry.hedis, entry.status, entry.lob, entry.instype, entry.payment_method, entry.id], (err, result) => {
+        let query = "UPDATE `insurances` SET `insName`= ?, `abbrName`= ?, `insemail` = ?, `insphone` = ?,  `insfax` = ?,  `insaddress` = ?, `insaddress2` = ?, `inscity` = ?, `insstate` = ?, `inszip` = ?, `hedis_active` = ?, `Inactive` = ?, `lob` = ? WHERE `id`= ? ";
+        connection.query(query, [entry.name, entry.abbr, entry.email, entry.phone, entry.fax, entry.address1, entry.address2, entry.city, entry.state, entry.zip, entry.hedis, entry.status, entry.lob, entry.id], (err, result) => {
             callback(err, result);
         });
     },
