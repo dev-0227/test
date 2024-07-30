@@ -1,10 +1,12 @@
-const role = require('../../repositories/settings/vital');
+const vitals = require('../../repositories/settings/vital');
 const event = require('../../repositories/event');
 const Acl = require('../../middleware/acl');
+const xlsx = require('node-xlsx');
+
 exports.list = async(req, res, next) => {
     var can = await Acl.can(req.user, ['read'], 'SETTING_VITAL_INFO');
     if(!can)return res.status(200).json({ data: [] });
-    role.list((err, result) => {
+    vitals.list((err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
@@ -27,7 +29,7 @@ exports.add = async(req, res, next) => {
         SNOMED: req.body.snomed,
         ECL: req.body.ecl,
     }
-    role.add(entry, (err, result) => {
+    vitals.add(entry, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
@@ -53,7 +55,7 @@ exports.chosen = async(req, res, next) => {
     let entry = {
         id: req.body.id
     }
-    role.chosen(entry, (err, result) => {
+    vitals.chosen(entry, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
@@ -76,7 +78,7 @@ exports.update = async(req, res, next) => {
         SNOMED: req.body.snomed,
         ECL: req.body.ecl,
     }
-    role.update(entry, (err, result) => {
+    vitals.update(entry, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
@@ -102,7 +104,168 @@ exports.delete = async(req, res, next) => {
     let entry = {
         id: req.body.id
     }
-    role.delete(entry, (err, result) => {
+    vitals.delete(entry, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+
+
+exports.getpt = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'SETTING_VITAL_INFO');
+    if(!can)return res.status(200).json('Not Permission');
+
+    vitals.getpt((err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.addpt = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'SETTING_VITAL_INFO');
+    if(!can)return res.status(405).json('Not Permission');
+    
+    vitals.addpt(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.chosenpt = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'SETTING_VITAL_INFO');
+    if(!can)return res.status(405).json('Not Permission');
+    
+    vitals.chosenpt(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.updatept = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['write'], 'SETTING_VITAL_INFO');
+    if(!can)return res.status(405).json('Not Permission');
+    
+    vitals.updatept(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+exports.deletept = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'SETTING_VITAL_INFO');
+    if(!can)return res.status(405).json('Not Permission');
+    
+    vitals.deletept(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err);
+        } else {
+            res.status(200).json({ data: result });
+        }
+    });
+}
+
+
+
+function ExcelDateToJSDate(serial) {
+    let utc_days = serial - 25568;
+    let utc_value = utc_days * 86400;
+    let date_info = new Date(utc_value * 1000);
+
+    let year = date_info.getFullYear();
+    let month = date_info.getMonth() + 1;
+    let dt = date_info.getDate();
+
+    if (dt < 10) {
+        dt = '0' + dt;
+    }
+    if (month < 10) {
+        month = '0' + month;
+    }
+    return year + '-' + month + '-' + dt;
+}
+
+exports.vitalloader = async(req, res, next) => {
+    // 1. getpatient vital information begin //
+    let vitalList = await vitals.getpt()
+
+    let pureSheet = []
+
+    const workSheetsFromFile = xlsx.parse(req.files[0].path)
+    pureSheet = workSheetsFromFile[0].data
+    let headers = pureSheet[0]
+    let rowCounter = 0
+    let addCount = 0
+
+    if(pureSheet.length < 1) return
+    // 1. getpatient vital information end //
+
+    // 2. add patient vital information begin //
+    for (row of pureSheet) {
+        if (rowCounter > 0) {
+            let vData = {
+                vid: '',
+                vid1: '',
+                vid2: '',
+                encid: row[headers.indexOf('encounterid')],
+                clinicid: req.body.clinicid,
+                pcpid: row[headers.indexOf('doctorid')],
+                ptid: 0,
+                ptemrid: row[headers.indexOf('patientId')],
+                value: row[headers.indexOf('VitalValue')] ? row[headers.indexOf('VitalValue')] : '',
+                value1: row[headers.indexOf('systollic')] ? row[headers.indexOf('systollic')] : '',
+                value2: row[headers.indexOf('diastollic')] ? row[headers.indexOf('diastollic')] : '',
+                vdate: row[headers.indexOf("date")] ? ExcelDateToJSDate(row[headers.indexOf("date")]) : '',
+                deleted: 0,
+                updatemethod: '',
+                updateby: req.body.userid,
+                createddate: new Date(Date.now()).toISOString().substr(0, 10),
+                visittype: row[headers.indexOf('ENC_VISIT_TYPE')],
+                visitstatus: row[headers.indexOf('ENC_STATUS')],
+                loadmethod: 'Excel'
+            }
+            var _id = 0
+            if (!vitalList.find(o => {
+                _id = o.id
+                return o.encid == row[headers.indexOf('encounterid')]
+            })) { // add new
+                await vitals.addpt(vData)
+                addCount ++
+            } else { // update
+                vData.id = _id
+                await vitals.updatept(vData)
+            }
+        }
+        rowCounter ++
+    }
+    // 2. add patient vital information end //
+
+    // 3. get total patient vital information begin //
+    let totalCount = await vitals.countTotal()
+    // 3. get total patient vital information end //
+    res.status(200).json({total: totalCount, readCount: rowCounter - 1, addCount: addCount})
+}
+
+exports.ecwbulk = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'LOADERS_VITAL_LOADER');
+    if(!can)return res.status(405).json('Not Permission');
+
+    vitals.ecwbulk(entry, (err, result) => {
         if (err) {
             res.status(404).json(err);
         } else {
