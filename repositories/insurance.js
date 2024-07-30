@@ -43,6 +43,7 @@ const accounts = {
         let query = `SELECT ins_lob_map.*, i.insName, l.insName AS lobName, clinics.name AS clinicName FROM ins_lob_map LEFT JOIN insurances AS i ON ins_lob_map.insid = i.id LEFT JOIN insurances AS l ON l.id = ins_lob_map.lobid LEFT JOIN clinics ON ins_lob_map.clinicid = clinics.id WHERE 1 `
         if (entry.insid > 0) query += `AND ins_lob_map.insid = ${entry.insid} `
         if (entry.clinicid > 0) query += `AND ins_lob_map.clinicid = ${entry.clinicid} `
+        if (entry.filter.length > 0) query += ` AND (i.insName LIKE '%${entry.filter}%' OR l.insName LIKE '%${entry.filter}%' OR clinics.name LIKE '%${entry.filter}%' OR ins_lob_map.ecw_insid LIKE '%${entry.filter}%' OR ins_lob_map.ecw_loginsid LIKE '%${entry.filter}%') `
 
         query +=  `ORDER BY ins_lob_map.inslob`
         connection.query(query, [], (err1, result1) => {
@@ -50,6 +51,7 @@ const accounts = {
                 query = `SELECT COUNT(*) AS total FROM ins_lob_map LEFT JOIN insurances AS i ON ins_lob_map.insid = i.id LEFT JOIN insurances AS l ON l.id = ins_lob_map.lobid LEFT JOIN clinics ON ins_lob_map.clinicid = clinics.id WHERE 1 `
                 if (entry.insid > 0) query += `AND ins_lob_map.insid = ${entry.insid} `
                 if (entry.clinicid > 0) query += `AND ins_lob_map.clinicid = ${entry.clinicid} `
+                if (entry.filter.length > 0) query += ` AND (i.insName LIKE '%${entry.filter}%' OR l.insName LIKE '%${entry.filter}%' OR clinics.name LIKE '%${entry.filter}%' OR ins_lob_map.ecw_insid LIKE '%${entry.filter}%' OR ins_lob_map.ecw_loginsid LIKE '%${entry.filter}%') `
                 connection.query(query, [], (err2, result2) => {
                     var total = 0
                     if (!err2) {
