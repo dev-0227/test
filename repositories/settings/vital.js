@@ -20,6 +20,18 @@ const vitals = {
             callback(err, result);
         });
     },
+    chosenForAsync: (entry) => {
+        return new Promise((resolve, reject) => {
+            let query = "SELECT * FROM `f_vitals` WHERE `vname`= ? "
+            connection.query(query, [entry.vname], (err, result) => {
+                if (!err) {
+                    resolve(result)
+                } else {
+                    reject(err)
+                }
+            });
+        })
+    },
     update: (entry, callback) => {
         let query = "UPDATE `f_vitals` SET `vname`= ?, `vdescription` = ?, `LOINC` = ?, `LOINC_Name`= ?, `UCUM_Units` = ?, `SNOMED` = ?, `ECL` = ? WHERE `id`= ? ";
         connection.query(query, [entry.vname, entry.vdescription, entry.LOINC, entry.LOINC_Name, entry.UCUM_Units, entry.SNOMED, entry.ECL,  entry.id], (err, result) => {

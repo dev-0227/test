@@ -216,12 +216,17 @@ exports.vitalloader = async(req, res, next) => {
     // 1. getpatient vital information end //
 
     // 2. add patient vital information begin //
+
+    var vid = await vitals.chosenForAsync({vname: 'BP-S'})
+    var vid1 = await vitals.chosenForAsync({vname: 'BP-D'})
+    var vid2 = await vitals.chosenForAsync({vname: 'BP'})
+
     for (row of pureSheet) {
         if (rowCounter > 0) {
             let vData = {
-                vid: '',
-                vid1: '',
-                vid2: '',
+                vid: vid[0].LOINC,
+                vid1: vid1[0].LOINC,
+                vid2: vid2[0].LOINC,
                 encid: row[headers.indexOf('encounterid')],
                 clinicid: req.body.clinicid,
                 pcpid: row[headers.indexOf('doctorid')],
