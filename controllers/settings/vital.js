@@ -243,7 +243,7 @@ exports.vitalloader = async(req, res, next) => {
             var _id = 0
             if (!vitalList.find(o => {
                 _id = o.id
-                return o.encid == row[headers.indexOf('encounterid')]
+                return o.encid == row[headers.indexOf('encounterid')] && o.vtype == req.body.vtype
             })) { // add new
                 await vitals.addpt(vData)
                 addCount ++
