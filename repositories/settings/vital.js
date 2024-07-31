@@ -47,7 +47,7 @@ const vitals = {
     },
     addpt: (entry, callback) => {
         return new Promise((resolve, reject) => {
-            let query = `INSERT INTO pt_vitals (vid, vid1, vid2, encid, clinicid, pcpid, ptid, ptemrid, value, value1, value2, vdate, deleted, updatemethod, updateby, createddate, visittype, visitstatus, loadmethod) VALUES ('${entry.vid}', '${entry.vid1}', '${entry.vid2}', ${entry.encid}, ${entry.clinicid}, ${entry.pcpid}, ${entry.ptid}, '${entry.ptemrid}', '${entry.value}', '${entry.value1}', '${entry.value2}', '${entry.vdate}', ${entry.deleted}, '${entry.updatemethod}', ${entry.updateby}, '${entry.createddate}', '${entry.visittype}', '${entry.visitstatus}', '${entry.loadmethod}')`
+            let query = `INSERT INTO pt_vitals (vid, vid1, vid2, encid, clinicid, pcpid, ptid, ptemrid, value, value1, value2, vdate, deleted, updatemethod, updateby, createddate, visittype, visitstatus, loadmethod, vtype) VALUES ('${entry.vid}', '${entry.vid1}', '${entry.vid2}', ${entry.encid}, ${entry.clinicid}, ${entry.pcpid}, ${entry.ptid}, '${entry.ptemrid}', '${entry.value}', '${entry.value1}', '${entry.value2}', '${entry.vdate}', ${entry.deleted}, '${entry.updatemethod}', ${entry.updateby}, '${entry.createddate}', '${entry.visittype}', '${entry.visitstatus}', '${entry.loadmethod}', ${entry.vtype})`
             connection.query(query, (err, result) => {
                 if (!err) {
                     resolve(result)
@@ -65,7 +65,7 @@ const vitals = {
     },
     updatept: (entry, callback) => {
         return new Promise((resolve, reject) => {
-            let query = `UPDATE pt_vitals SET vid = '${entry.vid}', vid1 = '${entry.vid1}', vid2 = '${entry.vid2}', encid = ${entry.encid}, clinicid = ${entry.clinicid}, pcpid = ${entry.pcpid}, ptid = ${entry.ptid}, ptemrid = '${entry.ptemrid}', value = '${entry.value}', value1 = '${entry.value1}', value2 = '${entry.value2}', vdate = '${entry.vdate}', deleted = ${entry.deleted}, updatemethod = '${entry.updatemethod}', updateby = ${entry.updateby}, createddate = '${entry.createddate}', visittype = '${entry.visittype}', visitstatus =  '${entry.visitstatus}', loadmethod = '${entry.loadmethod}' WHERE id = ${entry.id}`
+            let query = `UPDATE pt_vitals SET vid = '${entry.vid}', vid1 = '${entry.vid1}', vid2 = '${entry.vid2}', encid = ${entry.encid}, clinicid = ${entry.clinicid}, pcpid = ${entry.pcpid}, ptid = ${entry.ptid}, ptemrid = '${entry.ptemrid}', value = '${entry.value}', value1 = '${entry.value1}', value2 = '${entry.value2}', vdate = '${entry.vdate}', deleted = ${entry.deleted}, updatemethod = '${entry.updatemethod}', updateby = ${entry.updateby}, createddate = '${entry.createddate}', visittype = '${entry.visittype}', visitstatus =  '${entry.visitstatus}', loadmethod = '${entry.loadmethod}', vtype = ${entry.vtype} WHERE id = ${entry.id}`
             connection.query(query, (err, result) => {
                 if (!err) {
                     resolve(result)

@@ -237,7 +237,8 @@ exports.vitalloader = async(req, res, next) => {
                 createddate: new Date(Date.now()).toISOString().substr(0, 10),
                 visittype: row[headers.indexOf('ENC_VISIT_TYPE')],
                 visitstatus: row[headers.indexOf('ENC_STATUS')],
-                loadmethod: 'Excel'
+                loadmethod: 'Excel',
+                vtype: req.body.vtype
             }
             var _id = 0
             if (!vitalList.find(o => {
