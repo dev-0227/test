@@ -39,6 +39,7 @@ const tracking = require('./routes/tracking');
 const barriers = require('./routes/barriers');
 const reportBuilder = require('./routes/reportBuilder');
 const affiliation = require('./routes/affiliation');
+const ptanalysisloader = require('./routes/ptanalysisloader');
 
 
 const corsOptions = {
@@ -88,6 +89,7 @@ app.use('/tracking', tracking);
 app.use('/barriers', barriers);
 app.use('/reportBuilder', reportBuilder);
 app.use('/affiliation', affiliation);
+app.use('/ptanalysisloader', ptanalysisloader);
 
 
 app.use('/uploads', express.static(path.join(__dirname, './uploads')));
