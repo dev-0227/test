@@ -52,20 +52,30 @@ const tracking = {
         })
     },
     getPtInsTrackByPtId: (entry, callback) => {
-        let query = `SELECT inslob.id FROM inslob, insurances, patient_list, ins_lob_map WHERE inslob.id = ins_lob_map.lobid AND ins_lob_map.clinicid = ${entry.clinicid} AND ins_lob_map.insid = insurances.id AND insurances.insId = patient_list.INS_ID AND patient_list.patientid = ${entry.patientid}`
+        let data = {}
+        let query = `SELECT DISTINCT p.FNAME AS fname, p.LNAME AS lname, p.DOB AS dob, p.INS_ID AS insid, p.INS_NAME AS insName, p.GENDER AS gender, p.subscriberno, p.startDate, p.patientid AS ptemrid, i.id AS chinsid, i.lob FROM patient_list AS p `
+        query += `LEFT JOIN insurances AS i ON i.insId = p.INS_ID AND p.id = ${entry.patientid} WHERE p.id = ${entry.patientid}`
         connection.query(query, (err1, result1) => {
-            console.log(err1)
             if (!err1) {
-                var lobid = 0
-                if (result1.length) lobid = result1[0].id
-                query = `SELECT DISTINCT t.*, p.FNAME, p.LNAME, p.ADDRESS, p.CITY, p.ZIP, p.GENDER, p.DOB, p.LANGUAGE, p.PHONE, p.MOBILE, p.EMAIL, inslob.variation AS lob_name FROM pt_ins_track AS t `
-                query += `LEFT JOIN patient_list AS p ON p.patientid = t.ptemrid AND p.clinicid = ${entry.clinicid} `
-                query += `LEFT JOIN inslob ON inslob.id = ${lobid} `
-                query += `WHERE t.ptemrid = ${entry.patientid} AND t.clinic_id = ${entry.clinicid} `
-                query += `ORDER BY t.startDate DESC`
-                connection.query(query, (err, result) => {
-                    callback(err, result)
-                })
+                data = result1[0]
+                console.log(data)
+                if (data.lob == 1) { // insurance lob
+                    data.lobName = data.insName
+                    query = `SELECT m.*, i.insName AS insName FROM insurances AS i LEFT JOIN ins_lob_map AS m ON m.insid = i.insId AND m.clinicid = ${entry.clinicid}`
+                    connection.query(query, (err2, result2) => {
+                        if (!err2) {
+                            console.log(result2[0])
+                            data.insName = result2[0] ? result2[0].insName : ''
+                            callback(err2, [data])
+                        } else {
+                            callback(err2, result2)
+                        }
+                    })
+                } else { // insurance
+                    callback(err1, result1)
+                }
+            } else {
+                callback(err1, result1)
             }
         })
     },

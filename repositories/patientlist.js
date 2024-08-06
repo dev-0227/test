@@ -35,7 +35,7 @@ const patientlist = {
 
     ptloader: (entry, callback) => {
         //exist
-        let query = `SELECT id, startDate FROM patient_list WHERE patientid = ${entry.uid}`
+        let query = `SELECT id, startDate FROM patient_list WHERE patientid = ${entry.uid} AND clinicid = ${entry.clinicid}`
         return new Promise((resolve, reject) => {
             connection.query(query, [], (err1, result1) => {
                 if (!err1) {

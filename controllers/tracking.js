@@ -9,7 +9,7 @@ exports.getAllPatientTracking = async(req, res, next) => {
 
     setting.getAllPatientTracking(req.query, (err, result) => {
         if (err) {
-            res.status(404).json(err);
+            res.status(405).json(err);
         } else {
             res.status(200).json(result);
         }
@@ -22,7 +22,7 @@ exports.getPtInsTrackByPtId = async(req, res, next) => {
 
     tracking.getPtInsTrackByPtId(req.body, (err, result) => {
         if (err) {
-            res.status(404).json(err);
+            res.status(405).json(err);
         } else {
             res.status(200).json({data: result});
         }

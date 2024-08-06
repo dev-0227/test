@@ -54,10 +54,10 @@ exports.ptloader = async (req, res, next) => {
     let userid = req.body.userid;
     let pts = await patientlist.getpts(clinicid);
     await patientlist.setflagpts(clinicid);
-    var tmppts = [];
-    for(var  i = 0; i < pts.length;i++){
-        tmppts.push(pts[i]['patientid']);
-    }
+    // var tmppts = [];
+    // for(var  i = 0; i < pts.length;i++){
+    //     tmppts.push(pts[i]['patientid']);
+    // }
     let filePath = req.files[0].path;
     let pureSheet = [];
     // Parse a file
@@ -82,7 +82,8 @@ exports.ptloader = async (req, res, next) => {
     for (row of pureSheet) {
         if (rowCounter != 0) {
             let entry = [];
-            if(!tmppts.includes(row[headers.indexOf("uid")])){
+            if (!pts.find(o => o.patientid == row[headers.indexOf('uid')])) {
+            // if(!tmppts.includes(row[headers.indexOf("uid")])){
                 entry = {
                     userid: userid,
                     clinicid:clinicid,
