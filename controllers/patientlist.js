@@ -83,7 +83,7 @@ exports.ptloader = async (req, res, next) => {
         if (rowCounter != 0) {
             let entry = [];
             if (!pts.find(o => o.patientid == row[headers.indexOf('uid')])) {
-            // if(!tmppts.includes(row[headers.indexOf("uid")])){
+
                 entry = {
                     userid: userid,
                     clinicid:clinicid,
@@ -114,10 +114,12 @@ exports.ptloader = async (req, res, next) => {
                     loadmethod: 'Excel',
                     startDate:(row[headers.indexOf("startDate")]==null||row[headers.indexOf("startDate")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("startDate")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("startDate")])),
                 };
-                var result = await patientlist.ptloader(entry)
-                if (result != null && result['insertId']) {
-                    if(pt_ids != "")pt_ids += ","
-                    pt_ids += result['insertId']
+                if (!entry.uid || entry.uid == '') {
+                    var result = await patientlist.ptloader(entry)
+                    if (result != null && result['insertId']) {
+                        if(pt_ids != "")pt_ids += ","
+                        pt_ids += result['insertId']
+                    }
                 }
             }   
         }
