@@ -19,6 +19,8 @@ const cors = require('cors');
 const { BrandVettingContext } = require('twilio/lib/rest/messaging/v1/brandRegistration/brandVetting');
 const { type } = require('os');
 
+var _progressForPtLoader = 0.0
+
 var mail = nodemailer.createTransport({
     host: config.emailaccess.host,
     port: config.emailaccess.port,
@@ -66,6 +68,10 @@ exports.ptloader = async (req, res, next) => {
     let headers = pureSheet[0];
     let rowCounter = 0;
     if(pureSheet.length<1)return;
+
+    var allTrack = await tracking.getAllPtInsTracking()
+    var date = new Date(Date.now()).toISOString().substr(0, 10)
+
     let entry = {
         user_id: userid,
         clinic_id: clinicid,
@@ -78,12 +84,12 @@ exports.ptloader = async (req, res, next) => {
     }
     var event_result = await event.logger(entry);
     var pt_ids = "";
-    // 1. Patient Information begin //
+    
     for (row of pureSheet) {
         if (rowCounter != 0) {
+            // 1. Patient Information begin //
             let entry = [];
             if (!pts.find(o => o.patientid == row[headers.indexOf('uid')])) {
-
                 entry = {
                     userid: userid,
                     clinicid:clinicid,
@@ -121,26 +127,9 @@ exports.ptloader = async (req, res, next) => {
                         pt_ids += result['insertId']
                     }
                 }
-            }   
-        }
-        rowCounter++;
-    };
-    var load_count = pt_ids.split(',').length;
-    if(pt_ids=="")load_count = "0";
-    entry = {
-        id: event_result['insertId'],
-        model_name: 'patient_list',
-        model_id: pt_ids,
-        description: 'Loaded '+load_count+' patients from csv-file'
-    }
-    event.update(entry);
-    // 1. Patient Information end //
-    // 2. Patient Insurance Information begin //
-    rowCounter = 0
-    var allTrack = await tracking.getAllPtInsTracking()
-    var date = new Date(Date.now()).toISOString().substr(0, 10)
-    for(row of pureSheet) {
-        if (rowCounter > 0) {
+            }
+            // 1. Patient Information end //
+            // 2. Patient Insurance Information begin //
             let data = {
                 ins_id: row[headers.indexOf('insid')] ? row[headers.indexOf('insid')] : '',
                 insurance_name: row[headers.indexOf('insuranceName')] ? row[headers.indexOf('insuranceName')] : '',
@@ -152,12 +141,23 @@ exports.ptloader = async (req, res, next) => {
                 seq_no: 1
             }
             if (!allTrack.find(o => o.ins_id == data.ins_id && o.ptemrid == data.ptemrid)) {
-                var callback = await tracking.setPtInsTracking(data)
+                await tracking.setPtInsTracking(data)
             }
+            // 2. Patient Information end //
         }
-        rowCounter ++
+        rowCounter++
+        _progressForPtLoader = (rowCounter / pureSheet.length) * 100.0
+    };
+    var load_count = pt_ids.split(',').length;
+    if(pt_ids=="")load_count = "0";
+    entry = {
+        id: event_result['insertId'],
+        model_name: 'patient_list',
+        model_id: pt_ids,
+        description: 'Loaded '+load_count+' patients from csv-file'
     }
-    // 2. Patient Information end //
+    event.update(entry);
+    
     // 3. Insurance Lob Map begin //
     // for (row of pureSheet) {
     //     let lobmap = {
@@ -183,6 +183,11 @@ exports.ptloader = async (req, res, next) => {
             res.status(200).json({ data: result });
         }
     });
+    _progressForPtLoader = 0.0
+}
+
+exports.progress = async(req, res, next) => {
+    res.status(200).json({data: _progressForPtLoader})
 }
 
 exports.getData = async(req, res, next) => {
