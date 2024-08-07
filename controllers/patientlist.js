@@ -114,7 +114,7 @@ exports.ptloader = async (req, res, next) => {
                     loadmethod: 'Excel',
                     startDate:(row[headers.indexOf("startDate")]==null||row[headers.indexOf("startDate")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("startDate")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("startDate")])),
                 };
-                if (!entry.uid && entry.uid != '') {
+                if (entry.uid) {
                     var result = await patientlist.ptloader(entry)
                     if (result != null && result['insertId']) {
                         if(pt_ids != "")pt_ids += ","
