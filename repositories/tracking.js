@@ -14,7 +14,7 @@ const tracking = {
         query += `AND p.loaddate LIKE '%${entry.year}-${entry.month}%' `
 
         let where = ``
-        where += `AND (p.patientid LIKE '%${entry.all}%' OR p.FNAME LIKE '%${entry.all}%' OR p.LNAME LIKE '%${entry.all}%' OR p.PHONE LIKE '%${entry.all}%' OR p.DOB LIKE '%${entry.all}%' OR m.fname LIKE '%${entry.all}%' OR m.mname LIKE '%${entry.all}%' OR m.lname LIKE '%${entry.all}%' OR p.loadmethod LIKE '%${entry.all}%' OR p.newpttype LIKE '%${entry.all}%' `
+        where += `AND (p.patientid LIKE '%${entry.all}%' OR p.INS_NAME LIKE '%${entry.all}%' OR p.FNAME LIKE '%${entry.all}%' OR p.LNAME LIKE '%${entry.all}%' OR p.PHONE LIKE '%${entry.all}%' OR p.DOB LIKE '%${entry.all}%' OR m.fname LIKE '%${entry.all}%' OR m.mname LIKE '%${entry.all}%' OR m.lname LIKE '%${entry.all}%' OR p.loadmethod LIKE '%${entry.all}%' OR p.newpttype LIKE '%${entry.all}%' `
         where += `OR a.reason LIKE '%${entry.all}%' OR a.created_date LIKE '%${entry.all}%') `
         if (entry.visitstatus != 0) where += `AND a.status = ${entry.visitstatus} `
         if (entry.visittype != 0) where += `AND a.appt_type = ${entry.visittype} `
@@ -58,7 +58,6 @@ const tracking = {
         connection.query(query, (err1, result1) => {
             if (!err1) {
                 data = result1[0]
-                console.log(data)
                 if (data.lob == 1) { // insurance lob
                     data.lobName = data.insName
                     query = `SELECT m.*, i.insName AS insName FROM insurances AS i LEFT JOIN ins_lob_map AS m ON m.insid = i.insId AND m.clinicid = ${entry.clinicid}`
