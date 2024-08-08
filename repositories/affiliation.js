@@ -5,7 +5,7 @@ const affiliation = {
     get: (entry, callback) => {
         let query = `SELECT * FROM affiliation `
         if (entry.search.value && entry.search.value.length > 0) query += `WHERE name LIKE '%${entry.search.value}%' OR address LIKE '%${entry.search.value}%'`
-        query += ` ORDER BY name`
+        query += ` ORDER BY name LIMIT ${entry.start},${entry.length}`
         connection.query(query, (err, result) => {
             if (!err) {
                 query = `SELECT COUNT(*) AS total FROM affiliation`
