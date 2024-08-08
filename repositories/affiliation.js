@@ -60,7 +60,7 @@ const affiliation = {
         query += `JOIN ins_type AS it ON it.id = cic.instypeid `
         query += `JOIN ins_lob_payform AS pm ON pm.id = cic.paymethodid `
         if (entry.search.value && entry.search.value.length > 0) query += `WHERE clinic LIKE '%${entry.search.value}%' OR insurance LIKE '%${entry.search.value}%' OR affiliation LIKE '%${entry.search.value}%' `
-        query += `ORDER BY clinicid`
+        query += `ORDER BY clinicid LIMIT ${entry.start},${entry.length}`
         connection.query(query, (err, result) => {
             if (!err) {
                 query = `SELECT COUNT(*) AS total FROM clinic_ins_characteristics`
