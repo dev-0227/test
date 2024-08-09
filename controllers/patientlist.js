@@ -88,38 +88,37 @@ exports.ptloader = async (req, res, next) => {
     for (row of pureSheet) {
         if (rowCounter != 0) {
             // 1. Patient Information begin //
-            let entry = [];
+            let entry = {
+                userid: userid,
+                clinicid:clinicid,
+                uid:row[headers.indexOf("uid")],
+                ufname:row[headers.indexOf("ufname")],
+                uminitial:row[headers.indexOf("uminitial")],
+                ulname:row[headers.indexOf("ulname")],
+                upPhone:row[headers.indexOf("upPhone")],
+                umobileno:row[headers.indexOf("umobileno")],
+                uemail:row[headers.indexOf("uemail")],
+                upaddress:row[headers.indexOf("upaddress")],
+                upcity:row[headers.indexOf("upcity")],
+                zipcode:row[headers.indexOf("zipcode")],
+                upstate:row[headers.indexOf("upstate")],
+                sex:row[headers.indexOf("sex")],
+                Age:row[headers.indexOf("Age")],
+                language:row[headers.indexOf("language")],
+                ethnicity:row[headers.indexOf("ethnicity")],
+                race:row[headers.indexOf("race")],
+                deceased:row[headers.indexOf("deceased")],
+                deceasedDate:(row[headers.indexOf("deceasedDate")]==null||row[headers.indexOf("deceasedDate")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("deceasedDate")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("deceasedDate")])),
+                DOB:(row[headers.indexOf("DOB")]==null||row[headers.indexOf("DOB")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("DOB")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("DOB")])),
+                event_id:event_result['insertId'],
+                insid:row[headers.indexOf('insid')],
+                insuranceName:row[headers.indexOf('insuranceName')],
+                subscriberno:row[headers.indexOf('subscriberno')],
+                marital:1,
+                loadmethod: 'Excel',
+                startDate:(row[headers.indexOf("startDate")]==null||row[headers.indexOf("startDate")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("startDate")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("startDate")])),
+            }
             if (!pts.find(o => o.patientid == row[headers.indexOf('uid')])) {
-                entry = {
-                    userid: userid,
-                    clinicid:clinicid,
-                    uid:row[headers.indexOf("uid")],
-                    ufname:row[headers.indexOf("ufname")],
-                    uminitial:row[headers.indexOf("uminitial")],
-                    ulname:row[headers.indexOf("ulname")],
-                    upPhone:row[headers.indexOf("upPhone")],
-                    umobileno:row[headers.indexOf("umobileno")],
-                    uemail:row[headers.indexOf("uemail")],
-                    upaddress:row[headers.indexOf("upaddress")],
-                    upcity:row[headers.indexOf("upcity")],
-                    zipcode:row[headers.indexOf("zipcode")],
-                    upstate:row[headers.indexOf("upstate")],
-                    sex:row[headers.indexOf("sex")],
-                    Age:row[headers.indexOf("Age")],
-                    language:row[headers.indexOf("language")],
-                    ethnicity:row[headers.indexOf("ethnicity")],
-                    race:row[headers.indexOf("race")],
-                    deceased:row[headers.indexOf("deceased")],
-                    deceasedDate:(row[headers.indexOf("deceasedDate")]==null||row[headers.indexOf("deceasedDate")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("deceasedDate")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("deceasedDate")])),
-                    DOB:(row[headers.indexOf("DOB")]==null||row[headers.indexOf("DOB")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("DOB")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("DOB")])),
-                    event_id:event_result['insertId'],
-                    insid:row[headers.indexOf('insid')],
-                    insuranceName:row[headers.indexOf('insuranceName')],
-                    subscriberno:row[headers.indexOf('subscriberno')],
-                    marital:1,
-                    loadmethod: 'Excel',
-                    startDate:(row[headers.indexOf("startDate")]==null||row[headers.indexOf("startDate")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("startDate")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("startDate")])),
-                };
                 if (entry.uid) {
                     var result = await patientlist.ptloader(entry)
                     if (result != null && result['insertId']) {
@@ -144,6 +143,48 @@ exports.ptloader = async (req, res, next) => {
                 await tracking.setPtInsTracking(data)
             }
             // 2. Patient Information end //
+            // 3. New Patient Tracking begin //
+            let track = {
+                insid: entry.insid,
+                lobname: '',
+                memberid: entry.subscriberno,
+                clinicid: entry.clinicid,
+                patientid: entry.uid,
+                ptfhirid: '',
+                pcpname: '',
+                ptfname: entry.ufname,
+                ptmname: '',
+                ptlname: entry.ulname,
+                ptdob: entry.DOB,
+                ptgender: entry.sex,
+                ptaddress: entry.upaddress,
+                ptaddress2: entry.upaddress2,
+                ptemail: '',
+                ptcity: entry.upcity,
+                ptstate: entry.upstate,
+                ptzip: entry.zipcode,
+                ptphone: entry.upPhone,
+                loaddate: new Date(Date.now()).toISOString().substr(0, 10),
+                loadmethod: 'Excel',
+                loadby: entry.userid,
+                ptseen: '',
+                visittype: '',
+                reason: '',
+                rosterstatus: '',
+                visitstatus: '',
+                visitdos: '',
+                loadid: '',
+                recertdate: '',
+                disdate: ''
+            }
+            var r = await tracking.getNewPtTrackingByPtId(track)
+            if (!r) {
+                await tracking.addNewPtTracking(track)
+            } else {
+                track.id = r.id
+                 await tracking.updateNewPtTracking(track)
+            }
+            // 3. New Patient Tracking end //
         }
         rowCounter++
         _progressForPtLoader = (rowCounter / pureSheet.length) * 100.0
