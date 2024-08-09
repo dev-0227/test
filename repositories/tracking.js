@@ -103,8 +103,8 @@ const tracking = {
     },
     addNewPtTracking: (entry) => {
         return new Promise((resolve, reject) => {
-            let query = `INSERT INTO newpt_track (insid, lobname, memberid, clinicid, patientid, ptfhirid, pcpname, ptfname, ptmname, ptlname, ptdob, ptaddress, ptaddress2, ptemail, ptcity, ptstate, ptphone, loadby, loadmethod, ptseen, visittype, reason, rosterstatus, visitstatus, visitdos, loadid, recertdate, disdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-            connection.query(query, [entry.insid, entry.lobname, entry.memberid, entry.clinicid, entry.patientid, entry.ptfhirid, entry.pcpname, entry.ptfname, entry.ptmname, entry.ptlname, entry.ptdob, entry.ptaddress, entry.ptaddress2, entry.ptemail, entry.ptcity, entry.ptstate, entry.ptphone, entry.loadby, entry.loadmethod, entry.ptseen, entry.visittype, entry.reason, entry.rosterstatus, entry.visittsatus, entry.visitdos, entry.loadid, entry.recertdate, entry.disdate], (err, result) => {
+            let query = `INSERT INTO newpt_track (insid, lobname, memberid, clinicid, patientid, ptfhirid, pcpname, ptfname, ptmname, ptlname, ptdob, ptaddress, ptaddress2, ptemail, ptcity, ptstate, ptphone, loadby, loadmethod, loaddate, ptseen, visittype, reason, rosterstatus, visitstatus, visitdos, loadid, recertdate, disdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+            connection.query(query, [entry.insid, entry.lobname, entry.memberid, entry.clinicid, entry.patientid, entry.ptfhirid, entry.pcpname, entry.ptfname, entry.ptmname, entry.ptlname, entry.ptdob, entry.ptaddress, entry.ptaddress2, entry.ptemail, entry.ptcity, entry.ptstate, entry.ptphone, entry.loadby, entry.loadmethod, entry.loaddate, entry.ptseen, entry.visittype, entry.reason, entry.rosterstatus, entry.visittsatus, entry.visitdos, entry.loadid, entry.recertdate, entry.disdate], (err, result) => {
                 if (!err) {
                     resolve({status: 0, result: result})
                 } else {
@@ -115,8 +115,8 @@ const tracking = {
     },
     updateNewPtTracking: (entry) => {
         return new Promise((resolve, reject) => {
-            let query = `UPDATE newpt_track SET insid = ?, lobname = ?, memberid = ?, clinicid = ?, patientid = ?, ptfhirid = ?, pcpname = ?, ptfname = ?, ptmname = ?, ptlname = ?, ptdob = ?, ptaddress = ?, ptaddress2 = ?, ptemail = ?, ptcity = ?, ptstate = ?, ptphone = ?, loadby = ?, loadmethod = ?, ptseen = ?, visittype = ?, reason = ?, rosterstatus = ?, visitstatus = ?, visitdos = ?, loadid = ?, recertdate = ?, disdate = ? WHERE id = ?`
-            connection.query(query, [entry.insid, entry.lobname, entry.memberid, entry.clinicid, entry.patientid, entry.ptfhirid, entry.pcpname, entry.ptfname, entry.ptmname, entry.ptlname, entry.ptdob, entry.ptaddress, entry.ptaddress2, entry.ptemail, entry.ptcity, entry.ptstate, entry.ptphone, entry.loadby, entry.loadmethod, entry.ptseen, entry.visittype, entry.reason, entry.rosterstatus, entry.visittsatus, entry.visitdos, entry.loadid, entry.recertdate, entry.disdate, entry.id], (err, result) => {
+            let query = `UPDATE newpt_track SET insid = ?, lobname = ?, memberid = ?, clinicid = ?, patientid = ?, ptfhirid = ?, pcpname = ?, ptfname = ?, ptmname = ?, ptlname = ?, ptdob = ?, ptaddress = ?, ptaddress2 = ?, ptemail = ?, ptcity = ?, ptstate = ?, ptphone = ?, loadby = ?, loadmethod = ?, loaddate = ?, ptseen = ?, visittype = ?, reason = ?, rosterstatus = ?, visitstatus = ?, visitdos = ?, loadid = ?, recertdate = ?, disdate = ? WHERE id = ?`
+            connection.query(query, [entry.insid, entry.lobname, entry.memberid, entry.clinicid, entry.patientid, entry.ptfhirid, entry.pcpname, entry.ptfname, entry.ptmname, entry.ptlname, entry.ptdob, entry.ptaddress, entry.ptaddress2, entry.ptemail, entry.ptcity, entry.ptstate, entry.ptphone, entry.loadby, entry.loadmethod, entry.loaddate, entry.ptseen, entry.visittype, entry.reason, entry.rosterstatus, entry.visittsatus, entry.visitdos, entry.loadid, entry.recertdate, entry.disdate, entry.id], (err, result) => {
                 if (!err) {
                     resolve({status: 0, result: result})
                 } else {
