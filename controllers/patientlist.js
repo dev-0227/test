@@ -185,6 +185,15 @@ exports.ptloader = async (req, res, next) => {
                  await tracking.updateNewPtTracking(track)
             }
             // 3. New Patient Tracking end //
+            // 4. FFS Tracking begin //
+            // r = await tracking.getFFSTrackByPtId(track)
+            // if (!r) {
+            //     await tracking.addFFSTracking(track)
+            // } else {
+            //     track.id = r.id
+            //      await tracking.updateFFSTracking(track)
+            // }
+            // 4. FFS Tracking end //
         }
         rowCounter++
         _progressForPtLoader = (rowCounter / pureSheet.length) * 100.0
