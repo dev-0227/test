@@ -8,7 +8,7 @@ router.get('/patient/all', AuthGuard, controller.getAllPatientTracking);
 router.post('/patient/byptid', AuthGuard, controller.getPtInsTrackByPtId);
 
 router.get('/ffs/all', AuthGuard, controller.getAllFFSTracking);
-router.post('/ffs/byptid', AuthGuard, controller.getFFSTrackByPtId);
+router.post('/ffs/byptid', AuthGuard, controller.chosenFFSTrack);
 router.post('/ffs/export', AuthGuard, controller.ffsExport);
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const xlsx = require('node-xlsx');
 const patientlist = require('../repositories/patientlist');
 const tracking = require('../repositories/tracking')
-const insurance = require('../repositories/insurance')
+const affiliation = require('../repositories/affiliation')
 const event = require('../repositories/event');
 const Acl = require('../middleware/acl');
 const {getClinicsByUserType} = require('../repositories/settings/clinic')
@@ -186,13 +186,32 @@ exports.ptloader = async (req, res, next) => {
             }
             // 3. New Patient Tracking end //
             // 4. FFS Tracking begin //
-            // r = await tracking.getFFSTrackByPtId(track)
-            // if (!r) {
-            //     await tracking.addFFSTracking(track)
-            // } else {
-            //     track.id = r.id
-            //      await tracking.updateFFSTracking(track)
-            // }
+            var pay = await affiliation.chosenInsClinicAffiliationByInsurance({clinicid: entry.clinicid, insid: entry.insid, patientid: entry.uid})
+            let ffs_track = {
+                insid: entry.insid,
+                ins_typeid: pay.instypeid,
+                patientid: entry.uid,
+                clinicid: entry.clinicid,
+                pay_methodid: pay.paymethodid,
+                ffs_status: '',
+                ffs_status_date: '1900-01-01',
+                visit_type: '',
+                visit_reason: '',
+                visit_status: '',
+                visit_dos: '',
+                loadid: '',
+                load_date: new Date(Date.now()).toISOString().substr(0, 10),
+                change_date: '1900-01-01',
+                loadby: userid,
+                loadmethod: 'Excel'
+            }
+            r = await tracking.getFFSTrackByPtId(ffs_track)
+            if (!r) {
+                await tracking.addFFSTracking(ffs_track)
+            } else {
+                ffs_track.id = r.id
+                 await tracking.updateFFSTracking(ffs_track)
+            }
             // 4. FFS Tracking end //
         }
         rowCounter++
@@ -207,20 +226,6 @@ exports.ptloader = async (req, res, next) => {
         description: 'Loaded '+load_count+' patients from csv-file'
     }
     event.update(entry);
-    
-    // 3. Insurance Lob Map begin //
-    // for (row of pureSheet) {
-    //     let lobmap = {
-    //         insid: '',
-    //         clinicid: clinicid,
-    //         lobid: '',
-    //         ecw_insid: row[headers.indexOf('insid')] ? row[headers.indexOf('insid')] : '',
-    //         inslob: row[headers.indexOf('insuranceName')] ? row[headers.indexOf('insuranceName')] : ''
-    //     }
-    //     lobmap.inslob = lobmap.inslob.toUpperCase()
-    //     await insurance.setInsLobMap(lobmap)
-    // }
-    // 3. Insurance Lob Map end //
 
     entry = {
         clinicid: req.body.clinicid,

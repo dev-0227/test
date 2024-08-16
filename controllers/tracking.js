@@ -55,6 +55,19 @@ exports.getFFSTrackByPtId = async(req, res, next) => {
     });
 }
 
+exports.chosenFFSTrack = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['create'], 'FFS_TRACKING');
+    if(!can)return res.status(405).json('Not Permission');
+
+    tracking.chosenFFSTrack(req.body, (err, result) => {
+        if (err) {
+            res.status(405).json(err);
+        } else {
+            res.status(200).json({data: result});
+        }
+    });
+}
+
 exports.ffsExport = async(req, res, next) => {
     var can = await Acl.can(req.user, ['write'], 'FFS_TRACKING');
     if(!can)return res.status(405).json('Not Permission');

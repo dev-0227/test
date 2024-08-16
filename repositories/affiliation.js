@@ -100,6 +100,25 @@ const affiliation = {
         connection.query(query, (err, result) => {
             callback(err, result)
         })
+    },
+    chosenInsClinicAffiliationByInsurance: (entry) => {
+        return new Promise((resolve, reject) => {
+            let query = `SELECT cic.paymethodid, cic.instypeid, it.display AS instype, p.display AS paymethod FROM insurances AS i, clinic_ins_characteristics AS cic `
+            query += `LEFT JOIN ins_lob_payform AS p ON p.id = cic.paymethodid `
+            query += `LEFT JOIN ins_type AS it ON it.id = cic.instypeid `
+            query += `WHERE cic.clinicid = ${entry.clinicid} AND (cic.insid = i.id AND i.insId = ${entry.insid})`
+            connection.query(query, (err, result) => {
+                if (!err) {
+                    if (result.length > 0) {
+                        resolve({paymethodid: result[0].paymethodid, instypeid: result[0].instypeid})
+                    } else {
+                        resolve({paymethodid: 0, instypeid: 0})
+                    }
+                } else {
+                    reject(err)
+                }
+            })
+        })
     }
 }
 
