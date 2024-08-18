@@ -29,12 +29,12 @@ const reportBuilderModel = {
         });
 
     },
-    addQualityProgram: (params, callback) => {
-        let query = "INSERT INTO `quality_program` (`ins_id`, `ins_lob_id`, `name`, `display`, `definition`, `description`, `program_date`) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        connection.query(query, [params.ins_id, params.ins_lob_id, params.name, params.display, params.definition, params.description, params.program_date], (err, result) => {
-            callback(err, result);
-        });
-    },
+    // addQualityProgram: (params, callback) => {
+    //     let query = "INSERT INTO `quality_program` (`ins_id`, `ins_lob_id`, `name`, `display`, `definition`, `description`, `program_date`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    //     connection.query(query, [params.ins_id, params.ins_lob_id, params.name, params.display, params.definition, params.description, params.program_date], (err, result) => {
+    //         callback(err, result);
+    //     });
+    // },
 
     addQualityProgram: (params, callback) => {
         if (!Array.isArray(params.ins_lob_id)) {

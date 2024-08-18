@@ -3,7 +3,7 @@ const connection = require('../utilities/database');
 
 const tracking = {
     getAllPatientTracking: (entry, callback) => {
-        let query = `SELECT DISTINCT p.id, p.patientid, p.FNAME AS pfname, p.LNAME AS plname, p.PHONE AS pphone, p.DOB AS pdob, p.loadby, p.loadmethod, p.ptseen, p.INS_ID AS pinsid, p.startDate, i.insName AS pinsname, l.insName AS plobname, il.insName AS pinsnamel, ll.insName AS plobnamel, p.subscriberno AS psub, s.display AS visitstatus, t.name AS visittype, t.color, n.display AS newpttype, m.fname, m.lname, m.mname, a.reason, a.created_date `
+        let query = `SELECT DISTINCT p.id, p.patientid, p.FNAME AS pfname, p.LNAME AS plname, p.PHONE AS pphone, p.DOB AS pdob, p.EMAIL AS email, p.loadby, p.loadmethod, p.ptseen, p.INS_ID AS pinsid, p.startDate, i.insName AS pinsname, l.insName AS plobname, il.insName AS pinsnamel, ll.insName AS plobnamel, p.subscriberno AS psub, s.display AS visitstatus, t.name AS visittype, t.color, n.display AS newpttype, m.fname, m.lname, m.mname, a.reason, a.created_date `
         query += `FROM patient_list AS p `
         query += `LEFT JOIN f_appointment AS a ON a.patient_id = p.id AND a.clinic_id = ${entry.clinicid} `
         query += `LEFT JOIN f_vs_appt_status AS s ON a.status = s.id `
@@ -61,7 +61,7 @@ const tracking = {
         })
     },
     getPtInsTrackByPtId: (entry, callback) => {
-        let query = `SELECT DISTINCT p.id, p.patientid AS ptemrid, p.FNAME AS fname, p.LNAME AS lname, p.DOB AS dob, p.GENDER AS gender, p.loadmethod, p.ptseen, p.INS_ID AS pinsid, p.loaddate AS loaddate, i.insName AS pinsname, l.insName AS plobname, il.insName AS pinsnamel, ll.insName AS plobnamel, p.subscriberno AS subscriberno `
+        let query = `SELECT DISTINCT p.id, p.patientid AS ptemrid, p.FNAME AS fname, p.LNAME AS lname, p.DOB AS dob, p.GENDER AS gender, p.EMAIL AS email, p.loadmethod, p.ptseen, p.INS_ID AS pinsid, p.loaddate AS loaddate, i.insName AS pinsname, l.insName AS plobname, il.insName AS pinsnamel, ll.insName AS plobnamel, p.subscriberno AS subscriberno `
         query += `FROM patient_list AS p `
         // insurance name for ecw_insid in ins_lob_map //
         query += `LEFT JOIN ins_lob_map AS ilm ON ilm.clinicid = ${entry.clinicid} AND ilm.ecw_insid = p.INS_ID `
@@ -164,7 +164,7 @@ const tracking = {
         })
     },
     getAllFFSTracking: (entry, callback) => {
-        let query = `SELECT DISTINCT p.id, p.patientid, p.FNAME AS pfname, p.LNAME AS plname, p.PHONE AS pphone, p.DOB AS pdob, p.loadby, p.loadmethod, p.ptseen, p.INS_ID AS pinsid, p.startDate, i.insName AS pinsname, l.insName AS plobname, il.insName AS pinsnamel, ll.insName AS plobnamel, p.subscriberno AS psub, t.name AS visittype, t.color, n.display AS newpttype, m.fname, m.lname, m.mname, a.reason, a.created_date `
+        let query = `SELECT DISTINCT p.id, p.patientid, p.FNAME AS pfname, p.LNAME AS plname, p.PHONE AS pphone, p.DOB AS pdob, p.EMAIL AS pemail, p.loadby, p.loadmethod, p.ptseen, p.INS_ID AS pinsid, p.startDate, i.insName AS pinsname, l.insName AS plobname, il.insName AS pinsnamel, ll.insName AS plobnamel, p.subscriberno AS psub, t.name AS visittype, t.color, n.display AS newpttype, m.fname, m.lname, m.mname, a.reason, a.created_date `
         query += `FROM patient_list AS p `
         query += `LEFT JOIN f_appointment AS a ON a.patient_id = p.id AND a.clinic_id = ${entry.clinicid} `
         // query += `LEFT JOIN f_vs_appt_status AS s ON a.status = s.id `
@@ -247,7 +247,7 @@ const tracking = {
         })
     },
     chosenFFSTrack: (entry, callback) => {
-        let query = `SELECT p.id AS pid, p.patientid AS ptemrid, p.FNAME AS fname, p.LNAME AS lname, p.MNAME AS mname, p.DOB AS dob, p.GENDER AS gender FROM patient_list AS p WHERE p.id = ${entry.patientid} AND p.clinicid = ${entry.clinicid}`
+        let query = `SELECT p.id AS pid, p.patientid AS ptemrid, p.FNAME AS fname, p.LNAME AS lname, p.MNAME AS mname, p.DOB AS dob, p.GENDER AS gender, p.EMAIL AS email FROM patient_list AS p WHERE p.id = ${entry.patientid} AND p.clinicid = ${entry.clinicid}`
         connection.query(query, (err, result) => {
             callback(err, result)
         })
