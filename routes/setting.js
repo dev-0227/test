@@ -5,6 +5,7 @@ const vitalController = require('../controllers/settings/vital');
 const AuthGuard = require('../middleware/auth');
 const relateController = require('../controllers/settings/relationship');
 const ecwbulk = require('../controllers/settings/ecwbulk')
+const lab = require('../controllers/settings/lab')
 const router = express.Router();
 
 // Get all logs route 
@@ -140,5 +141,13 @@ router.post('/bulk/getForEncounterById', AuthGuard, ecwbulk.getForEncounterById)
 router.post('/bulk/add', AuthGuard, ecwbulk.addBulk)
 router.post('/bulk/edit', AuthGuard, ecwbulk.editBulk)
 router.post('/bulk/delete', AuthGuard, ecwbulk.deleteBulk)
+
+// lab begin //
+router.get('/lab', AuthGuard, lab.list)
+router.post('/lab/add', AuthGuard, lab.add)
+router.post('/lab/update', AuthGuard, lab.update)
+router.post('/lab/chosen', AuthGuard, lab.chosen)
+router.post('/lab/delete', AuthGuard, lab.delete)
+// lab end //
 
 module.exports = router;
