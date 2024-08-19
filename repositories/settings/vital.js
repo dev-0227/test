@@ -93,9 +93,9 @@ const vitals = {
             callback(err, result)
         })
     },
-    countTotal: () => {
+    countTotal: (entry) => {
         return new Promise((resolve, reject) => {
-            let query = `SELECT COUNT(*) AS total FROM pt_vitals`
+            let query = `SELECT COUNT(*) AS total FROM pt_vitals WHERE clinicid = ${entry.clinicid}`
             connection.query(query, (err, result) => {
                 var total = 0
                 if (!err) {

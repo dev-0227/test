@@ -217,38 +217,46 @@ exports.vitalloader = async(req, res, next) => {
 
     // 2. add patient vital information begin //
 
-    var vid = await vitals.chosenForAsync({vname: 'BP-S'})
-    var vid1 = await vitals.chosenForAsync({vname: 'BP-D'})
-    var vid2 = await vitals.chosenForAsync({vname: 'BP'})
+    var vid = '', vid1 = '', vid2 = ''
+    if (req.body.vtype >= 15 && req.body.vtype <= 17) {
+        vid = await vitals.chosenForAsync({vname: 'BP-S'})
+        vid1 = await vitals.chosenForAsync({vname: 'BP-D'})
+        vid2 = await vitals.chosenForAsync({vname: 'BP'})
+    } else if (req.body.vtype == 13 || req.body.vtype == 14) {
+        vid = await vitals.chosenForAsync({vname: 'BMI'})
+        vid1 = await vitals.chosenForAsync({vname: 'BMI%'})
+        vid2 = [{LOINC: ''}]
+    }
 
     for (row of pureSheet) {
         if (rowCounter > 0) {
             let vData = {
-                vid: vid[0].LOINC,
-                vid1: vid1[0].LOINC,
-                vid2: vid2[0].LOINC,
-                encid: row[headers.indexOf('encounterid')],
+                vid: vid[0].LOINC ? vid[0].LOINC : '',
+                vid1: vid1[0].LOINC ? vid1[0].LOINC : '',
+                vid2: vid2[0].LOINC ? vid2[0].LOINC : '',
+                encid: row[headers.indexOf('encounterid')] ? row[headers.indexOf('encounterid')] : '',
                 clinicid: req.body.clinicid,
-                pcpid: row[headers.indexOf('doctorid')],
+                pcpid: row[headers.indexOf('doctorid')] ? row[headers.indexOf('doctorid')] : '',
                 ptid: 0,
-                ptemrid: row[headers.indexOf('patientId')],
+                ptemrid: row[headers.indexOf('patientId')] ? row[headers.indexOf('patientId')] : '',
                 value: row[headers.indexOf('Value')] ? row[headers.indexOf('Value')] : '',
                 value1: row[headers.indexOf('Value1')] ? row[headers.indexOf('Value1')] : '',
                 value2: row[headers.indexOf('Value2')] ? row[headers.indexOf('Value2')] : '',
-                vdate: row[headers.indexOf("date")] ? ExcelDateToJSDate(row[headers.indexOf("date")]) : '',
+                vdate: row[headers.indexOf("date")] ? ExcelDateToJSDate(row[headers.indexOf("date")]) : '1900-01-01',
                 deleted: 0,
                 updatemethod: '',
                 updateby: req.body.userid,
                 createddate: new Date(Date.now()).toISOString().substr(0, 10),
-                visittype: row[headers.indexOf('ENC_VISIT_TYPE')],
-                visitstatus: row[headers.indexOf('ENC_STATUS')],
+                visittype: row[headers.indexOf('ENC_VISIT_TYPE')] ? row[headers.indexOf('ENC_VISIT_TYPE')] : '',
+                visitstatus: row[headers.indexOf('ENC_STATUS')] ? row[headers.indexOf('ENC_STATUS')] : '',
                 loadmethod: 'Excel',
                 vtype: req.body.vtype
             }
             var _id = 0
             if (!vitalList.find(o => {
                 _id = o.id
-                return o.encid == row[headers.indexOf('encounterid')] && o.vtype == req.body.vtype && o.clinicid == req.body.clinicid
+                // return o.encid == row[headers.indexOf('encounterid')] && o.vtype == req.body.vtype && o.clinicid == req.body.clinicid
+                return o.encid == row[headers.indexOf('encounterid')] && o.clinicid == req.body.clinicid
             })) { // add new
                 await vitals.addpt(vData)
                 addCount ++
@@ -262,7 +270,7 @@ exports.vitalloader = async(req, res, next) => {
     // 2. add patient vital information end //
 
     // 3. get total patient vital information begin //
-    let totalCount = await vitals.countTotal()
+    let totalCount = await vitals.countTotal({clinicid: req.body.clinicid})
     // 3. get total patient vital information end //
     res.status(200).json({total: totalCount, readCount: rowCounter - 1, addCount: addCount})
 }
