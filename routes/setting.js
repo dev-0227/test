@@ -7,6 +7,9 @@ const relateController = require('../controllers/settings/relationship');
 const ecwbulk = require('../controllers/settings/ecwbulk')
 const lab = require('../controllers/settings/lab')
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const config = require('../config');
 
 // Get all logs route 
 router.get('/');
@@ -143,6 +146,26 @@ router.post('/bulk/edit', AuthGuard, ecwbulk.editBulk)
 router.post('/bulk/delete', AuthGuard, ecwbulk.deleteBulk)
 
 // lab begin //
+const storage = multer.diskStorage({
+    destination: config.common.uploads,
+    filename: (req, file, cb) => {
+        cb(null, 'lablist-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({
+    storage: storage
+}).array('labfile');
+
+router.post('/labloader', (req, res, next) => {
+    upload(req, res, (err) => {
+        if (!err) {
+            lab.labloader(req, res, next);
+        }
+    });
+});
+
+router.post('/lab/get', AuthGuard, lab.get)
 router.get('/lab', AuthGuard, lab.list)
 router.post('/lab/add', AuthGuard, lab.add)
 router.post('/lab/update', AuthGuard, lab.update)
