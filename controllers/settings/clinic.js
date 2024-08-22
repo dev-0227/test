@@ -255,3 +255,98 @@ exports.chosenclinicmanagers = async(req, res, next) => {
         }
     });
 }
+
+// Hedis Quality Program
+exports.addQualityProgram = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_MANAGE')
+    if(!can)return res.status(405).json('Not Permission')
+    
+    clinic.addQualityProgram(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+
+exports.updateQualityProgram = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_MANAGE')
+    if(!can)return res.status(405).json('Not Permission')
+    
+    clinic.updateQualityProgram(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+
+exports.chosenQualityProgram = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_MANAGE')
+    if(!can)return res.status(405).json('Not Permission')
+    
+    clinic.chosenQualityProgram(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+
+exports.deleteQualityProgram = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_MANAGE')
+    if(!can)return res.status(405).json('Not Permission')
+    
+    clinic.deleteQualityProgram(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+
+exports.setQualityProgram = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_MANAGE')
+    if(!can)return res.status(405).json('Not Permission')
+    
+    clinic.chosenQualityProgram(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            if (result[0]) {
+                clinic.updateQualityProgram(req.body, (err1, result1) => {
+                    if (err1) {
+                        res.status(405).json(err)
+                    } else {
+                        res.status(200).json({ data: result1 })
+                    }
+                })
+            } else {
+                clinic.addQualityProgram(req.body, (err1, result1) => {
+                    if (err1) {
+                        res.status(405).json(err)
+                    } else {
+                        res.status(200).json({ data: result1 })
+                    }
+                })
+            }
+        }
+    })
+}
+
+exports.getQualityList = async(req, res, next) => {
+    var can = await Acl.can(req.user, ['read'], 'CLINIC_MANAGE')
+    if(!can)return res.status(405).json('Not Permission')
+    
+    clinic.getQualityList(req.query, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json(result)
+        }
+    })
+}

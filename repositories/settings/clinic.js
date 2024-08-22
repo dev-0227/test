@@ -1,3 +1,4 @@
+
 const connection = require('../../utilities/database');
 var md5 = require('md5');
 const accounts = {
@@ -177,6 +178,61 @@ const accounts = {
                     }
                 }
             })
+        })
+    },
+
+    //Hedis Quality Program
+    addQualityProgram: (entry, callback) => {
+        let query = `INSERT INTO hedis_quality_program (clinicid, insuranceid, qprogram, date, updateby) VALUES (?, ?, ?, ?, ?)`
+        connection.query(query, [entry.clinicid, entry.insuranceid, entry.qprogram, new Date(Date.now()).toISOString().substr(0, 10), entry.updateby], (err, result) => {
+            callback(err, result)
+        })
+    },
+    updateQualityProgram: (entry, callback) => {
+        let query = `UPDATE hedis_quality_program SET clinicid = ?, insuranceid = ?, qprogram = ?, date = ?, updateby = ? `
+        if (entry.id) query += `WHERE id = ${entry.id}`
+        else {
+            query += `WHERE clinicid = ${entry.clinicid} `
+            if (entry.insuranceid) query += `AND insuranceid = ${entry.insuranceid}`
+        }
+        connection.query(query, [entry.clinicid, entry.insuranceid, entry.qprogram, new Date(Date.now()).toISOString().substr(0, 10), entry.updateby], (err, result) => {
+            callback(err, result)
+        })
+    },
+    chosenQualityProgram: (entry, callback) => {
+        let query = `SELECT * FROM hedis_quality_program WHERE clinicid = ${entry.clinicid} `
+        if (entry.insuranceid) query += `AND insuranceid = ${entry.insuranceid}`
+        connection.query(query, (err, result) => {
+            callback(err, result)
+        })
+    },
+    deleteQualityProgram: (entry, callback) => {
+        let query = `DELETE FROM hedis_quality_program WHERE clinicid = ${entry.clinicid} `
+        if (entry.insuranceid) query += `AND insuranceid = ${entry.insuranceid}`
+        connection.query(query, (err, result) => {
+            callback(err, result)
+        })
+    },
+    getQualityList: (entry, callback) => {
+        let query = `SELECT * FROM quality_program `
+        if (entry.ins_id) query += `WHERE ins_id = ${entry.ins_id} `
+        query += `LIMIT ${entry.start},${entry.length}`
+        connection.query(query, (err, result) => {
+            if (!err) {
+                query = `SELECT COUNT(*) AS total FROM quality_program `
+                if (entry.ins_id) query += `WHERE ins_id = ${entry.ins_id}`
+                connection.query(query, (err1, result1) => {
+                    if (!err1) {
+                        var total = 0
+                        if (result1[0]) total = result1[0].total
+                        callback(err, { data: result, recordsFiltered: total, recordsTotal: total })
+                    } else {
+                        callback(err, {data: [], recordsFiltered: 0, recordsTotal: 0})
+                    }
+                })
+            } else {
+                callback(err, {data: [], recordsFiltered: 0, recordsTotal: 0})
+            }
         })
     }
 }

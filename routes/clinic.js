@@ -41,4 +41,12 @@ router.post('/uploadlogo', (req, res, next) => {
     });
 });
 
+//Hedis Quality Program
+router.post('/program', AuthGuard, controller.setQualityProgram)
+router.post('/program/add', AuthGuard, controller.addQualityProgram)
+router.post('/program/update', AuthGuard, controller.updateQualityProgram)
+router.post('/program/delete', AuthGuard, controller.deleteQualityProgram)
+router.post('/program/chosen', AuthGuard, controller.chosenQualityProgram)
+router.get('/program/list', AuthGuard, controller.getQualityList)
+
 module.exports = router;
