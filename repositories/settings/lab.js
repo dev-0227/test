@@ -117,8 +117,8 @@ const lab = {
     },
     addPtLabsForAsync: (entry) => {
         return new Promise((resolve, reject) => {
-            let query = `INSERT INTO pt_labs (clinicid, pcpid, ptid, lid, lid1, labfhirid, reportid, labname, value, value1, dos, resultstatus, deleted, updatemethod, updateby, createdate, encid, visittype, visitstatus, loadmethod, vtype, lab_root_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
-            connection.query(query, [entry.clinicid, entry.pcpid, entry.ptid, entry.lid, entry.lid1, entry.labfhirid, entry.reportid, entry.labname, entry.value, entry.value1, entry.dos, entry.resultstatus, entry.deleted, entry.updatemethod, entry.updateby, entry.createdate, entry.encid, entry.visittype, entry.visitstatus, entry.loadmethod, entry.vtype, entry.lab_root_name], (err, result) => {
+            let query = `INSERT INTO pt_labs (clinicid, pcpid, ptid, lid, lid1, labfhirid, reportid, labname, value, value1, dos, resultstatus, deleted, updatemethod, updateby, createdate, encid, visittype, visitstatus, visitdate, loadmethod, vtype, lab_root_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+            connection.query(query, [entry.clinicid, entry.pcpid, entry.ptid, entry.lid, entry.lid1, entry.labfhirid, entry.reportid, entry.labname, entry.value, entry.value1, entry.dos, entry.resultstatus, entry.deleted, entry.updatemethod, entry.updateby, entry.createdate, entry.encid, entry.visittype, entry.visitstatus, entry.visitdate, entry.loadmethod, entry.vtype, entry.lab_root_name], (err, result) => {
                 if (!err) {
                     resolve([])
                 } else {
@@ -129,8 +129,8 @@ const lab = {
     },
     upatePtLabsForAsync: (entry) => {
         return new Promise((resolve, reject) => {
-            let query = `UPDATE pt_labs SET clinicid = ?, pcpid = ?, ptid = ?, lid = ?, lid1 = ?, labfhirid = ?, reportid = ?, labname = ?, value = ?, value1 = ?, dos = ?, resultstatus = ?, deleted = ?, updatemethod = ?, updateby = ?, createdate = ?, encid = ?, visittype = ?, visitstatus = ?, loadmethod = ?, vtype = ?, lab_root_name = ? WHERE id = ?;`
-            connection.query(query, [entry.clinicid, entry.pcpid, entry.ptid, entry.lid, entry.lid1, entry.labfhirid, entry.reportid, entry.labname, entry.value, entry.value1, entry.dos, entry.resultstatus, entry.deleted, entry.updatemethod, entry.updateby, entry.createdate, entry.encid, entry.visittype, entry.visitstatus, entry.loadmethod, entry.vtype, entry.lab_root_name, entry.id], (err, result) => {
+            let query = `UPDATE pt_labs SET clinicid = ?, pcpid = ?, ptid = ?, lid = ?, lid1 = ?, labfhirid = ?, reportid = ?, labname = ?, value = ?, value1 = ?, dos = ?, resultstatus = ?, deleted = ?, updatemethod = ?, updateby = ?, createdate = ?, encid = ?, visittype = ?, visitstatus = ?, visitdate = ?, loadmethod = ?, vtype = ?, lab_root_name = ? WHERE id = ?;`
+            connection.query(query, [entry.clinicid, entry.pcpid, entry.ptid, entry.lid, entry.lid1, entry.labfhirid, entry.reportid, entry.labname, entry.value, entry.value1, entry.dos, entry.resultstatus, entry.deleted, entry.updatemethod, entry.updateby, entry.createdate, entry.encid, entry.visittype, entry.visitstatus, entry.visitdate, entry.loadmethod, entry.vtype, entry.lab_root_name, entry.id], (err, result) => {
                 if (!err) {
                     resolve([])
                 } else {

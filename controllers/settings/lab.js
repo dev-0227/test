@@ -63,6 +63,24 @@ exports.delete = async(req, res, next) => {
     })
 }
 
+function ExcelDateToJSDate(serial) {
+    let utc_days = serial - 25568;
+    let utc_value = utc_days * 86400;
+    let date_info = new Date(utc_value * 1000);
+
+    let year = date_info.getFullYear();
+    let month = date_info.getMonth() + 1;
+    let dt = date_info.getDate();
+
+    if (dt < 10) {
+        dt = '0' + dt;
+    }
+    if (month < 10) {
+        month = '0' + month;
+    }
+    return year + '-' + month + '-' + dt;
+}
+
 exports.labloader = async(req, res, next) => {
     let clinicid = req.body.clinicid
     let userid = req.body.userid
@@ -102,7 +120,7 @@ exports.labloader = async(req, res, next) => {
                 value: row[headers.indexOf("value_HL7")] ?? '',
                 value1: '',
                 resultstatus: '',
-                dos: row[headers.indexOf("Lab_ResultDate")] ?? '1900-01-01',
+                dos: row[headers.indexOf("Lab_ResultDate")] ? ExcelDateToJSDate(row[headers.indexOf("Lab_ResultDate")]) : '1900-01-01',
                 deleted: '',
                 updatemethod: '',
                 updateby: 0,
@@ -110,7 +128,7 @@ exports.labloader = async(req, res, next) => {
                 encid: row[headers.indexOf("Lab_D_Encounter")] ?? '',
                 visittype: row[headers.indexOf("VISIT_TYPE")] ?? '',
                 visitstatus: row[headers.indexOf("ENC_STATUS")] ?? '',
-                visitdate: row[headers.indexOf("date")] ?? '1900-01-01',
+                visitdate: row[headers.indexOf("date")] ? ExcelDateToJSDate([headers.indexOf("date")]) : '1900-01-01',
                 vtype: ''
             }
             if (!allLabs.find(o => {
