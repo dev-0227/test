@@ -128,7 +128,7 @@ exports.labloader = async(req, res, next) => {
                 encid: row[headers.indexOf("Lab_D_Encounter")] ?? '',
                 visittype: row[headers.indexOf("VISIT_TYPE")] ?? '',
                 visitstatus: row[headers.indexOf("ENC_STATUS")] ?? '',
-                visitdate: row[headers.indexOf("date")] ? ExcelDateToJSDate([headers.indexOf("date")]) : '1900-01-01',
+                visitdate: row[headers.indexOf("date")] ? ExcelDateToJSDate(row[headers.indexOf("date")]) : '1900-01-01',
                 vtype: ''
             }
             if (!allLabs.find(o => {
