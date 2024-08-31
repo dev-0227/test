@@ -252,38 +252,79 @@ const hedisloader = {
             });
         });
     },
+    matchPatient: (entry) => {
+        return new Promise((resolve, reject) => {
+            let query = `SELECT * FROM patient_list WHERE clinicid = ${entry.clinicid} AND FNAME = '${entry.pfname}' AND LNAME = '${entry.plname}' AND (PHONE = '${entry.phone}' OR MOBILE = '${entry.phone}' ) AND DOB = '${new Date(entry.dob).toISOString().substr(0, 10)}'`
+            connection.query(query, (err, result) => {
+                if (!err) {
+                    if (result.length > 0) {
+                        resolve({status: true, result: result})
+                    } else {
+                        resolve({status: false, result: []})
+                    }
+                } else {
+                    reject(err)
+                }
+            })
+        })
+    },
+    addHedisLoadTrack: (entry) => {
+        return new Promise((resolve, reject) => {
+            let query = `INSERT INTO hedis_load_tracker (ptid, mid, clinicid, l_statusid, loaddate) VALUES (${entry.ptid}, ${entry.mid}, ${entry.clinicid}, ${entry.status}, '${new Date(Date.now()).toISOString().substr(0, 10)}')`
+            connection.query(query, (err, result) => {
+                if (!err) {
+                    resolve({})
+                } else {
+                    reject(err)
+                }
+            })
+        })
+    },
     //existed = 1 new = 2 no longer = 3 multicheck = 0
-    qualityloader: (entry,flag, callback) => {
+    qualityloader: (entry, flag, callback) => {
         let query = "";
-        if(flag == 1){
-            query = "SELECT id FROM `hedis_track` WHERE cyear = ? AND clinicid = ? AND insid = ? AND mid = ? AND measureid = ? AND hstatus = 1";
-            connection.query(query, [entry.cyear, entry.clinicid,entry.insid,entry.mid,entry.measureid], (err, result) => {
-                if(result.length == 0){
-                    let query = "INSERT INTO `hedis_track` (`id`, `cyear`, `clinicid`, `insid`,`emr_id`,`mid`,`ptfname`,`ptlname`,`dob`,`phone`,`email`,`mlob`,`measureid`,`measure`,`ins_pcp_id`,`flag`,`status`,`hstatus`) VALUES (NULL, ? , ? , ? , ?,  ? , ? , ? , ? , ? , ? , ?,  ? , ? , ? , ?, ?, ? )";
-                    connection.query(query, [entry.cyear, entry.clinicid, entry.insid, entry.emr_id, entry.mid, entry.ptfname, entry.ptlname, entry.dob, entry.phone, entry.email, entry.mlob, entry.measureid, entry.measure, entry.ins_pcp_id, entry.flag, entry.status, entry.hstatus], (err, result) => {
-                        callback(err, result);
-                    });
-                }   
-            });
-        }
-        else{
-            query = "SELECT id FROM `hedis_track` WHERE cyear = ? AND clinicid = ? AND insid = ? AND mid = ? AND measure = ?";
-            
-            connection.query(query, [entry.cyear, entry.clinicid,entry.insid,entry.mid,entry.measure], (err, result) => {
-                if(result.length == 0){
-                    let query = "INSERT INTO `hedis_track` (`id`, `cyear`, `clinicid`, `insid`,`emr_id`,`mid`,`ptfname`,`ptlname`,`dob`,`phone`,`email`,`mlob`,`measureid`,`measure`,`ins_pcp_id`,`flag`,`status`,`hstatus`) VALUES (NULL, ? , ? , ? , ?,  ? , ? , ? , ? , ? , ? , ?,  ? , ? , ? , ?, ?, ? )";
-                    
-                    connection.query(query, [entry.cyear, entry.clinicid, entry.insid, entry.emr_id, entry.mid, entry.ptfname, entry.ptlname, entry.dob, entry.phone, entry.email, entry.mlob, entry.measureid, entry.measure, entry.ins_pcp_id, entry.flag, entry.status, entry.hstatus], (err, result) => {
-                        callback(err, result);
-                    });
-                }   
-            });
-        }
+        return new Promise((resolve, reject) => {
+            if(flag == 1){
+                query = "SELECT id FROM `hedis_track` WHERE cyear = ? AND clinicid = ? AND insid = ? AND mid = ? AND measureid = ? AND hstatus = 1";
+                connection.query(query, [entry.cyear, entry.clinicid,entry.insid,entry.mid,entry.measureid], (err, result) => {
+                    if(result.length == 0){
+                        let query = "INSERT INTO `hedis_track` (`id`, `cyear`, `clinicid`, `insid`,`emr_id`,`mid`,`ptfname`,`ptlname`,`dob`,`phone`,`email`,`mlob`,`measureid`,`measure`,`ins_pcp_id`,`flag`,`status`,`hstatus`, `qpid`) VALUES (NULL, ? , ? , ? , ?,  ? , ? , ? , ? , ? , ? , ?,  ? , ? , ? , ?, ?, ?, ? )";
+                        connection.query(query, [entry.cyear, entry.clinicid, entry.insid, entry.emr_id, entry.mid, entry.ptfname, entry.ptlname, entry.dob, entry.phone, entry.email, entry.mlob, entry.measureid, entry.measure, entry.ins_pcp_id, entry.flag, entry.status, entry.hstatus, entry.qpid], (err, result) => {
+                            if (err) {
+                                return reject(err)
+                            } else {
+                                return resolve({_status: true})
+                            }
+                        });
+                    } else {
+                        resolve({_status: false})
+                    }
+                });
+            }
+            else{
+                query = "SELECT id FROM `hedis_track` WHERE cyear = ? AND clinicid = ? AND insid = ? AND mid = ? AND measure = ?";
+                
+                connection.query(query, [entry.cyear, entry.clinicid,entry.insid,entry.mid,entry.measure], (err, result) => {
+                    if(result.length == 0){
+                        let query = "INSERT INTO `hedis_track` (`id`, `cyear`, `clinicid`, `insid`,`emr_id`,`mid`,`ptfname`,`ptlname`,`dob`,`phone`,`email`,`mlob`,`measureid`,`measure`,`ins_pcp_id`,`flag`,`status`,`hstatus`, `qpid`) VALUES (NULL, ? , ? , ? , ?,  ? , ? , ? , ? , ? , ? , ?,  ? , ? , ? , ?, ?, ?, ? )";
+                        connection.query(query, [entry.cyear, entry.clinicid, entry.insid, entry.emr_id, entry.mid, entry.ptfname, entry.ptlname, entry.dob, entry.phone, entry.email, entry.mlob, entry.measureid, entry.measure, entry.ins_pcp_id, entry.flag, entry.status, entry.hstatus, entry.qpid], (err, result) => {
+                            if (err) {
+                                reject(err)
+                            } else {
+                                resolve({_status: true})
+                            }
+                        });
+                    } else {
+                        resolve({_status: false})
+                    }  
+                });
+            }
+        })
         
     },
     tmpqualityloader: (entry, callback) => {
-        let query = "INSERT INTO `hedis_track` (`id`, `cyear`, `clinicid`, `insid`,`emr_id`,`mid`,`ptfname`,`ptlname`,`dob`,`phone`,`email`,`mlob`,`measureid`,`measure`,`ins_pcp_id`,`flag`,`status`,`dos`,`value1`,`value2`,`cpt1`,`cpt2`,`icd1`,`icd2`,`icdv1`,`icdv2`,`gstatus`,`rstatus`,`hstatus`,`apptdate`,`apptpcp`,`apptvisit`,`nextdate`,`lastdate`,`lastpcp`,`lastvisit`) VALUES (NULL, ? , ? , ? , ?,  ? , ?, ?, ? , ? , ? , ?,  ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?,? )";
-        connection.query(query, [entry.cyear, entry.clinicid, entry.insid, entry.emr_id, entry.mid, entry.ptfname, entry.ptlname, entry.dob, entry.phone, entry.email, entry.mlob, entry.measureid, entry.measure, entry.ins_pcp_id, entry.flag, entry.status, entry.dos, entry.value1, entry.value2, entry.cpt1, entry.cpt2, entry.icd1, entry.icd2, entry.icdv1, entry.icdv2, entry.gstatus, entry.rstatus, entry.hstatus, entry.apptdate, entry.apptpcp, entry.apptvisit, entry.nextdate, entry.lastdate, entry.lastpcp, entry.lastvisit], (err, result) => {
+        let query = "INSERT INTO `hedis_track` (`id`, `cyear`, `clinicid`, `insid`,`emr_id`,`mid`,`ptfname`,`ptlname`,`dob`,`phone`,`email`,`mlob`,`measureid`,`measure`,`ins_pcp_id`,`flag`,`status`,`dos`,`value1`,`value2`,`cpt1`,`cpt2`,`icd1`,`icd2`,`icdv1`,`icdv2`,`gstatus`,`rstatus`,`hstatus`,`apptdate`,`apptpcp`,`apptvisit`,`nextdate`,`lastdate`,`lastpcp`,`lastvisit`, `qpid`) VALUES (NULL, ? , ? , ? , ?,  ? , ?, ?, ? , ? , ? , ?,  ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ? )";
+        connection.query(query, [entry.cyear, entry.clinicid, entry.insid, entry.emr_id, entry.mid, entry.ptfname, entry.ptlname, entry.dob, entry.phone, entry.email, entry.mlob, entry.measureid, entry.measure, entry.ins_pcp_id, entry.flag, entry.status, entry.dos, entry.value1, entry.value2, entry.cpt1, entry.cpt2, entry.icd1, entry.icd2, entry.icdv1, entry.icdv2, entry.gstatus, entry.rstatus, entry.hstatus, entry.apptdate, entry.apptpcp, entry.apptvisit, entry.nextdate, entry.lastdate, entry.lastpcp, entry.lastvisit, entry.qpid], (err, result) => {
             callback(err, result);
         });
     },
