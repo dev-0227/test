@@ -138,5 +138,12 @@ router.get('/getprioritycode', controller.getprioritycode);
 router.get('/getedcategorycode', controller.getedcategorycode);
 router.get('/getcomcategorycode', controller.getcomcategorycode);
 
+// hedis load status
+router.post('/loadstatus/measure', controller.getMeasure)
+router.get('/loadstatus/', controller.loadStatusList)
+router.post('/loadstatus/add', controller.addLoadStatus)
+router.post('/loadstatus/update', controller.updateLoadStatus)
+router.post('/loadstatus/delete', controller.deleteLoadStatus)
+router.post('/loadstatus/chosen', controller.chosenLoadStatus)
 
 module.exports = router;

@@ -934,7 +934,60 @@ const setting = {
             callback(err, result);
         });
     },
-    
-    
+
+    // Hedis Load Status //
+    getMeasure: (entry, callback) => {
+        let query = `SELECT * FROM measure_hedis WHERE eyear = ${new Date(Date.now()).getFullYear()}`
+        connection.query(query, (err, result) => {
+            callback(err, result)
+        })
+    },
+    loadStatusList: (entry, callback) => {
+        let query = `SELECT h.*, m.title AS measure FROM load_hedis_status AS h `
+        query += `LEFT JOIN measure_hedis AS m ON m.id = h.measureid AND m.eyear = ${new Date(Date.now()).getFullYear()} `
+        query += `WHERE 1`
+        connection.query(query, (err, result) => {
+            if (!err) {
+                var total = 0
+                query = `SELECT COUNT(*) AS total FROM load_hedis_status`
+                connection.query(query, (err1, result1) => {
+                    if (!err1) {
+                        total = result1.length > 0 ? result1[0].total : 0
+                        callback(err, { data: result, recordsFiltered: total, recordsTotal: total })
+                    } else {
+                        callback(err, { data: [], recordsFiltered: total, recordsTotal: total })
+                    }
+                })
+            } else {
+                callback(err, { data: [], recordsFiltered: 0, recordsTotal: 0 })
+            }
+        })
+    },
+    addLoadStatus: (entry, callback) => {
+        let query = `INSERT INTO load_hedis_status (code, display, measureid) VALUES ('${entry.code}', '${entry.display}', ${entry.measureid})`
+        connection.query(query, (err, result) => {
+            callback(err, result)
+        })
+    },
+    updateLoadStatus: (entry, callback) => {
+        let query = `UPDATE load_hedis_status SET code = '${entry.code}', display = '${entry.display}', measureid = ${entry.measureid} WHERE id = ${entry.id}`
+        connection.query(query, (err, result) => {
+            callback(err, result)
+        })
+    },
+    deleteLoadStatus: (entry, callback) => {
+        let query = `DELETE FROM load_hedis_status WHERE id = ${entry.id}`
+        connection.query(query, (err, result) => {
+            callback(err, result)
+        })
+    },
+    chosenLoadStatus: (entry, callback) => {
+        let query = `SELECT h.*, m.title AS measure FROM load_hedis_status AS h `
+        query += `LEFT JOIN measure_hedis AS m ON m.id = h.measureid `
+        query += `WHERE h.id = ${entry.id}`
+        connection.query(query, (err, result) => {
+            callback(err, result)
+        })
+    }
 }
 module.exports = setting;

@@ -1321,3 +1321,60 @@ exports.getcomcategorycode = (req, res, next) => {
         }
     });
 }
+
+// Hedis Load Status begin //
+exports.getMeasure = (req, res, next) => {
+    setting.getMeasure(req.query, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+exports.loadStatusList = (req, res, next) => {
+    setting.loadStatusList(req.query, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json(result)
+        }
+    })
+}
+exports.addLoadStatus = (req, res, next) => {
+    setting.addLoadStatus(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+exports.updateLoadStatus = (req, res, next) => {
+    setting.updateLoadStatus(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+exports.deleteLoadStatus = (req, res, next) => {
+    setting.deleteLoadStatus(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+exports.chosenLoadStatus = (req, res, next) => {
+    setting.chosenLoadStatus(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
+// Hedis Load Status end //
