@@ -555,11 +555,11 @@ exports.qualityloader = async(req, res, next) => {
                 var _r = await hedisloader.matchPatient(entry)
                 if (_r.status === true) {
                     entry.ptid = _r.result[0].id
-                    entry.l_statusid = 1
+                    entry.pt_l_statusid = 1
                     matched ++
                 } else {
                     entry.ptid = 0
-                    entry.l_statusid = 2
+                    entry.pt_l_statusid = 2
                 }
 
                 // add to hedis load tracking table

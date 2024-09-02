@@ -270,7 +270,7 @@ const hedisloader = {
     },
     addHedisLoadTrack: (entry) => {
         return new Promise((resolve, reject) => {
-            let query = `INSERT INTO hedis_load_tracker (ptid, mid, clinicid, l_statusid, loaddate) VALUES (${entry.ptid}, ${entry.mid}, ${entry.clinicid}, ${entry.l_statusid}, '${new Date(Date.now()).toISOString().substr(0, 10)}')`
+            let query = `INSERT INTO hedis_load_tracker (ptid, mid, clinicid, pt_l_statusid, m_l_statusid, measureid, loaddate) VALUES (${entry.ptid}, ${entry.mid}, ${entry.clinicid}, ${entry.pt_l_statusid}, ${entry.m_l_statusid}, ${entry.measureid}, '${new Date(Date.now()).toISOString().substr(0, 10)}')`
             connection.query(query, (err, result) => {
                 if (!err) {
                     resolve({})
