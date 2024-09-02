@@ -943,8 +943,7 @@ const setting = {
         })
     },
     loadStatusList: (entry, callback) => {
-        let query = `SELECT h.*, m.title AS measure FROM load_hedis_status AS h `
-        query += `LEFT JOIN measure_hedis AS m ON m.id = h.measureid `
+        let query = `SELECT h.* FROM load_hedis_status AS h `
         query += `WHERE 1`
         connection.query(query, (err, result) => {
             if (!err) {
@@ -964,13 +963,13 @@ const setting = {
         })
     },
     addLoadStatus: (entry, callback) => {
-        let query = `INSERT INTO load_hedis_status (code, display, measureid) VALUES ('${entry.code}', '${entry.display}', ${entry.measureid})`
+        let query = `INSERT INTO load_hedis_status (code, display) VALUES ('${entry.code}', '${entry.display}')`
         connection.query(query, (err, result) => {
             callback(err, result)
         })
     },
     updateLoadStatus: (entry, callback) => {
-        let query = `UPDATE load_hedis_status SET code = '${entry.code}', display = '${entry.display}', measureid = ${entry.measureid} WHERE id = ${entry.id}`
+        let query = `UPDATE load_hedis_status SET code = '${entry.code}', display = '${entry.display}' WHERE id = ${entry.id}`
         connection.query(query, (err, result) => {
             callback(err, result)
         })
@@ -982,8 +981,7 @@ const setting = {
         })
     },
     chosenLoadStatus: (entry, callback) => {
-        let query = `SELECT h.*, m.title AS measure FROM load_hedis_status AS h `
-        query += `LEFT JOIN measure_hedis AS m ON m.id = h.measureid `
+        let query = `SELECT h.* FROM load_hedis_status AS h `
         query += `WHERE h.id = ${entry.id}`
         connection.query(query, (err, result) => {
             callback(err, result)
