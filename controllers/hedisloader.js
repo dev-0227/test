@@ -51,7 +51,7 @@ function deDateFormat(serial) {
     }
     return year+'-'+month+'-'+dt;
 }
-  function DateFormatOutput(serial) {
+function DateFormatOutput(serial) {
     let year = serial.getFullYear();
     let month = serial.getMonth() + 1;
     let dt = serial.getDate();

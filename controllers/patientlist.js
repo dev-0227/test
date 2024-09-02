@@ -111,7 +111,7 @@ exports.ptloader = async (req, res, next) => {
                 deceasedDate:(row[headers.indexOf("deceasedDate")]==null||row[headers.indexOf("deceasedDate")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("deceasedDate")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("deceasedDate")])),
                 DOB:(row[headers.indexOf("DOB")]==null||row[headers.indexOf("DOB")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("DOB")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("DOB")])),
                 event_id:event_result['insertId'],
-                insid:row[headers.indexOf('insid')],
+                insid:row[headers.indexOf('insid')] ? row[headers.indexOf('insid')] : 0,
                 insuranceName:row[headers.indexOf('insuranceName')],
                 subscriberno:row[headers.indexOf('subscriberno')],
                 marital:1,
@@ -130,7 +130,7 @@ exports.ptloader = async (req, res, next) => {
             // 1. Patient Information end //
             // 2. Patient Insurance Information begin //
             let data = {
-                ins_id: row[headers.indexOf('insid')] ? row[headers.indexOf('insid')] : '',
+                ins_id: row[headers.indexOf('insid')] ? row[headers.indexOf('insid')] : 0,
                 insurance_name: row[headers.indexOf('insuranceName')] ? row[headers.indexOf('insuranceName')] : '',
                 subscriberid: row[headers.indexOf('subscriberno')] ? row[headers.indexOf('subscriberno')] : '',
                 created_date: date,
@@ -188,7 +188,7 @@ exports.ptloader = async (req, res, next) => {
             // 4. FFS Tracking begin //
             var pay = await affiliation.chosenInsClinicAffiliationByInsurance({clinicid: entry.clinicid, insid: entry.insid, patientid: entry.uid})
             let ffs_track = {
-                insid: entry.insid,
+                insid: entry.insid ? entry.insid : 0,
                 ins_typeid: pay.instypeid,
                 patientid: entry.uid,
                 clinicid: entry.clinicid,
