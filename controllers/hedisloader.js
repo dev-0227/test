@@ -64,248 +64,6 @@ function deDateFormat(serial) {
     }
     return month+''+dt+''+year;
 }
-// exports.qualityloaderOld = async (req, res, next) => {
-//     let cyear = req.body.cyear;
-//     let clinicid = req.body.clinicid;
-//     let insid = req.body.insid;
-//     let backupcheck = req.body.backupcheck;
-//     let retrospect = req.body.retrospect;
-//     let filePath = req.files[0].path;
-//     let pureSheet = [];
-//     // Parse a file
-//     await hedisloader.updatehstatus(clinicid, insid);
-//     if(backupcheck == 1){
-//         let currentData = await hedisloader.getcurrentData(clinicid,insid,cyear);
-//         for(var i = 0;i < currentData.length;i++){
-//             currentData[i]['dob'] = DateFormat(new Date(currentData[i]['dob']));
-//             currentData[i]['dos'] = currentData[i]['dos'] != null?DateFormat(new Date(currentData[i]['dos'])):"";
-//             currentData[i]['apptdate'] = currentData[i]['apptdate'] != null?DateFormat(new Date(currentData[i]['apptdate'])):"";
-//             currentData[i]['lastdate'] = currentData[i]['lastdate'] != null?DateFormat(new Date(currentData[i]['lastdate'])):"";
-//         }
-//         var filename = "backup-"+clinicid+"-"+insid+"-"+new Date().getTime()+'.csv';
-//         if(currentData.length>0){
-//             await hedisloader.backuphedis(clinicid, insid, filename, currentData.length);
-//             converter.json2csv(currentData, (err, csv) => {
-//                 if (err)throw err;
-//                 fs.writeFileSync(hedis_backup_path + filename, csv);
-//             });
-//         }
-        
-//     }
-//     let getgrlists = await hedisloader.getgrlists(clinicid,insid,cyear);
-//     let getimeasure = await hedisloader.getimeasure();
-//     let getallpts = await hedisloader.getallpts(clinicid);
-//     let tmpimeasure = [];
-//     for(var i = 0; i < getimeasure.length;i++){
-//         tmpimeasure.push(getimeasure[i]['name']);
-//     }
-//     let existedmid = await hedisloader.getexistedmid(clinicid,insid);
-//     let tmpexistedmid = [];
-//     for(var i = 0; i < existedmid.length;i++){
-//         tmpexistedmid.push(existedmid[i]['mid']);
-//     }
-//     const workSheetsFromFile = xlsx.parse(filePath);
-//     pureSheet = workSheetsFromFile[0].data;
-//     let rowCounter = 0;
-//     let fieldArr = [];
-//     let newMeasures = 0;
-//     let measures = 0;
-//     let newmid = [];
-//     let hstatus = 0;
-//     let retroArray = [];
-//     for(var i = 0; i < pureSheet[0].length;i++){
-//         let result = await hedisloader.getfields(pureSheet[0][i]);
-//         if(result.length > 0)
-//             fieldArr[result[0]['fields']]=i;
-//     }
-//     for (row of pureSheet) {
-//         if (rowCounter != 0) {
-//             let entry = [];
-//             let emr_id = null;
-//             let phone = null;
-//             let email = null;
-//             let measureid = null;
-//             let fname = null;
-//             let lname = null;
-//             if(!tmpimeasure.includes(row[fieldArr['measure']])){
-//                 if (typeof row[fieldArr['ptlname']] !== 'undefined') {
-//                     for(var i = 0;i < getallpts.length;i++){
-//                         if(deDateFormat(new Date(getallpts[i]['DOB'])) == ExcelDateToJSDate(row[fieldArr['dob']]) 
-//                             && typeof getallpts[i]['LNAME'] !== 'undefined' 
-//                             && row[fieldArr['ptlname']].toLowerCase().includes(getallpts[i]['LNAME'].toLowerCase())){
-//                                 emr_id = getallpts[i]['patientid'];
-//                                 phone = getallpts[i]['PHONE'];
-//                                 email = getallpts[i]['EMAIL'];
-//                                 fname = getallpts[i]['FNAME'];
-//                                 lname = getallpts[i]['LNAME'];
-//                                 break;
-//                         }
-//                     }
-//                 }
-//                 else if(typeof row[fieldArr['ptname']] !== 'undefined'){
-//                     for(var i = 0;i < getallpts.length;i++){
-//                         if(deDateFormat(new Date(getallpts[i]['DOB'])) == ExcelDateToJSDate(row[fieldArr['dob']]) 
-//                             && typeof getallpts[i]['LNAME'] !== 'undefined' 
-//                             && row[fieldArr['ptname']].toLowerCase().includes(getallpts[i]['LNAME'].toLowerCase())){
-//                                 emr_id = getallpts[i]['patientid'];
-//                                 phone = getallpts[i]['PHONE'];
-//                                 email = getallpts[i]['EMAIL'];
-//                                 fname = getallpts[i]['FNAME'];
-//                                 lname = getallpts[i]['LNAME'];
-//                                 break;
-//                         }
-//                     }
-//                     if(fname == null){
-//                         let tmpname = row[fieldArr['ptname']].split(",");
-//                         fname = tmpname[0]?tmpname[0]:null;
-//                         fname = tmpname[1]?tmpname[1]:null;
-//                     }
-//                 }
-                
-                    
-//                 measures = await hedisloader.getHedisMeasure(row[fieldArr['measure']]);
-                
-//                 if(measures.length > 0){
-//                     measureid = measures[0]['id'];
-//                     if(!tmpexistedmid.includes(row[fieldArr['mid']])){
-//                         hstatus = 2;
-//                     }
-//                     else{
-//                         hstatus = 1;
-//                     }
-//                     entry = {
-//                         cyear:cyear,
-//                         clinicid:clinicid,
-//                         insid:insid,
-//                         emr_id:emr_id?emr_id:null,
-//                         mid:row[fieldArr['mid']],
-//                         ptfname:fname==null?row[fieldArr['ptfname']]:fname,
-//                         ptlname:lname==null?row[fieldArr['ptlname']]:lname,
-//                         dob:ExcelDateToJSDate(row[fieldArr['dob']]),
-//                         phone:phone?phone:row[fieldArr['phone']],
-//                         email:email?email:row[fieldArr['email']],
-//                         mlob:row[fieldArr['mlob']],
-//                         measureid:measureid?measureid:null,
-//                         measure:row[fieldArr['measure']],
-//                         ins_pcp_id:row[fieldArr['ins_pcp_id']],
-//                         flag:0,
-//                         status:0,
-//                         hstatus:hstatus
-//                     };
-//                     let _r = await hedisloader.qualityloader(entry,0);
-//                     if(!newmid.includes(row[fieldArr['mid']]))
-//                         newmid.push(row[fieldArr['mid']]);
-                    
-//                     //
-//                     if (_r._status == true) newMeasures ++;
-//                 }
-//                 else{
-//                     multimeasures = await hedisloader.getMultipleHedisMeasure(row[fieldArr['measure']]);
-//                     if(multimeasures.length > 0){
-//                         for(var i = 0;i < multimeasures.length;i++){
-//                             for(var j = 0;j < parseInt(multimeasures[i]['multipleQuantity']==null?0:multimeasures[i]['multipleQuantity']);j++){
-//                                 if(!tmpexistedmid.includes(row[fieldArr['mid']])){
-//                                     hstatus = 2;
-//                                 }
-//                                 else{
-//                                     hstatus = 0;
-//                                 }
-//                                 entry = {
-//                                     cyear:cyear,
-//                                     clinicid:clinicid,
-//                                     insid:insid,
-//                                     emr_id:emr_id?emr_id:null,
-//                                     mid:row[fieldArr['mid']],
-//                                     ptfname:fname==null?row[fieldArr['ptfname']]:fname,
-//                                     ptlname:lname==null?row[fieldArr['ptlname']]:lname,
-//                                     dob:ExcelDateToJSDate(row[fieldArr['dob']]),
-//                                     phone:phone?phone:row[fieldArr['phone']],
-//                                     email:email?email:row[fieldArr['email']],
-//                                     mlob:row[fieldArr['mlob']],
-//                                     measureid:multimeasures[i]['id']?multimeasures[i]['id']:null,
-//                                     measure:row[fieldArr['measure']],
-//                                     ins_pcp_id:row[fieldArr['ins_pcp_id']],
-//                                     flag:0,
-//                                     status:0,
-//                                     hstatus:hstatus
-//                                 };
-//                                 // console.log(entry)
-//                                 let _r = await hedisloader.qualityloader(entry,1);
-//                                 if(!newmid.includes(row[fieldArr['mid']]))
-//                                     newmid.push(row[fieldArr['mid']]);
-
-//                                 if (_r._status == true) newMeasures ++
-//                             } 
-//                         }
-                        
-//                     }
-//                     else{
-//                         if(!tmpexistedmid.includes(row[fieldArr['mid']])){
-//                             hstatus = 2;
-//                         }
-//                         else{
-//                             hstatus = 1;
-//                         }
-//                         entry = {
-//                             cyear:cyear,
-//                             clinicid:clinicid,
-//                             insid:insid,
-//                             emr_id:emr_id?emr_id:null,
-//                             mid:row[fieldArr['mid']],
-//                             ptfname:fname==null?row[fieldArr['ptfname']]:fname,
-//                             ptlname:lname==null?row[fieldArr['ptlname']]:lname,
-//                             dob:ExcelDateToJSDate(row[fieldArr['dob']]),
-//                             phone:phone?phone:row[fieldArr['phone']],
-//                             email:email?email:row[fieldArr['email']],
-//                             mlob:row[fieldArr['mlob']],
-//                             measureid:null,
-//                             measure:row[fieldArr['measure']],
-//                             ins_pcp_id:row[fieldArr['ins_pcp_id']],
-//                             flag:0,
-//                             status:0,
-//                             hstatus:hstatus
-//                         };
-//                         let _r = await hedisloader.qualityloader(entry,0);
-//                         if(!newmid.includes(row[fieldArr['mid']]))
-//                             newmid.push(row[fieldArr['mid']]);
-
-//                         if (_r._status == true) newMeasures ++
-//                     }
-//                 }
-//                 if(retrospect == 1){
-//                     for(let k = 0;k < getgrlists.length;k++){
-//                         if(getgrlists[k].mid == entry.mid && getgrlists[k].measure == entry.measure){
-//                             retroArray.push(getgrlists[k].id);
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//         rowCounter++;
-//     };
-//     let generated = await hedisloader.getgenerated(clinicid,insid,cyear);
-//     let reported = await hedisloader.getreported(clinicid,insid,cyear);
-//     var tmpnewmid = "('0'";
-//     for(var i=0;i<newmid.length;i++){
-//         tmpnewmid += ",'"+newmid[i]+"'";
-//     }
-//     tmpnewmid += ")";
-//     await hedisloader.updatenolonger(clinicid,insid,tmpnewmid);
-//     let nolonger = await hedisloader.getnolonger(clinicid,insid,cyear);
-//     await hedisloader.getnewpt(clinicid,insid,cyear, (err, result) => {
-//         if (err) {
-//             res.status(404).json(err);
-//         } else {
-//             res.status(200).json({
-//                 new:result[0]['total'],
-//                 measures: newMeasures,
-//                 nolonger:nolonger[0]['total'],
-//                 generated:generated[0]['total'],reported:reported[0]['total'],
-//                 retro:retroArray
-//             });
-//         }
-//     });
-// }
 
 exports.qualityloader = async(req, res, next) => {
     // get values from body
@@ -317,7 +75,6 @@ exports.qualityloader = async(req, res, next) => {
     let qpid = req.body.qpid
     let filePath = req.files[0].path
     let pureSheet = []
-    console.log(qpid)
 
     // update hedis track status using clinic id and insruance id
     await hedisloader.updatehstatus(clinicid, insid)
@@ -455,7 +212,7 @@ exports.qualityloader = async(req, res, next) => {
                         phone: phone ? phone : row[fieldArr['phone']],
                         email: email ? email : row[fieldArr['email']],
                         mlob: row[fieldArr['mlob']],
-                        measureid: measureid ? measureid : null,
+                        measureid: measureid ? measureid : 0,
                         measure: row[fieldArr['measure']],
                         ins_pcp_id: row[fieldArr['ins_pcp_id']],
                         flag: 0,
@@ -495,7 +252,7 @@ exports.qualityloader = async(req, res, next) => {
                                     email: email ? email : row[fieldArr['email']],
                                     mlob: row[fieldArr['mlob']],
                                     measureid: multimeasures[i]['id'] ? multimeasures[i]['id'] : null,
-                                    measure: row[fieldArr['measure']],
+                                    measure: row[fieldArr['measure']] ? row[fieldArr['measure']] : 0,
                                     ins_pcp_id: row[fieldArr['ins_pcp_id']],
                                     flag: 0,
                                     status: 0,
@@ -530,7 +287,7 @@ exports.qualityloader = async(req, res, next) => {
                             email: email ? email : row[fieldArr['email']],
                             mlob: row[fieldArr['mlob']],
                             measureid: null,
-                            measure: row[fieldArr['measure']],
+                            measure: row[fieldArr['measure']] ? row[fieldArr['measure']] : 0,
                             ins_pcp_id: row[fieldArr['ins_pcp_id']],
                             flag: 0,
                             status: 0,
@@ -557,10 +314,12 @@ exports.qualityloader = async(req, res, next) => {
                 if (_r.status === true) {
                     entry.ptid = _r.result[0].id
                     entry.pt_l_statusid = 1
+                    entry.m_l_statusid = 3
                     matched ++
                 } else {
                     entry.ptid = 0
                     entry.pt_l_statusid = 2
+                    entry.m_l_statusid = 3
                 }
 
                 // add to hedis load tracking table
