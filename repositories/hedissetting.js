@@ -937,14 +937,14 @@ const setting = {
 
     // Hedis Load Status //
     getMeasure: (entry, callback) => {
-        let query = `SELECT * FROM measure_hedis WHERE eyear = ${new Date(Date.now()).getFullYear()}`
+        let query = `SELECT * FROM measure_hedis`
         connection.query(query, (err, result) => {
             callback(err, result)
         })
     },
     loadStatusList: (entry, callback) => {
         let query = `SELECT h.*, m.title AS measure FROM load_hedis_status AS h `
-        query += `LEFT JOIN measure_hedis AS m ON m.id = h.measureid AND m.eyear = ${new Date(Date.now()).getFullYear()} `
+        query += `LEFT JOIN measure_hedis AS m ON m.id = h.measureid `
         query += `WHERE 1`
         connection.query(query, (err, result) => {
             if (!err) {
