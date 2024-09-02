@@ -64,7 +64,7 @@ function deDateFormat(serial) {
     }
     return month+''+dt+''+year;
 }
-// exports.qualityloader = async (req, res, next) => {
+// exports.qualityloaderOld = async (req, res, next) => {
 //     let cyear = req.body.cyear;
 //     let clinicid = req.body.clinicid;
 //     let insid = req.body.insid;
@@ -557,12 +557,10 @@ exports.qualityloader = async(req, res, next) => {
                 if (_r.status === true) {
                     entry.ptid = _r.result[0].id
                     entry.pt_l_statusid = 1
-                    entry.m_l_statusid = 3
                     matched ++
                 } else {
                     entry.ptid = 0
                     entry.pt_l_statusid = 2
-                    entry.m_l_statusid = 3
                 }
 
                 // add to hedis load tracking table
