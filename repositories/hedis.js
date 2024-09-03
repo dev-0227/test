@@ -1377,5 +1377,9 @@ const hedis = {
             callback(err, result);
         });
     },
+
+    getHedisTrack: (entry) => {
+        let query = `SELECT * FROM hedis_track WHERE clinicid = ${entry.clinicid} AND insid = ${entry.insid} AND cyear = ${entry.cyear} AND `
+    }
 }
 module.exports = hedis;

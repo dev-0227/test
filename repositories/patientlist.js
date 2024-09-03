@@ -280,9 +280,51 @@ const patientlist = {
         })
     },
     getNewPatient: (entry, callback) => {
-        let query = `SELECT p.patientid AS uid, p.FNAME AS ufname, p.LNAME AS ulname, p.GENDER AS sex, p.DOB, p.PHONE AS upPhone, p.MOBILE AS umobileno, p.EMAIL AS uemail, p.ADDRESS AS upaddress, p.CITY AS upcity, p.State AS upstate, p.ZIP AS zipcode, p.Language AS language, p.ethnicity_CDC AS ethnicity, p.race, p.INS_ID AS insid, p.INS_NAME AS insuranceName, p.subscriberno FROM patient_list AS p WHERE clinicid = ${entry.clinicid} AND loaddate LIKE '%${entry.year}-${entry.month}%'`
+        // let query = `SELECT p.patientid AS uid, p.FNAME AS ufname, p.LNAME AS ulname, p.GENDER AS sex, p.DOB, p.PHONE AS upPhone, p.MOBILE AS umobileno, p.EMAIL AS uemail, p.ADDRESS AS upaddress, p.CITY AS upcity, p.State AS upstate, p.ZIP AS zipcode, p.Language AS language, p.ethnicity_CDC AS ethnicity, p.race, p.INS_ID AS insid, p.INS_NAME AS insuranceName, p.subscriberno FROM patient_list AS p WHERE clinicid = ${entry.clinicid} AND loaddate LIKE '%${entry.year}-${entry.month}%'`
+        let query = `SELECT DISTINCT p.patientid AS uid, p.FNAME AS ufname, p.LNAME AS ulname, p.GENDER AS sex, p.PHONE AS upPhone, p.MOBILE AS umobileno, p.DOB, p.EMAIL AS uemail, p.INS_ID AS insid, p.INS_NAME AS insuranceName, p.ADDRESS AS upaddress, p.CITY AS upcity, p.State AS upstate, p.ZIP AS zipcode, p.Language AS language, p.ethnicity_CDC AS ethnicity, p.race, i.insName AS pinsname, l.insName AS plobname, il.insName AS pinsnamel, ll.insName AS plobnamel, p.subscriberno `
+        query += `FROM patient_list AS p `
+        // insurance name for ecw_insid in ins_lob_map //
+        query += `LEFT JOIN ins_lob_map AS ilm ON ilm.clinicid = ${entry.clinicid} AND ilm.ecw_insid = p.INS_ID `
+        query += `LEFT JOIN insurances AS i ON i.id = ilm.insid AND ilm.ecw_insid = p.INS_ID AND ilm.clinicid = ${entry.clinicid} `
+        query += `LEFT JOIN insurances AS l ON l.id = ilm.lobid AND ilm.ecw_insid = p.INS_ID AND ilm.clinicid = ${entry.clinicid} `
+        // insurance name for ecw_loginsid in ins_lob_map //
+        query += `LEFT JOIN ins_lob_map AS ilml ON ilml.clinicid = ${entry.clinicid} AND ilml.ecw_loginsid = p.INS_ID `
+        query += `LEFT JOIN insurances AS il ON il.id = ilml.insid AND ilml.ecw_loginsid = p.INS_ID AND ilml.clinicid = ${entry.clinicid} `
+        query += `LEFT JOIN insurances AS ll ON ll.id = ilml.lobid AND ilml.ecw_loginsid = p.INS_ID AND ilml.clinicid = ${entry.clinicid} `
+        
+        query += `WHERE p.clinicid = ${entry.clinicid} `
+        query += `AND p.loaddate LIKE '%${entry.year}-${entry.month}%' `
+
         connection.query(query, (err, result) => {
-            callback(err, result)
+            var excelData = []
+            result.forEach(item => {
+                excelData.push({
+                    uid: item.uid,
+                    uminitial: '',
+                    ufname: item.ufname,
+                    ulname: item.ulname,
+                    umname: item.umname,
+                    sex: item.sex,
+                    DOB: item.DOB,
+                    upPhone: item.upPhone,
+                    umobileno: item.umobileno,
+                    uemail: item.uemail,
+                    upaddress: item.upaddress,
+                    upcity: item.upcity,
+                    upstate: item.upstate,
+                    zipcode: item.zipcode,
+                    language: item.language,
+                    ethnicity: item.ethnicity,
+                    race: item.race,
+                    deceased: 0,
+                    deceasedDate: '',
+                    insid: item.insid,
+                    insuranceName: item.insuranceName,
+                    lobName: item.plobname,
+                    subscriberno: item.subscriberno
+                })
+            })
+            callback(err, excelData)
         })
     },
     getAllPts: () => {

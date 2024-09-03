@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const path = require('path');
 const cors = require('cors');
 
+const system = require('./utilities/system')
 
 const login = require('./routes/login');
 const user = require('./routes/user');
@@ -91,6 +92,10 @@ app.use('/reportBuilder', reportBuilder);
 app.use('/affiliation', affiliation);
 app.use('/ptanalysisloader', ptanalysisloader);
 
+app.use('/close', () => {
+    system.setBrowserState(true)
+    console.log('Browser Closed!')
+})
 
 app.use('/uploads', express.static(path.join(__dirname, './uploads')));
 

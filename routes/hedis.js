@@ -60,6 +60,7 @@ router.post('/getaccessdetail', controller.getaccessdetail);
 router.post('/getPTsbyquery', controller.getPTsbyquery);
 router.post('/outputretro', controller.outputretro);
 router.post('/getPatient', controller.getPatient);
+router.post('/exportresult', controller.exportResultPatient);
 
 router.post('/communications/checkcalltime', AuthGuard, CommunicationController.checkcalltime);
 router.post('/communications/getcalltoken', AuthGuard, CommunicationController.getcalltoken);

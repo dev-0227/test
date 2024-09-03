@@ -894,6 +894,17 @@ exports.exportncompliantexcel = async (req, res, next) => {
         res.status(200).end();
     });
 }
+exports.exportResultPatient = async(req, res, next) => {
+    let entry = {
+        clinicid: req.body.clinicid,
+        cyear: req.body.cyear,
+        insid: req.body.insid,
+        l_status: req.body.l_status,
+        count: req.body.count
+    }
+
+    data = await hedis.getHedisTrack(entry)
+}
 exports.outputhedis = async (req, res, next) => {
     let entry = {
         clinicid: req.body.clinicid,
