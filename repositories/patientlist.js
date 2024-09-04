@@ -322,8 +322,10 @@ const patientlist = {
                     deceased: 0,
                     deceasedDate: '',
                     insid: item.insid,
-                    insuranceName: item.lob == 0 ? item.pinsname : item.pinsnamel,
-                    lobName: item.lob == 0 ? item.plobname : item.plobnamel,
+                    // insuranceName: item.lob == 0 ? item.pinsname : item.pinsnamel,
+                    // lobName: item.lob == 0 ? item.plobname : item.plobnamel,
+                    insuranceName: item.pinsnamel ? item.pinsnamel : item.pinsname,
+                    lobName: item.plobnamel ? item.plobnamel : item.plobname,
                     subscriberno: item.subscriberno
                 })
             })
