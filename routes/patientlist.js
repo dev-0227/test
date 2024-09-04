@@ -39,6 +39,7 @@ router.post('/add', AuthGuard, controller.add);
 router.post('/update', AuthGuard, controller.update);
 router.post('/search', AuthGuard, controller.search);
 router.get('/statistic', AuthGuard, controller.statisticNewPatients);
+router.get('/statisticforffs', AuthGuard, controller.statisticNewPatientsForFFS);
 router.post('/export', AuthGuard, controller.export);
 router.post('/ecwbulk', AuthGuard, controller.ecwbulk);
 router.post('/progress', AuthGuard, controller.progress);

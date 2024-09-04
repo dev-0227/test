@@ -279,6 +279,15 @@ const patientlist = {
             } else callback(0)
         })
     },
+    statisticPtbyClinicForFFS: (entry, callback) => {
+        let query = `SELECT COUNT(DISTINCT p.id) AS cnt FROM patient_list AS p, clinic_ins_characteristics AS cic, insurances AS i `
+        query += `WHERE p.loaddate LIKE '%${entry.year}-${entry.month}%' AND p.clinicid = ${entry.clinicid} AND (cic.insid = i.id AND i.insId = p.INS_ID AND cic.paymethodid = 1)`
+        connection.query(query, (err, result) => {
+            if (!err) {
+                if (result) callback(result[0].cnt)
+            } else callback(0)
+        })
+    },
     getNewPatient: (entry, callback) => {
         console.log(entry)
         let query = ''

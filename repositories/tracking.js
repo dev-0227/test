@@ -169,7 +169,7 @@ const tracking = {
     },
     getAllFFSTracking: (entry, callback) => {
         let query = `SELECT DISTINCT p.id, p.patientid, p.FNAME AS pfname, p.LNAME AS plname, p.PHONE AS pphone, p.DOB AS pdob, p.EMAIL AS pemail, p.loadby, p.loadmethod, p.ptseen, p.INS_ID AS pinsid, p.startDate, i.insName AS pinsname, l.insName AS plobname, il.insName AS pinsnamel, ll.insName AS plobnamel, p.subscriberno AS psub, t.name AS visittype, t.color, n.display AS newpttype, m.fname, m.lname, m.mname, a.reason, a.created_date `
-        query += `FROM patient_list AS p `
+        query += `FROM clinic_ins_characteristics AS cic, insurances AS ins, patient_list AS p `
         query += `LEFT JOIN f_appointment AS a ON a.patient_id = p.id AND a.clinic_id = ${entry.clinicid} `
         // query += `LEFT JOIN f_vs_appt_status AS s ON a.status = s.id `
         query += `LEFT JOIN f_appointment_type AS t ON a.appt_type = t.id `
@@ -185,7 +185,7 @@ const tracking = {
         query += `LEFT JOIN insurances AS il ON il.id = ilml.insid AND ilml.ecw_lobinsid = p.INS_ID AND ilml.clinicid = ${entry.clinicid} AND ilml.insid > 0 `
         query += `LEFT JOIN insurances AS ll ON ll.id = ilml.lobid AND ilml.ecw_lobinsid = p.INS_ID AND ilml.clinicid = ${entry.clinicid} AND ilml.lobid > 0 `
         
-        query += `WHERE p.clinicid = ${entry.clinicid} `
+        query += `WHERE p.clinicid = ${entry.clinicid} AND (cic.insid = ins.id AND ins.insId = p.INS_ID AND cic.paymethodid = 1) `
         query += `AND p.loaddate LIKE '%${entry.year}-${entry.month}%' `
 
         let where = ``
@@ -198,27 +198,20 @@ const tracking = {
         query += `ORDER BY p.patientid `
         query += `LIMIT ${entry.start},${entry.length}`
         connection.query(query, (err, result) => {
+            console.log(err)
             if (err) {
                 callback(err, [])
             }
             else {
                 let query = `SELECT COUNT(DISTINCT p.id) AS total `
-                query += `FROM patient_list AS p `
+                query += `FROM clinic_ins_characteristics AS cic, insurances AS ins, patient_list AS p `
                 query += `LEFT JOIN f_appointment AS a ON a.patient_id = p.id AND a.clinic_id = ${entry.clinicid} `
                 // query += `LEFT JOIN f_vs_appt_status AS s ON a.status = s.id `
                 query += `LEFT JOIN f_appointment_type AS t ON a.appt_type = t.id `
                 query += `LEFT JOIN managers AS m ON m.id = p.loadby `
                 query += `LEFT JOIN newpttype AS n ON p.newpttype = n.id `
-                query += `LEFT JOIN ins_lob_map AS ilm ON ilm.clinicid = ${entry.clinicid} AND ilm.ecw_insid = p.INS_ID AND p.INS_ID > 0 `
-                query += `LEFT JOIN ins_lob_map AS ilml ON ilml.clinicid = ${entry.clinicid} AND ilml.ecw_lobinsid = p.INS_ID AND p.INS_ID > 0 `
-                // insurance name for ecw_insid in ins_lob_map //
-                query += `LEFT JOIN insurances AS i ON i.id = ilm.insid AND ilm.ecw_insid = p.INS_ID AND ilm.clinicid = ${entry.clinicid} AND ilm.insid > 0 `
-                query += `LEFT JOIN insurances AS l ON l.id = ilm.lobid AND ilm.ecw_insid = p.INS_ID AND ilm.clinicid = ${entry.clinicid} AND ilm.lobid > 0 AND ilml.insid = 0 `
-                // insurance name for ecw_lobinsid in ins_lob_map //
-                query += `LEFT JOIN insurances AS il ON il.id = ilml.insid AND ilml.ecw_lobinsid = p.INS_ID AND ilml.clinicid = ${entry.clinicid} AND ilml.insid > 0 `
-                query += `LEFT JOIN insurances AS ll ON ll.id = ilml.lobid AND ilml.ecw_lobinsid = p.INS_ID AND ilml.clinicid = ${entry.clinicid} AND ilml.lobid > 0 `
                 
-                query += `WHERE p.clinicid = ${entry.clinicid} `
+                query += `WHERE p.clinicid = ${entry.clinicid} AND (cic.insid = ins.id AND ins.insId = p.INS_ID AND cic.paymethodid = 1) `
                 query += `AND p.loaddate LIKE '%${entry.year}-${entry.month}%' `
 
                 let where = ``
