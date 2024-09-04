@@ -7,7 +7,7 @@ const Acl = require('../middleware/acl');
 const {getClinicsByUserType} = require('../repositories/settings/clinic')
 const csv = require('xlsx')
 
-const _system = require('../utilities/system')
+// const _system = require('../utilities/system')
 
 var nodemailer = require('nodemailer');
 const Excel = require('exceljs');
@@ -88,7 +88,7 @@ exports.ptloader = async (req, res, next) => {
     var pt_ids = "";
     
     for (row of pureSheet) {
-        if (_system.getBrowserState() === true) break
+        // if (_system.getBrowserState() === true) break
         
         if (rowCounter != 0) {
             // 1. Patient Information begin //

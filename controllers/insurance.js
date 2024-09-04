@@ -125,7 +125,7 @@ exports.getInsLobMap = (req, res, next) => {
 }
 exports.addInsLobMap = (req, res, next) => {
     let entry = {
-        ecw_loginsid: req.body.ecw_loginsid,
+        ecw_lobinsid: req.body.ecw_lobinsid,
         insid: req.body.insid,
         lobid: req.body.lobid,
         clinicid: req.body.clinicid,
@@ -142,7 +142,7 @@ exports.addInsLobMap = (req, res, next) => {
 exports.updateInsLobMap = (req, res, next) => {
     let entry = {
         id: req.body.id,
-        ecw_loginsid: req.body.ecw_loginsid,
+        ecw_lobinsid: req.body.ecw_lobinsid,
         insid: req.body.insid,
         lobid: req.body.lobid,
         clinicid: req.body.clinicid,
