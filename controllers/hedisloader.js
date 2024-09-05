@@ -75,6 +75,7 @@ exports.qualityloader = async(req, res, next) => {
     let qpid = req.body.qpid
     let filePath = req.files[0].path
     let pureSheet = []
+    let loaddate = new Date(Date.now()).toISOString()
 
     // update hedis track status using clinic id and insruance id
     await hedisloader.updatehstatus(clinicid, insid)
@@ -311,6 +312,7 @@ exports.qualityloader = async(req, res, next) => {
 
                 // check match from patient table
                 var _r = await hedisloader.matchPatient({clinicid: clinicid, pfname: row[fieldArr['ptfname']], plname: row[fieldArr['ptlname']], dob: ExcelDateToJSDate(row[fieldArr['dob']]), phone: row[fieldArr['phone']], memberid: row[fieldArr['member']]})
+                entry.loaddate = loaddate
                 if (_r.status === true) {
                     entry.ptid = _r.result[0].id
                     entry.pt_l_statusid = 1
