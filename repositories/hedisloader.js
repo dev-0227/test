@@ -43,7 +43,7 @@ const hedisloader = {
         });
     },
     getfields: (entry) => {
-        let query = "SELECT id,fields FROM `hedis_fields_variables` WHERE `variables` LIKE '%"+entry+"%'";
+        let query = `SELECT id, fields FROM hedis_fields_variables WHERE variables LIKE '%${entry}%'`
         return new Promise((resolve, reject) => {
             connection.query(query, (err, rows) => {
                 if (err) {
@@ -254,7 +254,7 @@ const hedisloader = {
     },
     matchPatient: (entry) => {
         return new Promise((resolve, reject) => {
-            let query = `SELECT * FROM patient_list WHERE clinicid = ${entry.clinicid} AND FNAME = '${entry.pfname}' AND LNAME = '${entry.plname}' AND (PHONE = '${entry.phone}' OR MOBILE = '${entry.phone}' ) AND DOB = '${new Date(entry.dob).toISOString().substr(0, 10)}'`
+            let query = `SELECT * FROM patient_list WHERE clinicid = ${entry.clinicid} AND FNAME = '${entry.pfname}' AND LNAME = '${entry.plname}' AND (PHONE = '${entry.phone}'OR MOBILE = '${entry.phone}')`
             connection.query(query, (err, result) => {
                 if (!err) {
                     if (result.length > 0) {

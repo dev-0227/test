@@ -310,7 +310,7 @@ exports.qualityloader = async(req, res, next) => {
                 }
 
                 // check match from patient table
-                var _r = await hedisloader.matchPatient(entry)
+                var _r = await hedisloader.matchPatient({clinicid: clinicid, pfname: row[fieldArr['ptfname']], plname: row[fieldArr['ptlname']], dob: ExcelDateToJSDate(row[fieldArr['dob']]), phone: row[fieldArr['phone']], memberid: row[fieldArr['member']]})
                 if (_r.status === true) {
                     entry.ptid = _r.result[0].id
                     entry.pt_l_statusid = 1
