@@ -1,7 +1,7 @@
 /*
 * Report Builder Controller
 */
-const reportBuilderModel = require('../../repositories/settings/reportBuilderModel');
+const reportBuilderModel = require('../../repositories/settings/reportBuilder');
 
 exports.getInsuranceList = (req, res, next) => {
     reportBuilderModel.getInsuranceList((err, result) => {

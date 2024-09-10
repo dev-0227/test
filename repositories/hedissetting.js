@@ -275,19 +275,26 @@ const setting = {
             callback(err, result);
         });
     },
-    getnmeasure: () => {
-        let query = "SELECT `id`,`measure` FROM `hedis_track` GROUP BY `measure`";
-        return new Promise((resolve, reject) => {
-            connection.query(query, (err, rows) => {
-                if (err) {
-                reject(err);
-                } else {
-                resolve(rows);
-                }
-            });
-        });
+    getnmeasure: (entry, callback) => {
+        let query = `SELECT id, measure FROM infinite_measure WHERE measure_id = 0 AND year = ${new Date(Date.now()).getFullYear()}`
+        connection.query(query, (err, result) => {
+            if (!err) {
+                query = `SELECT COUNT(*) AS total FROM infinite_measure WHERE measure_id = 0 AND year = ${new Date(Date.now()).getFullYear()} ORDER BY measure ASC LIMIT ${entry.start}, ${entry.length}`
+                connection.query(query, (err1, result1) => {
+                    if (!err1) {
+                        var total = 0
+                        if (result1[0]) total = result1[0].total
+                        callback(err1, {data: result, recordsFiltered: total, recordsTotal: total})
+                    } else {
+                        callback(err1, result1)
+                    }
+                })
+            } else {
+                callback(err, {data: [], recordsFiltered: 0, recordsTotal: 0})
+            }
+        })
     },
-    getdefinedmeasure: () => {
+    getdefinedmeasure: (entry, callback) => {
         let query = "SELECT `id`,`keywords` FROM `mh_table`";
         return new Promise((resolve, reject) => {
             connection.query(query, (err, rows) => {
@@ -298,6 +305,10 @@ const setting = {
                 }
             });
         });
+        // let query = `SELECT DISTINCT id, title FROM f_qpp_measure_data WHERE infinite = 1`
+        // connection.query(query, (err, result) => {
+        //     callback(err, result)
+        // })
     },
     deletenmeasure: (entry, callback) => {
         let query = "";
@@ -937,7 +948,13 @@ const setting = {
 
     // Hedis Load Status //
     getMeasure: (entry, callback) => {
-        let query = `SELECT * FROM measure_hedis`
+        let query = `SELECT * FROM measure_hedis `
+        connection.query(query, (err, result) => {
+            callback(err, result)
+        })
+    },
+    getMeasureForCurrentYear: (entry, callback) => {
+        let query = `SELECT id, title FROM f_qpp_measure_data WHERE eyear = ${new Date(Date.now()).getFullYear()}`
         connection.query(query, (err, result) => {
             callback(err, result)
         })
@@ -986,6 +1003,18 @@ const setting = {
         connection.query(query, (err, result) => {
             callback(err, result)
         })
+    },
+    //Define Measure
+    defineMeasure: (entry, callback) => {
+        let query = `UPDATE infinite_measure SET measure_id = ${entry.measure_id} WHERE id = ${entry.id}`
+        connection.query(query, (err, result) => {
+            query = `UPDATE hedis_track SET measureid = ${entry.measure_id} WHERE measure = '${entry.measure}';`
+            query += `UPDATE hedis_load_tracker SET measureid = ${entry.measure_id} WHERE measure = '${entry.measure}';`
+            connection.query(query, (err1, result1) => {
+                callback(err1, result1)
+            })
+        })
     }
 }
-module.exports = setting;
+
+module.exports = setting

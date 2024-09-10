@@ -1,5 +1,5 @@
 const express = require('express');
-const controller = require('../controllers/settings/reportbuilderController');
+const controller = require('../controllers/settings/reportbuilder');
 const router = express.Router();
 
 // Report Builder Router 

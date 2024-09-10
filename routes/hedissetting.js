@@ -19,6 +19,8 @@ const upload = multer({
 const router = express.Router();
 
 // Get all logs route 
+router.post('/measurecurrent', controller.getMeasureForCurrentYear)
+
 router.get('/');
 router.get('/gethdomain', controller.gethdomain);
 router.post('/addhdomain', controller.addhdomain);
@@ -146,4 +148,7 @@ router.post('/loadstatus/update', controller.updateLoadStatus)
 router.post('/loadstatus/delete', controller.deleteLoadStatus)
 router.post('/loadstatus/chosen', controller.chosenLoadStatus)
 
-module.exports = router;
+// Define Measure
+router.post('/definemeasure', controller.defineMeasure)
+
+module.exports = router

@@ -35,7 +35,7 @@ const qualification = require('./routes/qualification');
 const provider = require('./routes/provider');
 const tracking = require('./routes/tracking');
 // const prescribe = require('./routes/prescribe');
-// const medadherance = require('./routes/medadherance');
+const medadherance = require('./routes/medadherance');
 // PT Risk and Barriers
 const barriers = require('./routes/barriers');
 const reportBuilder = require('./routes/reportBuilder');
@@ -86,7 +86,7 @@ app.use('/qualification', qualification);
 app.use('/provider', provider);
 app.use('/tracking', tracking);
 // app.use('/prescribe', prescribe);
-// app.use('/medadherance', medadherance);
+app.use('/medadherance', medadherance);
 app.use('/barriers', barriers);
 app.use('/reportBuilder', reportBuilder);
 app.use('/affiliation', affiliation);

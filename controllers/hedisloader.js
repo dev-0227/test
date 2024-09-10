@@ -141,9 +141,15 @@ exports.qualityloader = async(req, res, next) => {
         if(result.length > 0)
             fieldArr[result[0]['fields']] = i
     }
+
     // main handle begin //
     for (row of pureSheet) {
         if (rowCounter != 0) {
+            // check measure exist
+            await hedisloader.checkMeasure({
+                measure: row[fieldArr['measure']]
+            })
+
             let entry = []
             let emr_id = null
             let phone = null
@@ -221,6 +227,10 @@ exports.qualityloader = async(req, res, next) => {
                         hstatus: hstatus,
                         qpid: qpid,
                     }
+                    // get measure id. if not exist, add a new measure as infinit = 0
+                    let _m = await hedisloader.getMeasure(entry)
+                    entry.measureid = _m.id
+
                     let _r = await hedisloader.qualityloader(entry, 0)
                     if(!newmid.includes(row[fieldArr['mid']]))
                         newmid.push(row[fieldArr['mid']])
@@ -260,6 +270,10 @@ exports.qualityloader = async(req, res, next) => {
                                     hstatus: hstatus,
                                     qpid: qpid,
                                 }
+                                // get measure id. if not exist, add a new measure as infinit = 0
+                                let _m = await hedisloader.getMeasure(entry)
+                                entry.measureid = _m.id
+
                                 let _r = await hedisloader.qualityloader(entry, 1)
                                 if(!newmid.includes(row[fieldArr['mid']]))
                                     newmid.push(row[fieldArr['mid']])
@@ -295,6 +309,10 @@ exports.qualityloader = async(req, res, next) => {
                             hstatus: hstatus,
                             qpid: qpid,
                         }
+                        // get measure id. if not exist
+                        let _m = await hedisloader.getMeasure(entry)
+                        entry.measureid = _m.id
+                        
                         let _r = await hedisloader.qualityloader(entry, 0)
                         if(!newmid.includes(row[fieldArr['mid']]))
                             newmid.push(row[fieldArr['mid']])

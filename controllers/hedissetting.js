@@ -532,22 +532,13 @@ exports.deleteimeasure = (req, res, next) => {
 }
 
 exports.getnmeasure = async (req, res, next) => {
-    let result = await setting.getnmeasure();
-    let defined = await setting.getdefinedmeasure();
-    let tmpresult = [];
-    for(var i = 0;i< result.length;i++){
-        var tmpcnt = 0;
-        for(var j = 0;j< defined.length;j++){
-            if(defined[j]['keywords'].includes(result[i]['measure'])){
-                tmpcnt++;
-                break;
-            }
+    setting.getnmeasure(req.query, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json(result)
         }
-        if(tmpcnt == 0){
-            tmpresult.push(result[i]);
-        }
-    }
-    res.status(200).json({ data: tmpresult });
+    })
 }
 exports.deletenmeasure = (req, res, next) => {
     let entry = {
@@ -1332,6 +1323,15 @@ exports.getMeasure = (req, res, next) => {
         }
     })
 }
+exports.getMeasureForCurrentYear = (req, res, next) => {
+    setting.getMeasureForCurrentYear(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}
 exports.loadStatusList = (req, res, next) => {
     setting.loadStatusList(req.query, (err, result) => {
         if (err) {
@@ -1378,3 +1378,14 @@ exports.chosenLoadStatus = (req, res, next) => {
     })
 }
 // Hedis Load Status end //
+
+//Define Measure
+exports.defineMeasure = (req, res, next) => {
+    setting.defineMeasure(req.body, (err, result) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json({ data: result })
+        }
+    })
+}

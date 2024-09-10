@@ -270,7 +270,7 @@ const hedisloader = {
     },
     addHedisLoadTrack: (entry) => {
         return new Promise((resolve, reject) => {
-            let query = `INSERT INTO hedis_load_tracker (ptid, mid, clinicid, pt_l_statusid, m_l_statusid, measureid, loaddate) VALUES (${entry.ptid}, ${entry.mid}, ${entry.clinicid}, ${entry.pt_l_statusid}, ${entry.m_l_statusid}, ${entry.measureid}, '${entry.loaddate}')`
+            let query = `INSERT INTO hedis_load_tracker (ptid, mid, clinicid, pt_l_statusid, m_l_statusid, measure, measureid, loaddate) VALUES (${entry.ptid}, ${entry.mid}, ${entry.clinicid}, ${entry.pt_l_statusid}, ${entry.m_l_statusid}, '${entry.measure}', ${entry.measureid}, '${entry.loaddate}')`
             connection.query(query, (err, result) => {
                 if (!err) {
                     resolve({})
@@ -288,7 +288,7 @@ const hedisloader = {
                 query = "SELECT id FROM `hedis_track` WHERE cyear = ? AND clinicid = ? AND insid = ? AND mid = ? AND measureid = ? AND hstatus = 1";
                 connection.query(query, [entry.cyear, entry.clinicid,entry.insid,entry.mid,entry.measureid], (err, result) => {
                     if(result.length == 0){
-                        let query = "INSERT INTO `hedis_track` (`id`, `cyear`, `clinicid`, `insid`,`emr_id`,`mid`,`ptfname`,`ptlname`,`dob`,`phone`,`email`,`mlob`,`measureid`,`measure`,`ins_pcp_id`,`flag`,`status`,`hstatus`, `qpid`) VALUES (NULL, ? , ? , ? , ?,  ? , ? , ? , ? , ? , ? , ?,  ? , ? , ? , ?, ?, ?, ? )";
+                        let query = "INSERT INTO `hedis_track` (`cyear`, `clinicid`, `insid`,`emr_id`,`mid`,`ptfname`,`ptlname`,`dob`,`phone`,`email`,`mlob`,`measureid`,`measure`,`ins_pcp_id`,`flag`,`status`,`hstatus`, `qpid`) VALUES ? , ? , ? , ?,  ? , ? , ? , ? , ? , ? , ?,  ? , ? , ? , ?, ?, ?, ? )";
                         connection.query(query, [entry.cyear, entry.clinicid, entry.insid, entry.emr_id, entry.mid, entry.ptfname, entry.ptlname, entry.dob, entry.phone, entry.email, entry.mlob, entry.measureid, entry.measure, entry.ins_pcp_id, entry.flag, entry.status, entry.hstatus, entry.qpid], (err, result) => {
                             if (err) {
                                 return reject(err)
@@ -322,6 +322,66 @@ const hedisloader = {
         })
         
     },
+    // qualityloaderNew: (entry, flag, callback) => {
+    //     let query = ""
+    //     return new Promise((resolve, reject) => {
+    //         if(flag == 1){
+    //             query = "SELECT id FROM `hedis_track` WHERE cyear = ? AND clinicid = ? AND insid = ? AND mid = ? AND hstatus = 1";
+    //             connection.query(query, [entry.cyear, entry.clinicid,entry.insid,entry.mid,entry.measureid], (err, result) => {
+    //                 if(result.length == 0){
+    //                     query = `SELECT f.id, DISTANCE('${entry.measure}', f.title) AS d FROM f_qpp_measure_data AS f WHERE f.eyear = ${new Date(Date.now()).getFullYear()} ORDER BY d DESC LIMIT 1`
+    //                     connection.query(query, (err1, result1) => {
+    //                         if (!err1) {
+    //                             let measureid = 0
+    //                             if (result1[0]) measureid = result1[0].d > 0.9 ? result1[0].id : 0
+
+    //                             query = "INSERT INTO `hedis_track` (`cyear`, `clinicid`, `insid`,`emr_id`,`mid`,`ptfname`,`ptlname`,`dob`,`phone`,`email`,`mlob`,`measureid`,`measure`,`ins_pcp_id`,`flag`,`status`,`hstatus`, `qpid`) VALUES (? , ? , ? , ?,  ? , ? , ? , ? , ? , ? , ?,  ? , ? , ? , ?, ?, ?, ? )";
+    //                             connection.query(query, [entry.cyear, entry.clinicid, entry.insid, entry.emr_id, entry.mid, entry.ptfname, entry.ptlname, entry.dob, entry.phone, entry.email, entry.mlob, measureid, entry.measure, entry.ins_pcp_id, entry.flag, entry.status, entry.hstatus, entry.qpid], (err2, result2) => {
+    //                                 if (err2) {
+    //                                     reject(err2)
+    //                                 } else {
+    //                                     resolve({_status: true})
+    //                                 }
+    //                             })
+    //                         } else {
+    //                             reject(err1)
+    //                         }
+    //                     })
+    //                 } else {
+    //                     resolve({_status: false})
+    //                 }
+    //             })
+    //         }
+    //         else{
+    //             query = "SELECT id FROM `hedis_track` WHERE cyear = ? AND clinicid = ? AND insid = ? AND mid = ? AND measure = ?";
+    //             connection.query(query, [entry.cyear, entry.clinicid,entry.insid,entry.mid,entry.measure], (err, result) => {
+    //                 if(result.length == 0) {
+    //                     query = `SELECT f.id, DISTANCE('${entry.measure}', f.title) AS d FROM f_qpp_measure_data AS f WHERE f.eyear = ${new Date(Date.now()).getFullYear()} ORDER BY d DESC LIMIT 1`
+    //                     connection.query(query, (err1, result1) => {
+    //                         if (!err1) {
+    //                             let measureid = 0
+    //                             if (result1[0]) measureid = result1[0].d > 0.9 ? result1[0].id : 0
+
+    //                             query = "INSERT INTO `hedis_track` (`cyear`, `clinicid`, `insid`,`emr_id`,`mid`,`ptfname`,`ptlname`,`dob`,`phone`,`email`,`mlob`,`measureid`,`measure`,`ins_pcp_id`,`flag`,`status`,`hstatus`, `qpid`) VALUES (? , ? , ? , ?,  ? , ? , ? , ? , ? , ? , ?,  ? , ? , ? , ?, ?, ?, ? )";
+    //                             connection.query(query, [entry.cyear, entry.clinicid, entry.insid, entry.emr_id, entry.mid, entry.ptfname, entry.ptlname, entry.dob, entry.phone, entry.email, entry.mlob, measureid, entry.measure, entry.ins_pcp_id, entry.flag, entry.status, entry.hstatus, entry.qpid], (err2, result2) => {
+    //                                 if (err2) {
+    //                                     reject(err2)
+    //                                 } else {
+    //                                     resolve({_status: true})
+    //                                 }
+    //                             })
+    //                         } else {
+    //                             reject(err1)
+    //                         }
+    //                     })
+    //                 } else {
+    //                     resolve({_status: false})
+    //                 }  
+    //             });
+    //         }
+    //     })
+        
+    // },
     tmpqualityloader: (entry, callback) => {
         let query = "INSERT INTO `hedis_track` (`id`, `cyear`, `clinicid`, `insid`,`emr_id`,`mid`,`ptfname`,`ptlname`,`dob`,`phone`,`email`,`mlob`,`measureid`,`measure`,`ins_pcp_id`,`flag`,`status`,`dos`,`value1`,`value2`,`cpt1`,`cpt2`,`icd1`,`icd2`,`icdv1`,`icdv2`,`gstatus`,`rstatus`,`hstatus`,`apptdate`,`apptpcp`,`apptvisit`,`nextdate`,`lastdate`,`lastpcp`,`lastvisit`, `qpid`) VALUES (NULL, ? , ? , ? , ?,  ? , ?, ?, ? , ? , ? , ?,  ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ? )";
         connection.query(query, [entry.cyear, entry.clinicid, entry.insid, entry.emr_id, entry.mid, entry.ptfname, entry.ptlname, entry.dob, entry.phone, entry.email, entry.mlob, entry.measureid, entry.measure, entry.ins_pcp_id, entry.flag, entry.status, entry.dos, entry.value1, entry.value2, entry.cpt1, entry.cpt2, entry.icd1, entry.icd2, entry.icdv1, entry.icdv2, entry.gstatus, entry.rstatus, entry.hstatus, entry.apptdate, entry.apptpcp, entry.apptvisit, entry.nextdate, entry.lastdate, entry.lastpcp, entry.lastvisit, entry.qpid], (err, result) => {
@@ -820,5 +880,80 @@ const hedisloader = {
             });
         });
     },
+
+    checkMeasure: (entry) => {
+        return new Promise((resolve, reject) => {
+            let query = `SELECT id FROM f_qpp_measure_data WHERE title = '${entry.measure}' AND eyear = ${new Date(Date.now()).getFullYear()}`
+            connection.query(query, (err1, result1) => {
+                if (!err1) {
+                    if (!result1[0]) {
+                        query = `SELECT id FROM infinite_measure WHERE measure = '${entry.measure}' AND year = ${new Date(Date.now()).getFullYear()}`
+                        connection.query(query, (err2, result2) => {
+                            if (!err2) {
+                                if (!result2[0]) {
+                                    query = `INSERT INTO infinite_measure (measure, measure_id, year) VALUES ('${entry.measure}', 0, ${new Date(Date.now()).getFullYear()})`
+                                    connection.query(query, (err3, result3) => {
+                                        if (!err3) {
+                                            resolve({infinite: 0})
+                                        } else {
+                                            reject(err3)
+                                        }
+                                    })
+                                } else {
+                                    resolve({infinite: 0})
+                                }
+                            } else {
+                                reject(err2)
+                            }
+                        })
+                    } else {
+                        resolve({infinite: 1})
+                    }
+                } else {
+                    reject(err1)
+                }
+            })
+        })
+    },
+    addMeasureForAsync: (entry) => {
+        let query = `INSERT INTO q_app_measure_data (eyear, title, description, infinite) VALUES (${new Date(Date.now()).getFullYear()}, '${entry.measure}', '${entry.measure}', 0)`
+        return new Promise((resolve, reject) => {
+            connection.query(query, (err, result) => {
+                if (!err) {
+                    resolve(result)
+                } else {
+                    reject(err)
+                }
+            })
+        })
+    },
+    getMeasure: (entry) => {
+        let query = `SELECT id FROM f_qpp_measure_data WHERE title = '${entry.measure}' AND eyear = ${new Date(Date.now()).getFullYear()}`
+        return new Promise((resolve, reject) => {
+            connection.query(query, (err1, result1) => {
+                if (!err1) {
+                    if (!result1[0]) {
+                        query = `SELECT measure_id AS id FROM infinite_measure WHERE measure = '${entry.measure}'`
+                        connection.query(query, (err2, result2) => {
+                            if (!err2) {
+                                if (result2[0]) {
+                                    resolve({id: result2[0].id})
+                                } else {
+                                    resolve({id: 0})
+                                }
+                            } else {
+                                resolve({id: 0})
+                            }
+                        })
+                    } else {
+                        resolve({id: result1[0].id})
+                    }
+                } else {
+                    resolve({id: 0})
+                }
+            })
+        })
+    }
 }
+
 module.exports = hedisloader;
