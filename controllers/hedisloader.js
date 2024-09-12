@@ -135,6 +135,7 @@ exports.qualityloader = async(req, res, next) => {
     let hstatus = 0
     let retroArray = []
     let matched = 0
+
     // gather usable excel field name to load excel file
     for(var i = 0; i < pureSheet[0].length; i ++) {
         let result = await hedisloader.getfields(pureSheet[0][i])
@@ -145,10 +146,6 @@ exports.qualityloader = async(req, res, next) => {
     // main handle begin //
     for (row of pureSheet) {
         if (rowCounter != 0) {
-            // check measure exist
-            await hedisloader.checkMeasure({
-                measure: row[fieldArr['measure']]
-            })
 
             let entry = []
             let emr_id = null
@@ -157,6 +154,9 @@ exports.qualityloader = async(req, res, next) => {
             let measureid = null
             let fname = null
             let lname = null
+
+            // get measure for hedis from hedis_measure table
+            measures = await hedisloader.getHedisMeasure(row[fieldArr['measure']])
 
             // check existance measure loaded
             if(!tmpimeasure.includes(row[fieldArr['measure']])) {
@@ -195,10 +195,8 @@ exports.qualityloader = async(req, res, next) => {
                         fname = tmpname[1] ? tmpname[1] : null
                     }
                 }
-
-                // get measure for hedis from hedis_measure table
-                measures = await hedisloader.getHedisMeasure(row[fieldArr['measure']])
                 
+                // Quality Loader begin //
                 if(measures.length > 0) {
                     measureid = measures[0]['id']
                     if(!tmpexistedmid.includes(row[fieldArr['mid']])) {
@@ -320,6 +318,8 @@ exports.qualityloader = async(req, res, next) => {
                         if (_r._status == true) newMeasures ++
                     }
                 }
+                // Quality Loader end //
+
                 if(retrospect == 1) {
                     for(let k = 0; k < getgrlists.length; k ++) {
                         if(getgrlists[k].mid == entry.mid && getgrlists[k].measure == entry.measure) {
@@ -916,4 +916,39 @@ exports.backupdatafromhedis = async (req, res, next) => {
     }
     res.status(200).json({ message: "OK" });
     
+}
+exports.checkmeasure = async (req, res, next) => {
+    let _cash = []
+    let result = []
+    let filePath = req.files[0].path
+    let rowCounter = 0
+    let fieldArr = []
+    // load from excel or csv file
+    const workSheetsFromFile = xlsx.parse(filePath)
+    pureSheet = workSheetsFromFile[0].data
+
+    // gather usable excel field name to load excel file
+    for(var i = 0; i < pureSheet[0].length; i ++) {
+        let result = await hedisloader.getfields(pureSheet[0][i])
+        if(result.length > 0)
+            fieldArr[result[0]['fields']] = i
+    }
+
+    for (row of pureSheet) {
+        if (rowCounter > 0) {
+            if (_cash[row[fieldArr['measure']]] != 1) {
+                // check measure exist
+                let r = await hedisloader.checkMeasure({
+                    measure: row[fieldArr['measure']]
+                })
+                // check
+                if (r.infinite === 0) {
+                    result.push(row[fieldArr['measure']])
+                }
+                _cash[row[fieldArr['measure']]] = 1
+            }
+        }
+        rowCounter ++
+    }
+    res.status(200).json({data: result})
 }

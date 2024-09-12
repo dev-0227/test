@@ -56,4 +56,82 @@ router.post('/GetMeasureQualityId', controller.GetMeasureQualityId);
 router.post('/setDefaultIns', controller.setDefaultIns);
 router.post('/getDefaultIns', controller.getDefaultIns);
 
+
+
+/** Measure Report Definition / Specific Measure Cutpoint */
+router.get('/specificMeasureCutpoint', controller.GetSpecificMeasureCutpoint);
+router.post('/specificMeasureCutpoint', controller.InsertSpecificMeasureCutpoint);
+router.delete('/specificMeasureCutpoint', controller.DelSpecificMeasureCutpoint);
+router.post('/specificMeasureCutpoint/:id', controller.GetSpecificCutpointMeasureById);
+// router.put('/specificMeasureCutpoint/:id', controller.UpdateSpecificCutpointMeasureItem);
+router.put('/specificMeasureCutpoint/:id', controller.UpdateSpecificMeasureCutpoint);
+
+router.get('/clinics', controller.GetClinicNameList);
+router.post('/reports', controller.GetReportNameList);
+// router.post('/measureProgramCutpoint', controller.InsertMeasureProgramCutpoint);
+// router.put('/measureProgramCutpoint/:id', controller.UpdateMeasureProgramCutpointItem);
+// router.delete('/measureProgramCutpoint/:id', controller.DelMeasureProgramCutpointItem);
+// router.post('/measureProgramCutpoint/:id', controller.GetMeasureProgramCutpointById);
+
+
+
+/* Measure Report Definition / Measure Attribution */
+router.get('/GetMeasureAttrList', controller.GetMeasureAttrList);
+router.post('/NewMeasureAttrItem', controller.NewMeasureAttrItem);
+router.post('/DeleteMeasureAttrItem', controller.DeleteMeasureAttrItem);
+router.post('/UpdateMeasureAttrItem', controller.UpdateMeasureAttrItem);
+
+/** Measure Report Definition / Measure Program Cutpoint */
+router.get('/measureProgramCutpoint', controller.GetMeasureProgramCutpoints);
+router.post('/measureProgramCutpoint', controller.InsertMeasureProgramCutpoint);
+router.put('/measureProgramCutpoint/:id', controller.UpdateMeasureProgramCutpointItem);
+router.delete('/measureProgramCutpoint/:id', controller.DelMeasureProgramCutpointItem);
+router.post('/measureProgramCutpoint/:id', controller.GetMeasureProgramCutpointById);
+
+// Report Builder 
+
+
+// router.get('/GetHedisReportList', controller.GetHedisReportList);
+router.get('/hedisQualityProgram', controller.GetHedisReportList);
+router.post('/hedisQualityProgram', controller.InsertHedisReportItem);
+router.delete('/hedisQualityProgram/:id', controller.DelHedisReportItem);
+router.put('/hedisQualityProgram/:id', controller.UpdateHedisReportItem);
+
+router.post('/UpdateHedisReportItem', controller.UpdateHedisReportItem);
+
+router.post('/hedisMeasure', controller.GetHedisMeasureListByReportId);
+
+// router.post('/GetHedisMeasureListByReportId', controller.GetHedisMeasureListByReportId);
+router.post('/CheckSpecificCutpointMeasure', controller.CheckSpecificCutpointMeasure);
+router.post('/CheckMeasureProgramCutpoint', controller.CheckMeasureProgramCutpoint);
+
+
+// router.post('/DelHedisReportItem', controller.DelHedisReportItem);
+router.post('/hedisMeasureItem', controller.InsertHedisMeasureItem);
+
+router.post('/InsertHedisMeasureItem', controller.InsertHedisMeasureItem);
+router.post('/GetHedisMeasureItemById', controller.GetHedisMeasureItemById);
+router.post('/DelHedisMeasureItem', controller.DelHedisMeasureItem);
+
+router.put('/hedisMeasureItem/:id', controller.UpdateHedisMeasureItem);
+router.get('/GetIncentiveType', controller.GetIncentiveType);
+router.get('/measureCategories', controller.GetMeasureCategories);
+router.get('/measureAttr', controller.GetMeasureAttr);
+
+router.post('/CheckMeasureForSelect', controller.CheckMeasureForSelect);
+router.post('/CheckMeasureCutpoint', controller.CheckMeasureCutpoint);
+router.post('/GetReportMeasure', controller.GetReportMeasure);
+router.post('/GetInsuranceNameForReport', controller.GetInsuranceNameForReport);
+
+// HEDIS Quality Tracker
+router.get('/qualityPrograms', controller.qualityPrograms);
+router.post('/qualityProgramMeasures', controller.qualityProgramMeasures);
+router.post('/qualityProgramTracker/:id', controller.qualityProgramTracker);
+
+router.get('/GetHedisQualityTrackerList', controller.GetHedisQualityTrackerList);
+router.post('/clinicName', controller.clinicName);
+router.post('/insertTracker', controller.insertTracker);
+
+router.post('/cutpoint', controller.getCutpoints);
+
 module.exports = router;

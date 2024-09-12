@@ -887,7 +887,7 @@ const hedisloader = {
             connection.query(query, (err1, result1) => {
                 if (!err1) {
                     if (!result1[0]) {
-                        query = `SELECT id FROM infinite_measure WHERE measure = '${entry.measure}' AND year = ${new Date(Date.now()).getFullYear()}`
+                        query = `SELECT id, measure_id FROM infinite_measure WHERE measure = '${entry.measure}' AND year = ${new Date(Date.now()).getFullYear()}`
                         connection.query(query, (err2, result2) => {
                             if (!err2) {
                                 if (!result2[0]) {
@@ -900,7 +900,11 @@ const hedisloader = {
                                         }
                                     })
                                 } else {
-                                    resolve({infinite: 0})
+                                    if (result2[0].measure_id > 0) {
+                                        resolve({infinite: 1})
+                                    } else {
+                                        resolve({infinite: 0})
+                                    }
                                 }
                             } else {
                                 reject(err2)

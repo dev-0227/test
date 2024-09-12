@@ -45,6 +45,13 @@ router.post('/qualityloader', (req, res, next) => {
         }
     });
 });
+router.post('/checkmeasure', (req, res, next) => {
+    upload(req, res, (err) => {
+        if (!err) {
+            controller.checkmeasure(req, res, next);
+        }
+    });
+});
 router.post('/encloader', (req, res, next) => {
     encupload(req, res, (err) => {
         if (!err) {
@@ -79,5 +86,6 @@ router.post('/deletebackup', controller.deletebackup);
 router.post('/backuphedis', controller.backuphedis);
 router.post('/backupdatafromhedis', controller.backupdatafromhedis);
 router.post('/checkhedisdata', controller.checkhedisdata);
+router.post('/checkmeasure', controller.checkmeasure);
 
 module.exports = router;
