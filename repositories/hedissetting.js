@@ -954,7 +954,8 @@ const setting = {
         })
     },
     getMeasureForCurrentYear: (entry, callback) => {
-        let query = `SELECT id, title FROM f_qpp_measure_data WHERE eyear = ${new Date(Date.now()).getFullYear()}`
+        let query = `SELECT DISTINCT qmd.id, qmd.title FROM f_qpp_measure_data AS qmd, hedis_report_builder_measure AS hrbm, hedis_report_builder_report AS hrbr, hedis_quality_program AS hqp `
+        query += `WHERE (qmd.id = hrbm.measure_id AND hrbm.hedis_report_builder_report_id AND hrbr.quality_program_id = hqp.id AND hqp.id = ${entry.qpid}) AND qmd.eyear = 2023`
         connection.query(query, (err, result) => {
             callback(err, result)
         })

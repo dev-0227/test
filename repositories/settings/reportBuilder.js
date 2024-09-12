@@ -97,7 +97,8 @@ const reportBuilderModel = {
             var res = result.map(r => r.inslob_id);            
             callback(err, res);
         });
-    },GetCutPointList: (callback) => {
+    },
+    GetCutPointList: (callback) => {
         let query = "SELECT * FROM cutpoint_measure";
         connection.query(query, (err, result) => {                      
             callback(err, result);
@@ -306,8 +307,8 @@ const reportBuilderModel = {
         let query = `
             SELECT 
                 measure_program_cutpoint.id, 
-                measure_hedis.measureId as quality_id, 
-                measure_hedis.title as measure, 
+                f_qpp_measure_data.measureId as quality_id, 
+                f_qpp_measure_data.title as measure, 
                 hedis_quality_program.name as report, 
 
                 c1.display as cutpoint_1, 
@@ -336,7 +337,7 @@ const reportBuilderModel = {
 
                 FROM measure_program_cutpoint 
 
-                JOIN measure_hedis ON measure_program_cutpoint.measure_id = measure_hedis.id 
+                JOIN f_qpp_measure_data ON measure_program_cutpoint.measure_id = f_qpp_measure_data.id 
                 JOIN hedis_quality_program ON measure_program_cutpoint.report_id = hedis_quality_program.id 
                 JOIN cutpoint_measure as c1 ON measure_program_cutpoint.cutpoint_1_id = c1.id 
                 JOIN cutpoint_measure as c2 ON measure_program_cutpoint.cutpoint_2_id = c2.id 
@@ -402,10 +403,10 @@ const reportBuilderModel = {
     GetMeasureProgramCutpointById: (params, callback) => {
         let query = `SELECT 
                         measure_program_cutpoint.*, 
-                        measure_hedis.title, 
-                        measure_hedis.measureId 
+                        f_qpp_measure_data.title, 
+                        f_qpp_measure_data.measureId 
                     FROM measure_program_cutpoint 
-                    JOIN measure_hedis ON measure_program_cutpoint.measure_id = measure_hedis.id 
+                    JOIN f_qpp_measure_data ON measure_program_cutpoint.measure_id = f_qpp_measure_data.id 
                     WHERE measure_program_cutpoint.id = ?`;
         connection.query(query, [params.id], (err, result) => {
             callback(err, result);
@@ -503,13 +504,13 @@ const reportBuilderModel = {
         let query = `
             SELECT 
 		            hedis_report_builder_measure.*, 
-		            measure_hedis.title as measure, 
-		            measure_hedis.measureId as quality_id,
+		            f_qpp_measure_data.title as measure, 
+		            f_qpp_measure_data.measureId as quality_id,
 					measure_specific_incentive_type.display as incentive_type,
 					hcd_table.Health_Care_Domain as measure_categories,
                     measure_attribution.display as measure_attribution
                 FROM hedis_report_builder_measure 
-                    JOIN measure_hedis ON hedis_report_builder_measure.measure_id = measure_hedis.id 
+                    JOIN f_qpp_measure_data ON hedis_report_builder_measure.measure_id = f_qpp_measure_data.id 
 					LEFT JOIN measure_specific_incentive_type ON hedis_report_builder_measure.incentive_type_id = measure_specific_incentive_type.id
 					LEFT JOIN hcd_table ON hedis_report_builder_measure.measure_categories_id = hcd_table.id
                     LEFT JOIN measure_attribution ON measure_attribution.id = hedis_report_builder_measure.measure_attr_id
@@ -612,6 +613,7 @@ const reportBuilderModel = {
         });
     },
 
+    // --- //
     GetHedisReportStep1ItemById: (params, callback) => {
                
          let query = `SELECT 
@@ -865,10 +867,10 @@ const reportBuilderModel = {
     GetHedisMeasureItemById: (params, callback) => {               
         let query = `SELECT 
                        hedis_report_builder_measure.*, 
-                       measure_hedis.title as measure, 
-                       measure_hedis.measureId as quality_id 
+                       f_qpp_measure_data.title as measure, 
+                       f_qpp_measure_data.measureId as quality_id 
                    FROM hedis_report_builder_measure 
-                   JOIN measure_hedis ON hedis_report_builder_measure.measure_id = measure_hedis.id 
+                   JOIN f_qpp_measure_data ON hedis_report_builder_measure.measure_id = f_qpp_measure_data.id 
                    WHERE hedis_report_builder_measure.id = ?`;       
       
        connection.query(query, [params.measure_id], (err, result) => {
@@ -1060,8 +1062,8 @@ const reportBuilderModel = {
     },
 
     GetReportMeasure: (params, callback) => {
-        let query = `SELECT hedis_report_builder_measure.*, measure_attribution.display as attribution, hcd_table.Health_Care_Domain, measure_specific_incentive_type.display as incentive_type, measure_hedis.title as measure FROM hedis_report_builder_measure 
-                     JOIN measure_hedis ON hedis_report_builder_measure.measure_id = measure_hedis.id 
+        let query = `SELECT hedis_report_builder_measure.*, measure_attribution.display as attribution, hcd_table.Health_Care_Domain, measure_specific_incentive_type.display as incentive_type, f_qpp_measure_data.title as measure FROM hedis_report_builder_measure 
+                     JOIN f_qpp_measure_data ON hedis_report_builder_measure.measure_id = f_qpp_measure_data.id 
                      LEFT JOIN measure_attribution ON hedis_report_builder_measure.measure_attr_id = measure_attribution.id 
                      LEFT JOIN hcd_table ON hedis_report_builder_measure.measure_categories_id = hcd_table.id
                      LEFT JOIN measure_specific_incentive_type ON hedis_report_builder_measure.incentive_type_id = measure_specific_incentive_type.id
@@ -1118,8 +1120,8 @@ const reportBuilderModel = {
     },
 
     GetHedisQualityTrackerList: (callback) => {
-        let query = `SELECT hedis_quality_tracker.*, measure_hedis.title as measure_name FROM hedis_quality_tracker
-                    JOIN measure_hedis ON hedis_quality_tracker.mid = measure_hedis.id 
+        let query = `SELECT hedis_quality_tracker.*, f_qpp_measure_data.title as measure_name FROM hedis_quality_tracker
+                    JOIN f_qpp_measure_data ON hedis_quality_tracker.mid = f_qpp_measure_data.id 
                     ORDER BY id DESC`;
         connection.query(query, (err, result) => {
             callback(err, result);
@@ -1149,9 +1151,9 @@ const reportBuilderModel = {
 
     qualityProgramMeasures: (params, callback) => {
         let query = `SELECT 
-                        measure_hedis.title as measures, hedis_quality_tracker.*
+                        f_qpp_measure_data.title as measures, hedis_quality_tracker.*
                      FROM hedis_quality_tracker 
-                        JOIN measure_hedis ON hedis_quality_tracker.mid = measure_hedis.id
+                        JOIN f_qpp_measure_data ON hedis_quality_tracker.mid = f_qpp_measure_data.id
                      WHERE quality_program_id= ? AND clinic_id = ?
                      ORDER BY id DESC`;
 
@@ -1303,8 +1305,8 @@ const reportBuilderModel = {
         let query = `
             SELECT 
                 specific_measure_cutpoint.id, 
-                measure_hedis.measureId as quality_id, 
-                measure_hedis.title as measure, 
+                f_qpp_measure_data.measureId as quality_id, 
+                f_qpp_measure_data.title as measure, 
                 hedis_quality_program.name as report, 
                 clinics.name as clinic,
 
@@ -1334,7 +1336,7 @@ const reportBuilderModel = {
 
                 FROM specific_measure_cutpoint 
 
-                JOIN measure_hedis ON specific_measure_cutpoint.measure_id = measure_hedis.id 
+                JOIN f_qpp_measure_data ON specific_measure_cutpoint.measure_id = f_qpp_measure_data.id 
                 JOIN hedis_quality_program ON specific_measure_cutpoint.report_id = hedis_quality_program.id 
                 JOIN clinics ON specific_measure_cutpoint.clinic_id = clinics.id 
                 JOIN cutpoint_measure as c1 ON specific_measure_cutpoint.cutpoint_1_id = c1.id 
