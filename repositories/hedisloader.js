@@ -329,7 +329,7 @@ const hedisloader = {
     //             query = "SELECT id FROM `hedis_track` WHERE cyear = ? AND clinicid = ? AND insid = ? AND mid = ? AND hstatus = 1";
     //             connection.query(query, [entry.cyear, entry.clinicid,entry.insid,entry.mid,entry.measureid], (err, result) => {
     //                 if(result.length == 0){
-    //                     query = `SELECT f.id, DISTANCE('${entry.measure}', f.title) AS d FROM f_qpp_measure_data AS f WHERE f.eyear = ${new Date(Date.now()).getFullYear()} ORDER BY d DESC LIMIT 1`
+    //                     query = `SELECT f.id, DISTANCE('${entry.measure}', f.title) AS d FROM measure_hedis AS f WHERE f.eyear = ${new Date(Date.now()).getFullYear()} ORDER BY d DESC LIMIT 1`
     //                     connection.query(query, (err1, result1) => {
     //                         if (!err1) {
     //                             let measureid = 0
@@ -356,7 +356,7 @@ const hedisloader = {
     //             query = "SELECT id FROM `hedis_track` WHERE cyear = ? AND clinicid = ? AND insid = ? AND mid = ? AND measure = ?";
     //             connection.query(query, [entry.cyear, entry.clinicid,entry.insid,entry.mid,entry.measure], (err, result) => {
     //                 if(result.length == 0) {
-    //                     query = `SELECT f.id, DISTANCE('${entry.measure}', f.title) AS d FROM f_qpp_measure_data AS f WHERE f.eyear = ${new Date(Date.now()).getFullYear()} ORDER BY d DESC LIMIT 1`
+    //                     query = `SELECT f.id, DISTANCE('${entry.measure}', f.title) AS d FROM measure_hedis AS f WHERE f.eyear = ${new Date(Date.now()).getFullYear()} ORDER BY d DESC LIMIT 1`
     //                     connection.query(query, (err1, result1) => {
     //                         if (!err1) {
     //                             let measureid = 0
@@ -883,7 +883,7 @@ const hedisloader = {
 
     checkMeasure: (entry) => {
         return new Promise((resolve, reject) => {
-            let query = `SELECT id FROM f_qpp_measure_data WHERE title = '${entry.measure}' AND eyear = ${new Date(Date.now()).getFullYear()}`
+            let query = `SELECT id FROM measure_hedis WHERE title = '${entry.measure}' AND eyear = ${new Date(Date.now()).getFullYear()}`
             connection.query(query, (err1, result1) => {
                 if (!err1) {
                     if (!result1[0]) {
@@ -932,7 +932,7 @@ const hedisloader = {
         })
     },
     getMeasure: (entry) => {
-        let query = `SELECT id FROM f_qpp_measure_data WHERE title = '${entry.measure}' AND eyear = ${new Date(Date.now()).getFullYear()}`
+        let query = `SELECT id FROM measure_hedis WHERE title = '${entry.measure}' AND eyear = ${new Date(Date.now()).getFullYear()}`
         return new Promise((resolve, reject) => {
             connection.query(query, (err1, result1) => {
                 if (!err1) {

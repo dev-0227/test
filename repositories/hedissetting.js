@@ -954,8 +954,8 @@ const setting = {
         })
     },
     getMeasureForCurrentYear: (entry, callback) => {
-        let query = `SELECT DISTINCT qmd.id, qmd.title FROM f_qpp_measure_data AS qmd, hedis_report_builder_measure AS hrbm, hedis_report_builder_report AS hrbr, hedis_quality_program AS hqp `
-        query += `WHERE qmd.id = hrbm.measure_id AND hrbm.hedis_report_builder_report_id = hrbr.id AND hrbr.quality_program_id = ${entry.qpid}`
+        let query = `SELECT DISTINCT mh.id, mh.title FROM measure_hedis AS mh, hedis_report_builder_measure AS hrbm, hedis_report_builder_report AS hrbr, hedis_quality_program AS hqp `
+        query += `WHERE mh.id = hrbm.measure_id AND hrbm.hedis_report_builder_report_id = hrbr.id AND hrbr.quality_program_id = ${entry.qpid}`
         connection.query(query, (err, result) => {
             callback(err, result)
         })
