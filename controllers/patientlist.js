@@ -116,6 +116,7 @@ exports.ptloader = async (req, res, next) => {
                 DOB:(row[headers.indexOf("DOB")]==null||row[headers.indexOf("DOB")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("DOB")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("DOB")])),
                 event_id:event_result['insertId'],
                 insid:row[headers.indexOf('insid')] ? row[headers.indexOf('insid')] : 0,
+                seq_no:row[headers.indexOf('seqno')] ? row[headers.indexOf('seqno')] : 1,
                 insuranceName:row[headers.indexOf('insuranceName')],
                 subscriberno:row[headers.indexOf('subscriberno')],
                 marital:1,
@@ -141,7 +142,7 @@ exports.ptloader = async (req, res, next) => {
                 clinic_id: req.body.clinicid,
                 ptemrid: row[headers.indexOf('uid')] ? row[headers.indexOf('uid')] : '',
                 startDate: (row[headers.indexOf("startDate")]==null||row[headers.indexOf("startDate")]=="")?null:(ExcelDateToJSDate(row[headers.indexOf("startDate")])=="NaN-NaN-NaN"?null:ExcelDateToJSDate(row[headers.indexOf("startDate")])),
-                seq_no: 1
+                seq_no: row[headers.indexOf('seqno')] ? row[headers.indexOf('seqno')] : 1
             }
             if (!allTrack.find(o => o.ins_id == data.ins_id && o.ptemrid == data.ptemrid)) {
                 await tracking.setPtInsTracking(data)
